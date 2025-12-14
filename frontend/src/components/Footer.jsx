@@ -197,8 +197,8 @@ const Footer = () => {
 
             <Box sx={{ mt: 2 }}>
               {[
-                { icon: <Facebook />, link: "facebook.com/profile/61553103202212" },
-                { icon: <Instagram />, link: "instagram.com/the_professor_acadmey" },
+                { icon: <Facebook />, link: "https://www.facebook.com/profile/61553103202212" },
+                { icon: <Instagram />, link: "https://www.instagram.com/the_professor_acadmey" },
                 { icon: <Twitter />, link: "#" },
                 { icon: <YouTube />, link: "#" },
                 {
