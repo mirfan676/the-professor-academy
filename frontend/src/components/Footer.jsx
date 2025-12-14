@@ -55,11 +55,11 @@ const Footer = () => {
             }}
           >
             <Typography variant="body1" sx={{ opacity: 0.85, lineHeight: 1.7 }}>
-              A Plus Home Tutors is Pakistan’s most trusted home and online tutoring
-              network — connecting students with expert educators nationwide. From
-              O/A Levels to Qur’an with Tajweed, our mission is to create confident
-              learners through personalized teaching, modern tools, and one-on-one
-              guidance that transforms academic performance.
+              The Professor Academy is a globally trusted home and online tutoring 
+              network—connecting students with expert professional educators across the UK, USA, Canada,
+               UAE, Australia, and Pakistan. From CA, ACCA, and O/A Levels to IELTS and Digital Skills,
+                our mission is to create confident learners through personalized teaching, modern tools,
+                 and one-on-one guidance that transforms global career and academic performance.
             </Typography>
           </Box>
         </Grid>
@@ -185,26 +185,26 @@ const Footer = () => {
             }}
           >
             <Typography variant="body2" sx={{ mb: 1, opacity: 0.85 }}>
-              Lahore • Karachi • Islamabad • Rawalpindi • Faisalabad  
-              Online tutoring available across Pakistan.
+              Our Branches Across All Major Cities
+              Lahore • Karachi • Islamabad • Rawalpindi • Faisalabad • Multan
             </Typography>
 
             <Typography variant="body2" sx={{ opacity: 0.85 }}>
-              📱 0306-6762289 | 0306-5555415  
+              📱 +92 301 5037768
               <br />
-              📧 aplushometutorspk@gmail.com
+              📧 zahoorahmed6692@gmail.com
             </Typography>
 
             <Box sx={{ mt: 2 }}>
               {[
-                { icon: <Facebook />, link: "#" },
-                { icon: <Instagram />, link: "#" },
+                { icon: <Facebook />, link: "facebook.com/profile/61553103202212" },
+                { icon: <Instagram />, link: "instagram.com/the_professor_acadmey" },
                 { icon: <Twitter />, link: "#" },
                 { icon: <LinkedIn />, link: "#" },
                 { icon: <YouTube />, link: "#" },
                 {
                   icon: <WhatsApp />,
-                  link: "https://wa.me/923066762289",
+                  link: "https://wa.me/923015037768",
                 },
               ].map((s, idx) => (
                 <IconButton
@@ -231,10 +231,10 @@ const Footer = () => {
       {/* BOTTOM BAR */}
       <Box sx={{ textAlign: "center", opacity: 0.7 }}>
         <Typography variant="body2">
-          © {new Date().getFullYear()} APlus Home Tutors — All Rights Reserved
+          © {new Date().getFullYear()} The Professor Academy — All Rights Reserved
         </Typography>
         <Typography variant="caption">
-          Empowering students across Pakistan — From Basic to Brilliance.
+          Learn From Professionals, Succeed Globally.
         </Typography>
       </Box>
     </Box>
