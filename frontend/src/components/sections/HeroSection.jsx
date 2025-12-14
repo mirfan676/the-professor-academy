@@ -1,35 +1,8 @@
 import React from "react";
-import { Box, Typography, Button, useTheme, useMediaQuery } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Box, Typography, Button, Grid } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 export default function HeroSection() {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
-
-  const glassFrame = {
-    position: "absolute",
-    bottom: isMobile ? "-15px" : "-25px",
-    right: isMobile ? "-10px" : "-30px",
-    padding: isMobile ? "6px" : "10px",
-    borderRadius: "20px",
-    backdropFilter: "blur(10px)",
-    background: "rgba(255, 255, 255, 0.25)",
-    border: "1px solid rgba(255, 255, 255, 0.35)",
-    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-  };
-
-  const whiteFrame = {
-    position: "absolute",
-    bottom: isMobile ? "-15px" : "-25px",
-    right: isMobile ? "-10px" : "-30px",
-    padding: isMobile ? "6px" : "10px",
-    borderRadius: "20px",
-    background: "rgba(255, 255, 255, 0.95)",
-    border: "1px solid rgba(255, 255, 255, 0.35)",
-    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-  };
-
   return (
     <Box
       sx={{
@@ -37,143 +10,261 @@ export default function HeroSection() {
         minHeight: { xs: "70vh", sm: "75vh", md: "85vh" },
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
-        flexDirection: { xs: "column-reverse", md: "row" },
+        justifyContent: "center",
+        flexDirection: "column",
         px: { xs: 3, sm: 5, md: 10 },
-        pt: { xs: 4, sm: 6, md: 10 },
-        backgroundColor: "#f5f5f7",
-        position: "relative",
+        pt: { xs: 6, sm: 8, md: 10 },
+        pb: { xs: 6, sm: 8, md: 10 },
+        backgroundImage: "url('/background-home-1.png')", // Add the path to your image
+        backgroundSize: "cover", // Ensures the image covers the entire section
+        backgroundPosition: "center", // Centers the image
+        backgroundRepeat: "no-repeat", // Prevents the image from repeating
+        borderBottom:"5px solid #fddc88",
       }}
     >
-      {/* LEFT TEXT */}
-      <Box
-        sx={{
-          maxWidth: { xs: "100%", sm: 450, md: 520 },
-          textAlign: { xs: "center", md: "left" },
-        }}
-      >
+      {/* Title Section */}
+      <Box sx={{ textAlign: "center", mb: 6 }}>
         <Typography
           variant="h2"
           sx={{
             fontSize: { xs: "1.8rem", sm: "2.4rem", md: "3.2rem" },
             fontWeight: 800,
             lineHeight: 1.2,
-            color: "#004aad",
+            color: "#02539b", // Vivid Azure
+            mb: 2,
+            borderBottom: "1px solid transparent",
+            borderTop: "1px solid transparent",
+            padding:"15px",
+            "&:hover": {
+              borderBottom: "1px solid #fddc88", 
+              borderTop:"1px solid #fddc88"// Pastel Orange on hover
+            },
           }}
         >
-          Premium Home Tutors For All Classes
+          Expert Home & Online Tuition
         </Typography>
-
         <Typography
           sx={{
             mt: 2,
             fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
-            color: "#555",
+            color: "#333",
           }}
         >
-          Expert one-to-one tutoring at your home — trusted by parents,
-          students, and teachers.
+          CA, ACCA, O/A Levels, IELTS & Digital Skills
         </Typography>
-
-        {/* BUTTONS */}
-<Box
-  sx={{
-    mt: 3,
-    display: "flex",
-    flexDirection: { xs: "column", sm: "row" },
-    gap: 2,
-    justifyContent: { xs: "center", md: "flex-start" },
-  }}
->
-  {/* WHATSAPP BUTTON */}
-  <Button
-    component="a"
-    href="https://wa.me/923066762289"
-    target="_blank"
-    rel="noopener noreferrer"
-    variant="contained"
-    size="large"
-    sx={{
-      background: "#007bff",
-      "&:hover": { background: "#0069d9" },
-      px: 5,
-      py: 1.5,
-      borderRadius: "10px",
-      fontSize: { xs: "0.95rem", sm: "1.05rem", md: "1.1rem" },
-      width: { xs: "100%", sm: "auto" },
-      transition: "all 0.3s ease",
-    }}
-  >
-    Contact Now
-  </Button>
-
-  {/* EXISTING HIRE TUTOR BUTTON */}
-  <Button
-    component={Link}
-    to="/teachers"
-    variant="contained"
-    size="large"
-    sx={{
-      background: "#29b554",
-      "&:hover": { background: "#22a049" },
-      px: 5,
-      py: 1.5,
-      borderRadius: "10px",
-      fontSize: { xs: "0.95rem", sm: "1.05rem", md: "1.1rem" },
-      width: { xs: "100%", sm: "auto" },
-      transition: "all 0.3s ease",
-    }}
-  >
-    Find Your Tutor
-  </Button>
-</Box>
-
       </Box>
 
-      {/* RIGHT HERO IMAGES */}
-      <Box
-        sx={{
-          position: "relative",
-          mt: { xs: 6, md: 0 },
-          display: "flex",
-          justifyContent: { xs: "center", md: "flex-end" },
-        }}
-      >
-        {/* MAIN LCP IMAGE */}
-        <Box
-          component="img"
-          src="assets/hero-main-430.webp"
-          alt="Students"
-          width={430}
-          height={322}
-          fetchpriority="high"
-          loading="eager"
-          sx={{
-            width: { xs: 260, sm: 350, md: 430 },
-            height: "auto",
-            borderRadius: "30px",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.18)",
-            transition: "transform 0.3s ease",
-            "&:hover": { transform: "scale(1.02)" },
-          }}
-        />
-
-        {/* SMALL IMAGE WITH WHITE FRAME */}
-        <Box sx={whiteFrame}>
+      {/* Categories Section */}
+      <Grid container spacing={3} sx={{ justifyContent: "center", mb: 6 }}>
+        {/* Category 1 */}
+        <Grid item xs={6} sm={4} md={2.5}>
           <Box
-            component="img"
-            src="assets/hero-small.webp"
-            alt="Tutor"
-            width={150}  
-            height={112} 
             sx={{
-              width: { xs: 100, sm: 120, md: 150 },
-              height: "auto",
-              borderRadius: "15px",
-              display: "block",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: "12px",
+              backgroundColor: "transparent",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+              height: "200px",
+              width: "200px",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
             }}
-          />
-        </Box>
+          >
+            <Box
+              component="img"
+              src="/icons/O-A-level.png" // Replace with actual icon image
+              alt="Education Programmes"
+              sx={{
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
+                mb: 2,
+              }}
+            />
+            <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
+              O & A Level
+            </Typography>
+          </Box>
+        </Grid>
+
+        {/* Category 2 */}
+        <Grid item xs={6} sm={4} md={2.5}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: "12px",
+              backgroundColor: "transparent",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+              height: "200px",
+              width: "200px",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            <Box
+              component="img"
+              src="/icons/hometutor.png" // Replace with actual icon image
+              alt="Home Tutors"
+              sx={{
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
+                mb: 2,
+              }}
+            />
+            <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
+              Home Tutors
+            </Typography>
+          </Box>
+        </Grid>
+
+        {/* Category 3 */}
+        <Grid item xs={6} sm={4} md={2.5}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: "12px",
+              backgroundColor: "transparent",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+              height: "200px",
+              width: "200px",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            <Box
+              component="img"
+              src="/icons/online.png" // Replace with actual icon image
+              alt="Online Tutors"
+              sx={{
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
+                mb: 2,
+              }}
+            />
+            <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
+              Online Tutors
+            </Typography>
+          </Box>
+        </Grid>
+
+        {/* Category 4 */}
+        <Grid item xs={6} sm={4} md={2.5}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: "12px",
+              backgroundColor: "transparent",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+              height: "200px",
+              width: "200px",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            <Box
+              component="img"
+              src="/icons/ielts.png" // Replace with actual icon image
+              alt="IELTS Experts"
+              sx={{
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
+                mb: 2,
+              }}
+            />
+            <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
+              IELTS Experts
+            </Typography>
+          </Box>
+        </Grid>
+
+        {/* Category 5 */}
+        <Grid item xs={6} sm={4} md={2.5}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: "12px",
+              backgroundColor: "transparent",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+              height: "200px",
+              width: "200px",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            <Box
+              component="img"
+              src="/icons/quran.png" // Replace with actual icon image
+              alt="Quran Online"
+              sx={{
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
+                mb: 2,
+              }}
+            />
+            <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
+              Quran Online
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+
+      {/* "Read More" Button Section */}
+      <Box sx={{ textAlign: "center" }}>
+        <Button
+          variant="contained"
+          component={Link}
+          to={"/about"}
+          color="primary"
+          sx={{
+            background: "#02539b", // Vivid Azure
+            "&:hover": { background: "#003f88" },
+            fontSize: "1rem",
+            px: 5,
+            py: 1,
+            borderRadius: "10px",
+          }}
+        >
+          Read More
+        </Button>
       </Box>
     </Box>
   );

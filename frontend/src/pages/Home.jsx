@@ -2,10 +2,8 @@ import React from "react";
 import useSEO from "../hooks/useSEO";  // <-- REQUIRED IMPORT
 
 import HeroSection from "../components/sections/HeroSection";
-import AdvantagesSection from "../components/sections/AdvantagesSection";
-import StepsSection from "../components/sections/StepsSection";
-import WhyChooseUs from "../components/sections/WhyChooseUs";
-import AreasWeCover from "../components/sections/AreasWeCover";
+import AboutSection from "../components/sections/AboutSection";
+import BranchesSection from "../components/sections/BranchesSection";
 import FAQSection from "../components/sections/FAQSection";
 import FooterCTA from "../components/sections/FooterCTA";
 
@@ -21,10 +19,8 @@ const Home = () => {
   return (
     <>
       <HeroSection />
-      <AdvantagesSection />
-      <StepsSection />
-      <WhyChooseUs />
-      <AreasWeCover />
+      <AboutSection/>
+      <BranchesSection/>
       <FAQSection />
       <FooterCTA />
     </>
