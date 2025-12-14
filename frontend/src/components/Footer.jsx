@@ -200,7 +200,6 @@ const Footer = () => {
                 { icon: <Facebook />, link: "facebook.com/profile/61553103202212" },
                 { icon: <Instagram />, link: "instagram.com/the_professor_acadmey" },
                 { icon: <Twitter />, link: "#" },
-                { icon: <LinkedIn />, link: "#" },
                 { icon: <YouTube />, link: "#" },
                 {
                   icon: <WhatsApp />,

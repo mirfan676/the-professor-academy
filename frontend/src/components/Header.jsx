@@ -47,7 +47,7 @@ const Header = () => {
       {/* Top Contact Info Bar */}
       <Box sx={{ backgroundColor: "#003366", color: "#fff", textAlign: "center", padding: "5px 0" }}>
         <Typography variant="body2">
-          <a href="tel:+111277111" style={{ textDecoration: "none", color: "inherit", marginRight: "15px" }}>
+          <a href="tel:+923015037768" style={{ textDecoration: "none", color: "inherit", marginRight: "15px" }}>
             +92 301 5037768
           </a>
           |

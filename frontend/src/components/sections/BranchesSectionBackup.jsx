@@ -1,32 +1,8 @@
-import React, { useState } from "react";
-import { Box, Typography, Button, Grid, Collapse } from '@mui/material';
+import React from "react";
+import { Box, Typography, Button, Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export default function HeroSection() {
-  const [isIslamabadOpen, setIsIslamabadOpen] = useState(false);
-  const [isKarachiOpen, setIsKarachiOpen] = useState(false);
-  const [isLahoreOpen, setIsLahoreOpen] = useState(false);
-  const [isMultanOpen, setIsMultanOpen] = useState(false);
-
-  const toggleCityBranches = (city) => {
-    switch (city) {
-      case "Islamabad":
-        setIsIslamabadOpen(!isIslamabadOpen);
-        break;
-      case "Karachi":
-        setIsKarachiOpen(!isKarachiOpen);
-        break;
-      case "Lahore":
-        setIsLahoreOpen(!isLahoreOpen);
-        break;
-      case "Multan":
-        setIsMultanOpen(!isMultanOpen);
-        break;
-      default:
-        break;
-    }
-  };
-
   return (
     <Box
       sx={{
@@ -39,10 +15,10 @@ export default function HeroSection() {
         px: { xs: 3, sm: 5, md: 10 },
         pt: { xs: 6, sm: 8, md: 10 },
         pb: { xs: 6, sm: 8, md: 10 },
-        backgroundImage: "url('/background-home-1.png')", 
-        backgroundSize: "cover", 
-        backgroundPosition: "center", 
-        backgroundRepeat: "no-repeat", 
+        backgroundImage: "url('/background-home-1.png')", // Add the path to your image
+        backgroundSize: "cover", // Ensures the image covers the entire section
+        backgroundPosition: "center", // Centers the image
+        backgroundRepeat: "no-repeat", // Prevents the image from repeating
         borderBottom:"5px solid #fddc88",
       }}
     >
@@ -61,7 +37,7 @@ export default function HeroSection() {
             padding:"15px",
             "&:hover": {
               borderBottom: "1px solid #fddc88", 
-              borderTop:"1px solid #fddc88"
+              borderTop:"1px solid #fddc88"// Pastel Orange on hover
             },
           }}
         >
@@ -80,7 +56,7 @@ export default function HeroSection() {
 
       {/* Categories Section */}
       <Grid container spacing={3} sx={{ justifyContent: "center", mb: 6 }}>
-        {/* City 1: Islamabad */}
+        {/* Category 1 */}
         <Grid item xs={6} sm={4} md={2.5}>
           <Box
             sx={{
@@ -100,7 +76,6 @@ export default function HeroSection() {
                 transform: "scale(1.05)",
               },
             }}
-            onClick={() => toggleCityBranches("Islamabad")}
           >
             <Box
               component="img"
@@ -117,19 +92,9 @@ export default function HeroSection() {
               Islamabad
             </Typography>
           </Box>
-          <Collapse in={isIslamabadOpen}>
-            <Box sx={{ mt: 2, textAlign: "center" }}>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                F7 Branch
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                F6 Branch
-              </Typography>
-            </Box>
-          </Collapse>
         </Grid>
 
-        {/* City 2: Karachi */}
+        {/* Category 2 */}
         <Grid item xs={6} sm={4} md={2.5}>
           <Box
             sx={{
@@ -149,7 +114,6 @@ export default function HeroSection() {
                 transform: "scale(1.05)",
               },
             }}
-            onClick={() => toggleCityBranches("Karachi")}
           >
             <Box
               component="img"
@@ -166,19 +130,9 @@ export default function HeroSection() {
               Karachi
             </Typography>
           </Box>
-          <Collapse in={isKarachiOpen}>
-            <Box sx={{ mt: 2, textAlign: "center" }}>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                Korangi Branch
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                Saddar Branch
-              </Typography>
-            </Box>
-          </Collapse>
         </Grid>
 
-        {/* City 3: Lahore */}
+        {/* Category 3 */}
         <Grid item xs={6} sm={4} md={2.5}>
           <Box
             sx={{
@@ -198,7 +152,6 @@ export default function HeroSection() {
                 transform: "scale(1.05)",
               },
             }}
-            onClick={() => toggleCityBranches("Lahore")}
           >
             <Box
               component="img"
@@ -215,19 +168,9 @@ export default function HeroSection() {
               Lahore
             </Typography>
           </Box>
-          <Collapse in={isLahoreOpen}>
-            <Box sx={{ mt: 2, textAlign: "center" }}>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                DHA Branch
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                Gulberg Branch
-              </Typography>
-            </Box>
-          </Collapse>
         </Grid>
 
-        {/* City 4: Multan */}
+        {/* Category 4 */}
         <Grid item xs={6} sm={4} md={2.5}>
           <Box
             sx={{
@@ -247,7 +190,6 @@ export default function HeroSection() {
                 transform: "scale(1.05)",
               },
             }}
-            onClick={() => toggleCityBranches("Multan")}
           >
             <Box
               component="img"
@@ -264,13 +206,6 @@ export default function HeroSection() {
               Multan
             </Typography>
           </Box>
-          <Collapse in={isMultanOpen}>
-            <Box sx={{ mt: 2, textAlign: "center" }}>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                Multan Cantt Branch
-              </Typography>
-            </Box>
-          </Collapse>
         </Grid>
       </Grid>
 
