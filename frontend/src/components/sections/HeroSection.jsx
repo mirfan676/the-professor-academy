@@ -181,6 +181,7 @@ export default function HeroSection() {
               "&:hover": {
                 transform: "scale(1.05)",
               },
+              
             }}
           >
             <Box
