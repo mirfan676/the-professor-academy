@@ -69,8 +69,6 @@ export default function HeroSection() {
               backgroundColor: "transparent",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
-              height: "200px",
-              width: "200px",
               transition: "transform 0.3s ease",
               "&:hover": {
                 transform: "scale(1.05)",
@@ -107,8 +105,6 @@ export default function HeroSection() {
               backgroundColor: "transparent",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
-              height: "200px",
-              width: "200px",
               transition: "transform 0.3s ease",
               "&:hover": {
                 transform: "scale(1.05)",
@@ -145,8 +141,6 @@ export default function HeroSection() {
               backgroundColor: "transparent",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
-              height: "200px",
-              width: "200px",
               transition: "transform 0.3s ease",
               "&:hover": {
                 transform: "scale(1.05)",
@@ -183,8 +177,6 @@ export default function HeroSection() {
               backgroundColor: "transparent",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
-              height: "200px",
-              width: "200px",
               transition: "transform 0.3s ease",
               "&:hover": {
                 transform: "scale(1.05)",
@@ -221,8 +213,6 @@ export default function HeroSection() {
               backgroundColor: "transparent",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
-              height: "200px",
-              width: "200px",
               transition: "transform 0.3s ease",
               "&:hover": {
                 transform: "scale(1.05)",

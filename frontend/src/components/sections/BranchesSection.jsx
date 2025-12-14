@@ -93,8 +93,6 @@ export default function HeroSection() {
               backgroundColor: "transparent",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
-              height: "200px",
-              width: "200px",
               transition: "transform 0.3s ease",
               "&:hover": {
                 transform: "scale(1.05)",
@@ -104,7 +102,7 @@ export default function HeroSection() {
           >
             <Box
               component="img"
-              src="/assets/Islamabad.svg" // Replace with actual icon image
+              src="/assets/Islamabad.svg"
               alt="Islamabad"
               sx={{
                 width: "120px",
@@ -142,8 +140,6 @@ export default function HeroSection() {
               backgroundColor: "transparent",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
-              height: "200px",
-              width: "200px",
               transition: "transform 0.3s ease",
               "&:hover": {
                 transform: "scale(1.05)",
@@ -191,8 +187,6 @@ export default function HeroSection() {
               backgroundColor: "transparent",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
-              height: "200px",
-              width: "200px",
               transition: "transform 0.3s ease",
               "&:hover": {
                 transform: "scale(1.05)",
@@ -240,8 +234,6 @@ export default function HeroSection() {
               backgroundColor: "transparent",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
-              height: "200px",
-              width: "200px",
               transition: "transform 0.3s ease",
               "&:hover": {
                 transform: "scale(1.05)",
