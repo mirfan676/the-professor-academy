@@ -51,7 +51,7 @@ const Header = () => {
             +92 301 5037768
           </a>
           |
-          <a href="mailto:info@beaconhouse.net" style={{ textDecoration: "none", color: "inherit", marginLeft: "15px" }}>
+          <a href="mailto:zahoorahmed6692@gmail.com" style={{ textDecoration: "none", color: "inherit", marginLeft: "15px" }}>
             zahoorahmed6692@gmail.com
           </a>
         </Typography>
