@@ -6,9 +6,29 @@ from config.settings import SERVICE_ACCOUNT_JSON, SCOPES, SHEET_ID
 # ----------------------------
 # Google Sheets client
 # ----------------------------
-creds = Credentials.from_service_account_info(SERVICE_ACCOUNT_JSON, scopes=SCOPES)
-gspread_client = gspread.authorize(creds)
-sheet = gspread_client.open_by_key(SHEET_ID).worksheet("Tutors")
+try:
+    creds = Credentials.from_service_account_info(SERVICE_ACCOUNT_JSON, scopes=SCOPES)
+    gspread_client = gspread.authorize(creds)
+    print("✅ Google Sheets client authorized successfully")
+except Exception as e:
+    print("❌ Failed to authorize Google Sheets client:", e)
+    raise
+
+# ----------------------------
+# Connect to the Tutors sheet
+# ----------------------------
+try:
+    sheet = gspread_client.open_by_key(SHEET_ID).worksheet("Tutors")
+    print("✅ Successfully opened Tutors worksheet")
+except gspread.SpreadsheetNotFound:
+    print(f"❌ Spreadsheet with ID {SHEET_ID} NOT found or access denied")
+    raise
+except gspread.WorksheetNotFound:
+    print("❌ Worksheet 'Tutors' NOT found in spreadsheet. Check exact name and capitalization")
+    raise
+except Exception as e:
+    print("❌ Unknown error while opening sheet:", e)
+    raise
 
 # ----------------------------
 # Cache globals
@@ -24,21 +44,14 @@ def s(v):
     """Safe string strip"""
     return str(v).strip() if v else ""
 
-
 # ----------------------------
 # Preload tutors
 # ----------------------------
 def preload_tutors():
-    """
-    Load tutors from Google Sheet
-    Only keep verified tutors
-    Raises Exception if loading fails or no verified tutors
-    """
     global cached_tutors, last_fetch_time
-
     try:
         records = sheet.get_all_records(empty2zero=False, head=1)
-        print("📌 TOTAL ROWS LOADED FROM SHEET:", len(records))
+        print(f"📌 TOTAL ROWS LOADED FROM SHEET: {len(records)}")
 
         verified = []
 
@@ -51,7 +64,6 @@ def preload_tutors():
                 print(f"❌ Row {idx} skipped — NOT verified")
                 continue
 
-            # Process subjects
             subjects = []
             if s(r.get("Subject")):
                 subjects.append(s(r.get("Subject")))
@@ -60,7 +72,6 @@ def preload_tutors():
             if major_subjects:
                 subjects.extend([x.strip() for x in str(major_subjects).split(",") if x.strip()])
 
-            # Append cleaned tutor record
             verified.append({**r, "Subjects": subjects})
             print(f"✅ Row {idx} accepted")
 
@@ -69,27 +80,25 @@ def preload_tutors():
 
         cached_tutors = verified
         last_fetch_time = datetime.utcnow()
-        print("🔥 FINAL VERIFIED COUNT:", len(cached_tutors))
+        print(f"🔥 FINAL VERIFIED COUNT: {len(cached_tutors)}")
 
     except Exception as e:
-        # Clear cache if preload fails
         cached_tutors = []
         last_fetch_time = datetime.min
         print("⚠️ Preload failed:", e)
-        # Raise exception so routes can handle it
         raise Exception(f"Failed to load tutors from sheet: {e}")
-    
+
 # ----------------------------
 # Load Jobs Sheet
 # ----------------------------
 def load_jobs_sheet():
-    """
-    Returns all job records from the Google Sheet named 'Jobs'
-    """
     try:
         jobs_sheet = gspread_client.open_by_key(SHEET_ID).worksheet("Jobs")
         records = jobs_sheet.get_all_records(empty2zero=False, head=1)
         return records
+    except gspread.WorksheetNotFound:
+        print("❌ Worksheet 'Jobs' NOT found. Check exact name and capitalization")
+        raise
     except Exception as e:
         print("⚠️ Failed to load jobs sheet:", e)
-        raise Exception(f"Failed to load Jobs sheet: {e}")
+        raise

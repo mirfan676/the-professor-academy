@@ -1,7 +1,12 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from config.sheets import load_jobs_sheet
+from config.security import verify_request_origin
 
-router = APIRouter(prefix="/jobs", tags=["Jobs"])
+router = APIRouter(
+    prefix="/jobs",
+    tags=["Jobs"],
+     dependencies=[Depends(verify_request_origin)]
+    )
 
 
 @router.get("/")

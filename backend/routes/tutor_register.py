@@ -1,11 +1,14 @@
-from fastapi import APIRouter, Form, File, UploadFile, HTTPException
+from fastapi import APIRouter, Form, File, UploadFile, HTTPException, Depends
+from config.security import verify_request_origin
 from config.recaptcha import verify_recaptcha
 from config.imgbb import upload_to_imgbb
 from config.geocoder import geolocator
-from config.sheets import sheet
+import config.sheets as sheets
 import traceback
 
-router = APIRouter()
+router = APIRouter(
+    dependencies=[Depends(verify_request_origin)]
+)
 
 @router.post("/tutors/register")
 async def register_tutor(
@@ -24,16 +27,13 @@ async def register_tutor(
     profile_url: str = Form(None),
 ):
     try:
-        # Validate reCAPTCHA
+        # ✅ reCAPTCHA verification
         verify_recaptcha(recaptcha_token, "tutor_register")
 
-        # Upload to imgbb
         image_url = await upload_to_imgbb(image)
 
-        # Parse coordinates
         latitude = float(lat) if lat else None
         longitude = float(lng) if lng else None
-        
         city = district = province = tehsil = ""
 
         if latitude and longitude:
@@ -44,12 +44,11 @@ async def register_tutor(
                 district = addr.get("county") or ""
                 province = addr.get("state") or ""
                 tehsil = addr.get("suburb") or ""
-
             except Exception:
                 pass
 
-        # Write to sheet
-        sheet.append_row([
+        tutors_sheet = sheets.get_tutors_sheet()
+        tutors_sheet.append_row([
             name,
             subject or "",
             f"{qualification} {subject}" if subject else qualification,

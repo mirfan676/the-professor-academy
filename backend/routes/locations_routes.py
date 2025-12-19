@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
+from config.security import verify_request_origin
 from config.locations import pakistan_data
 
-router = APIRouter()
+router = APIRouter(
+    dependencies=[Depends(verify_request_origin)]
+)
 
 @router.get("/locations")
 def get_locations():
