@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, TextField, Modal, Paper, CircularProgress, Grid } from '@mui/material';
+import { Box, Typography, Button, Grid } from '@mui/material';
+import DemoModal from './DemoModal';  // Modal component import
 import axios from 'axios';
 
 export default function HeroSection() {
@@ -18,7 +19,7 @@ export default function HeroSection() {
     try {
       // Send data to Formspree
       console.log('Sending form data...');
-      await axios.post('https://formspree.io/f/mpwvojwr', { 
+      await axios.post('https://formspree.io/f/mpwvojwr', {
         phone: phoneNumber,
       });
 
@@ -87,191 +88,238 @@ export default function HeroSection() {
             color: "#333",
           }}
         >
-          CA, ACCA, O/A Levels, IELTS & Digital Skills
+          Junior Classes, CSS/PMS, O/A Levels, English Tutors, & Home Schooling
         </Typography>
       </Box>
+
       <Grid container spacing={3} sx={{ justifyContent: "center", mb: 6 }}>
-      {/* Category 1 */}
-      <Grid item xs={6} sm={4} md={2.5}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            p: 3,
-            borderRadius: "12px",
-            backgroundColor: "transparent",
-            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-            textAlign: "center",
-            transition: "transform 0.3s ease",
-            "&:hover": {
-              transform: "scale(1.05)",
-            },
-          }}
-        >
+        
+        {/* Junior Classes */}
+        <Grid item xs={6} sm={4} md={2.5}>
           <Box
-            component="img"
-            src="/icons/O-A-level.png" // Replace with actual icon image
-            alt="Education Programmes"
             sx={{
-              width: "120px",
-              height: "120px",
-              objectFit: "contain",
-              mb: 2,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: "12px",
+              backgroundColor: "transparent",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
             }}
-          />
-          <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
-            O & A Level
-          </Typography>
-        </Box>
+          >
+            <Box
+              component="img"
+              src="/icons/junior-classes.png" // Replace with actual icon image
+              alt="Junior Classes"
+              sx={{
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
+                mb: 2,
+              }}
+            />
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#02539b" }}>
+              Junior Classes
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
+                color: "#333",
+                maxWidth: "150px",
+              }}
+            >
+              Foundation for Future Learning
+            </Typography>
+          </Box>
+        </Grid>
+
+        {/* CSS/PMS Classes */}
+        <Grid item xs={6} sm={4} md={2.5}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: "12px",
+              backgroundColor: "transparent",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            <Box
+              component="img"
+              src="/icons/css-pms.png" // Replace with actual icon image
+              alt="CSS/PMS"
+              sx={{
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
+                mb: 2,
+              }}
+            />
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#02539b" }}>
+              CSS/PMS
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
+                color: "#333",
+                maxWidth: "150px",
+              }}
+            >
+              Expert Tutors for CSS/PMS Exam Preparation
+            </Typography>
+          </Box>
+        </Grid>
+
+        {/* O/A Levels */}
+        <Grid item xs={6} sm={4} md={2.5}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: "12px",
+              backgroundColor: "transparent",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            <Box
+              component="img"
+              src="/icons/O-A-level.png" // Replace with actual icon image
+              alt="O/A Level"
+              sx={{
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
+                mb: 2,
+              }}
+            />
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#02539b" }}>
+              O & A Level
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
+                color: "#333",
+                maxWidth: "150px",
+              }}
+            >
+              Specialist Tutors Home & Online
+            </Typography>
+          </Box>
+        </Grid>
+
+        {/* English Tutors */}
+        <Grid item xs={6} sm={4} md={2.5}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: "12px",
+              backgroundColor: "transparent",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            <Box
+              component="img"
+              src="/icons/english-tutor.png" // Replace with actual icon image
+              alt="English Tutors"
+              sx={{
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
+                mb: 2,
+              }}
+            />
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#02539b" }}>
+              English Tutors
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
+                color: "#333",
+                maxWidth: "150px",
+              }}
+            >
+              Experienced Tutors for All Levels
+            </Typography>
+          </Box>
+        </Grid>
+
+        {/* Home Schooling */}
+        <Grid item xs={6} sm={4} md={2.5}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: "12px",
+              backgroundColor: "transparent",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            <Box
+              component="img"
+              src="/icons/home-schooling.png" // Replace with actual icon image
+              alt="Home Schooling"
+              sx={{
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
+                mb: 2,
+              }}
+            />
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#02539b" }}>
+              Home Schooling
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
+                color: "#333",
+                maxWidth: "150px",
+              }}
+            >
+              Personalized Learning at Home
+            </Typography>
+          </Box>
+        </Grid>
       </Grid>
 
-      {/* Category 2 */}
-      <Grid item xs={6} sm={4} md={2.5}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            p: 3,
-            borderRadius: "12px",
-            backgroundColor: "transparent",
-            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-            textAlign: "center",
-            transition: "transform 0.3s ease",
-            "&:hover": {
-              transform: "scale(1.05)",
-            },
-          }}
-        >
-          <Box
-            component="img"
-            src="/icons/hometutor.png" // Replace with actual icon image
-            alt="Home Tutors"
-            sx={{
-              width: "120px",
-              height: "120px",
-              objectFit: "contain",
-              mb: 2,
-            }}
-          />
-          <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
-            Home Tutors
-          </Typography>
-        </Box>
-      </Grid>
-
-      {/* Category 3 */}
-      <Grid item xs={6} sm={4} md={2.5}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            p: 3,
-            borderRadius: "12px",
-            backgroundColor: "transparent",
-            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-            textAlign: "center",
-            transition: "transform 0.3s ease",
-            "&:hover": {
-              transform: "scale(1.05)",
-            },
-          }}
-        >
-          <Box
-            component="img"
-            src="/icons/online.png" // Replace with actual icon image
-            alt="Online Tutors"
-            sx={{
-              width: "120px",
-              height: "120px",
-              objectFit: "contain",
-              mb: 2,
-            }}
-          />
-          <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
-            Online Tutors
-          </Typography>
-        </Box>
-      </Grid>
-
-      {/* Category 4 */}
-      <Grid item xs={6} sm={4} md={2.5}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            p: 3,
-            borderRadius: "12px",
-            backgroundColor: "transparent",
-            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-            textAlign: "center",
-            transition: "transform 0.3s ease",
-            "&:hover": {
-              transform: "scale(1.05)",
-            },
-            
-          }}
-        >
-          <Box
-            component="img"
-            src="/icons/ielts.png" // Replace with actual icon image
-            alt="IELTS Experts"
-            sx={{
-              width: "120px",
-              height: "120px",
-              objectFit: "contain",
-              mb: 2,
-            }}
-          />
-          <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
-            IELTS Experts
-          </Typography>
-        </Box>
-      </Grid>
-
-      {/* Category 5 */}
-      <Grid item xs={6} sm={4} md={2.5}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            p: 3,
-            borderRadius: "12px",
-            backgroundColor: "transparent",
-            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-            textAlign: "center",
-            transition: "transform 0.3s ease",
-            "&:hover": {
-              transform: "scale(1.05)",
-            },
-          }}
-        >
-          <Box
-            component="img"
-            src="/icons/quran.png" // Replace with actual icon image
-            alt="Quran Online"
-            sx={{
-              width: "120px",
-              height: "120px",
-              objectFit: "contain",
-              mb: 2,
-            }}
-          />
-          <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
-            Quran Online
-          </Typography>
-        </Box>
-      </Grid>
-    </Grid>
       {/* "Book Free Demo" Button Section */}
       <Box sx={{ textAlign: "center", mb: 6 }}>
         <Button
@@ -279,13 +327,16 @@ export default function HeroSection() {
           color="secondary"
           onClick={() => setOpenModal(true)}  // Open modal on button click
           sx={{
-            background: "#fddc88", 
+            background: "#dcf2f3ff",
+            border:"solid 1px transparent",
+            color:"#02539b",
             "&:hover": {
-              transform: "scale(1.05)", 
-              background: "#ffbb33", 
+              background: "transparent",
+              border:"solid 1px #dd5019ff", 
+              color:"#02539b"
             },
-            fontSize: "1.2rem",
-            px: 2,
+            fontSize: "1rem",
+            px: 4,
             py: 1,
             borderRadius: "10px",
             transition: "all 0.3s ease", 
@@ -295,29 +346,8 @@ export default function HeroSection() {
         </Button>
       </Box>
 
-      {/* Modal for the Form */}
-      <Modal
-        open={openModal}
-        onClose={() => setOpenModal(false)}  
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Paper sx={{ display: "flex", maxWidth: "80%", p: 4, borderRadius: "12px" }}>
-          <Box sx={{ flex: 1, backgroundImage: "url('/background-home-1.png')", backgroundSize: "cover", backgroundPosition: "center", borderRadius: "12px", marginRight: 2 }} />
-          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>Book a Free Demo Class</Typography>
-            <form onSubmit={handleSubmit}>
-              <TextField label="Phone Number" variant="outlined" fullWidth name="phone" value={phoneNumber} onChange={handlePhoneNumberChange} sx={{ mb: 3 }} />
-              <Button type="submit" variant="contained" color="primary" sx={{ width: "100%", background: "#02539b", "&:hover": { background: "#003f88" }, fontSize: "1rem", py: 1, borderRadius: "10px" }}>
-                {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Submit"}
-              </Button>
-            </form>
-          </Box>
-        </Paper>
-      </Modal>
+      {/* Modal Component */}
+      <DemoModal openModal={openModal} setOpenModal={setOpenModal} />  {/* Use the modal component */}
     </Box>
   );
 }
