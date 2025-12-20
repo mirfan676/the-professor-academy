@@ -35,6 +35,11 @@ app.include_router(jobs_router)
 def home():
     return {"message": "API disabled for unauthorized access"}
 
+# --- Health Check ---
+@app.get("/healthz")
+def health_check():
+    return {"status": "ok"}
+
 # --- Startup Event ---
 @app.on_event("startup")
 def startup_event():
