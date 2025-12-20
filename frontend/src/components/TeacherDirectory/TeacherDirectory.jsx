@@ -72,7 +72,7 @@ export default function TeacherDirectory() {
   // ------------------------------------------------------
   useEffect(() => {
     axios
-      .get("https://aplus-academy.onrender.com/tutors/")
+      .get("https://the-professor-academy.onrender.com/tutors/")
       .then((res) =>
         setTeachers(
           res.data.map((t) => ({
