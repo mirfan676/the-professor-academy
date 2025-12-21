@@ -7,7 +7,7 @@ from routes.tutors_routes import router as tutors_router
 from routes.jobs_routes import router as jobs_router
 from config.sheets import preload_tutors
 from dotenv import load_dotenv
-
+from utils.ip_location import router as ip_location_router
 # Load environment variables
 load_dotenv()
 
@@ -36,6 +36,7 @@ app.include_router(locations_router)
 app.include_router(register_router)
 app.include_router(tutors_router)
 app.include_router(jobs_router)
+app.include_router(ip_location_router)
 
 # --- Root Endpoint ---
 @app.get("/")
