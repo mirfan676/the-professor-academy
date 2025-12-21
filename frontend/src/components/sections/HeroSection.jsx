@@ -115,7 +115,7 @@ export default function HeroSection() {
           >
             <Box
               component="img"
-              src="/icons/junior-classes.png" // Replace with actual icon image
+              src="/icons/creative-learning.png" // Replace with actual icon image
               alt="Junior Classes"
               sx={{
                 width: "120px",
@@ -250,7 +250,7 @@ export default function HeroSection() {
           >
             <Box
               component="img"
-              src="/icons/english-tutor.png" // Replace with actual icon image
+              src="/icons/ielts.png" // Replace with actual icon image
               alt="English Tutors"
               sx={{
                 width: "120px",
@@ -295,7 +295,7 @@ export default function HeroSection() {
           >
             <Box
               component="img"
-              src="/icons/home-schooling.png" // Replace with actual icon image
+              src="/icons/hometutor.png" // Replace with actual icon image
               alt="Home Schooling"
               sx={{
                 width: "120px",

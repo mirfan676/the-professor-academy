@@ -27,7 +27,7 @@ const TeacherProfile = () => {
     const fetchTeacher = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("https://aplus-academy.onrender.com/tutors/");
+        const res = await axios.get("https://the-professor-academy.onrender.com/tutors/");
         if (Array.isArray(res.data)) {
           const mapped = res.data.map((t, i) => ({
             id: i,

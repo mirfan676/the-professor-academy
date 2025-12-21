@@ -119,7 +119,7 @@ export default function JobCard({ job }) {
                   <Typography sx={{ color: "#777", fontSize: "0.85rem" }}>Fee</Typography>
                 </Box>
 
-                <Box sx={{ mt: 2, width: "100%" }}>
+                <Box sx={{ mt: 2, width: "100%", minWidth:"200px" }}>
                   <Button
                     fullWidth
                     variant="contained"
@@ -127,14 +127,10 @@ export default function JobCard({ job }) {
                     href={waUrl || undefined}
                     target="_blank"
                     disabled={isClosed || !waUrl}
-                    sx={{ background: isClosed ? "#b71c1c" : "#25D366", color: "#fff", fontWeight: 800 }}
+                    sx={{ background: isClosed ? "#b71c1c" : "#25D366", color: "#fff", fontWeight: 800, }}
                   >
                     {isClosed ? "Position Closed" : "Apply on WhatsApp"}
                   </Button>
-
-                  <Typography sx={{ mt: 1, color: "#666", fontSize: "0.85rem", textAlign: "center" }}>
-                    {final.contact ? `Contact: ${final.contact}` : "Contact not listed"}
-                  </Typography>
                 </Box>
               </Box>
             </Box>
