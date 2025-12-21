@@ -88,8 +88,8 @@ const fieldSubjects = {
   "Home Economics": ["Home Economics", "Food & Nutrition", "Textiles", "Fashion Design", "Health Science", "Budgeting", "Child Development", "Household Management"],
   "Mass Communication": ["Mass Communication", "Media Studies", "Public Relations", "Journalism", "Writing Skills", "Communication Skills", "Advertising", "Broadcasting"],
   "Public Relations": ["Public Relations", "Marketing", "Mass Communication", "Communication Skills", "Media Studies", "Business Studies", "Psychology", "Event Management"],
-  BDS: ["Oral Anatomy", "Dental Materials", "Oral Biology", "Physiology", "Biochemistry", "General Anatomy", "Oral Pathology", "Community Dentistry", "Prosthodontics", "Orthodontics", "Endodontics", "Periodontology", "Oral Surgery"],
-  MBBS: ["Anatomy", "Physiology", "Biochemistry", "Pharmacology", "Pathology", "Microbiology", "Community Medicine", "Forensic Medicine", "General Medicine", "General Surgery", "Pediatrics", "Gynecology", "ENT", "Ophthalmology", "Cardiology Basics"],
+  BDS: ["Oral Anatomy", "Dental Materials", "Physiology"],
+  MBBS: ["Anatomy", "Physiology", "Biochemistry"],
 };
 
 // ----------------------------------------------------------
@@ -124,6 +124,7 @@ export default function TutorRegistration() {
     experience: "",
     phone: "",
     bio: "",
+    id_card: "",
     image: null,
     agree: false,
   });
@@ -135,10 +136,11 @@ export default function TutorRegistration() {
   const [loading, setLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [locationBlocked, setLocationBlocked] = useState(false);
+  const [idError, setIdError] = useState(false);
 
-  // ----------------------------------------------------------
+  // -----------------------
   // LOAD reCAPTCHA
-  // ----------------------------------------------------------
+  // -----------------------
   useEffect(() => {
     if (!window.grecaptcha) {
       const script = document.createElement("script");
@@ -149,16 +151,16 @@ export default function TutorRegistration() {
     }
   }, []);
 
-  // ----------------------------------------------------------
+  // -----------------------
   // GEOLOCATION WITH IP FALLBACK
-  // ----------------------------------------------------------
+  // -----------------------
   useEffect(() => {
     navigator.geolocation?.getCurrentPosition(
       (pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
       async () => {
         setLocationBlocked(true);
         try {
-          const res = await fetch("https://ipapi.co/json/");
+          const res = await fetch("/utils/ip-location");
           const data = await res.json();
           setCoords({ lat: data.latitude, lng: data.longitude });
         } catch (err) {
@@ -168,9 +170,9 @@ export default function TutorRegistration() {
     );
   }, []);
 
-  // ----------------------------------------------------------
+  // -----------------------
   // QUALIFICATION CHANGE → RESET SUBJECT
-  // ----------------------------------------------------------
+  // -----------------------
   useEffect(() => {
     if (!higherEducation.includes(formData.qualification)) {
       setSelectedHigherSubject("");
@@ -178,24 +180,50 @@ export default function TutorRegistration() {
     }
   }, [formData.qualification]);
 
-  // ----------------------------------------------------------
+  // -----------------------
+  // DEBOUNCED ID CARD CHECK
+  // -----------------------
+  useEffect(() => {
+    if (formData.id_card.length !== 13) {
+      setIdError(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await api.get("/tutors/check-id", { params: { id_card: formData.id_card } });
+        setIdError(res.data.exists);
+      } catch (err) {
+        console.error("ID check failed", err);
+        setIdError(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [formData.id_card]);
+
+  // -----------------------
   // HANDLE INPUT CHANGE
-  // ----------------------------------------------------------
+  // -----------------------
   const handleChange = (e) => {
     const { name, value, files, checked, type } = e.target;
+
     if (files) {
       setFormData((p) => ({ ...p, image: files[0] }));
       setImageError(false);
     } else if (type === "checkbox") {
       setFormData((p) => ({ ...p, [name]: checked }));
+    } else if (name === "id_card") {
+      const digitsOnly = value.replace(/\D/g, "").slice(0, 13);
+      setFormData((p) => ({ ...p, id_card: digitsOnly }));
     } else {
       setFormData((p) => ({ ...p, [name]: value }));
     }
   };
 
-  // ----------------------------------------------------------
+  // -----------------------
   // AUTO-SUGGEST SUBJECTS (MAX 3) - GHOST CHIPS
-  // ----------------------------------------------------------
+  // -----------------------
   const suggestedGhostSubjects = useMemo(() => {
     let q = formData.qualification;
     if (!q) return [];
@@ -207,9 +235,9 @@ export default function TutorRegistration() {
     return [...new Set(suggestions)].slice(0, 3);
   }, [formData.qualification, selectedHigherSubject, majorSubjects]);
 
-  // ----------------------------------------------------------
+  // -----------------------
   // FILTER AVAILABLE MAJOR SUBJECT OPTIONS
-  // ----------------------------------------------------------
+  // -----------------------
   const filteredMajorSubjects = useMemo(() => {
     if (selectedHigherSubject && fieldSubjects[selectedHigherSubject]) {
       return [...fieldSubjects[selectedHigherSubject]];
@@ -221,12 +249,18 @@ export default function TutorRegistration() {
     return [...new Set(base)].filter((s) => s !== selectedHigherSubject);
   }, [formData.qualification, selectedHigherSubject]);
 
-  // ----------------------------------------------------------
+  // -----------------------
   // FORM SUBMIT
-  // ----------------------------------------------------------
+  // -----------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+
+    if (higherEducation.includes(formData.qualification) && !selectedHigherSubject)
+      return setMessage("⚠️ Please select your subject for higher qualification.");
+
+    if (!majorSubjects.length)
+      return setMessage("⚠️ Please select at least one major subject.");
 
     if (!formData.agree) return setMessage("⚠️ Please agree to Terms.");
     if (!formData.image) {
@@ -235,6 +269,8 @@ export default function TutorRegistration() {
     }
     if (higherEducation.includes(formData.qualification) && !selectedHigherSubject)
       return setMessage("⚠️ Please select your subject for higher qualification.");
+
+    if (idError) return setMessage("⚠️ This ID card is already registered.");
 
     setLoading(true);
 
@@ -248,15 +284,36 @@ export default function TutorRegistration() {
       });
 
       const submissionData = new FormData();
-      submissionData.append("subject", selectedHigherSubject || "");
-      submissionData.append("major_subjects", majorSubjects.join(","));
+      // Always send subject
+      submissionData.append(
+        "subject",
+        higherEducation.includes(formData.qualification) 
+        ? selectedHigherSubject 
+        : formData.subject || ""
+      );
+
+      // Always send major_subjects
+      submissionData.append(
+        "major_subjects",
+        majorSubjects.length 
+        ? majorSubjects.join(",") 
+        : formData.major_subjects || ""
+      );
+
+      // Append the rest of formData except 'image', 'subject', 'major_subjects'
       Object.entries(formData).forEach(([k, v]) => {
-        if (k !== "image") submissionData.append(k, v ?? "");
+        if (!["image", "subject", "major_subjects"].includes(k)) {
+          submissionData.append(k, v ?? "");
+        }
       });
+
       submissionData.append("image", formData.image);
       submissionData.append("lat", coords.lat ?? "");
       submissionData.append("lng", coords.lng ?? "");
       submissionData.append("recaptcha_token", token);
+
+      console.log("Submitting Latitude:", coords.lat);
+      console.log("Submitting Longitude:", coords.lng);
 
       const res = await api.post("/tutors/register", submissionData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -273,6 +330,7 @@ export default function TutorRegistration() {
           phone: "",
           bio: "",
           image: null,
+          id_card: "",
           agree: false,
         });
         setMajorSubjects([]);
@@ -284,12 +342,13 @@ export default function TutorRegistration() {
       console.error(err);
       setMessage("❌ Error submitting form. Server might be down.");
     }
+
     setLoading(false);
   };
 
-  // ----------------------------------------------------------
+  // -----------------------
   // RENDER
-  // ----------------------------------------------------------
+  // -----------------------
   return (
     <Box sx={{ bgcolor: "#f9f9f9", minHeight: "100vh", py: 6 }}>
       <Box
@@ -305,7 +364,7 @@ export default function TutorRegistration() {
           Tutor Registration
         </Typography>
         <Typography variant="subtitle1">
-          Join A+ Academy and connect with students across Pakistan
+          Fill the Complete Form Carefully to Join The Professor Academy Platform
         </Typography>
       </Box>
 
@@ -331,103 +390,134 @@ export default function TutorRegistration() {
               {/* NAME */}
               <TextField label="Full Name" name="name" value={formData.name} onChange={handleChange} required fullWidth margin="normal" />
 
+              {/* ID Card */}
+              <TextField
+                label="ID Card Number"
+                name="id_card"
+                value={formData.id_card}
+                onChange={handleChange}
+                required
+                fullWidth
+                margin="normal"
+                error={formData.id_card.length !== 13 || idError}
+                helperText={
+                  idError
+                    ? "ID already registered"
+                    : formData.id_card && formData.id_card.length !== 13
+                   
+                    ? "ID must be 13 digits"
+                    : ""
+                }
+              />
+
               {/* QUALIFICATION */}
               <Autocomplete
                 options={qualificationsList}
-                value={formData.qualification || null}
-                onChange={(e, v) => setFormData((p) => ({ ...p, qualification: v || "" }))}
-                renderInput={(params) => <TextField {...params} label="Qualification" margin="normal" fullWidth required />}
+                value={formData.qualification}
+                onChange={(_, value) => setFormData((p) => ({ ...p, qualification: value || "" }))}
+                renderInput={(params) => <TextField {...params} label="Qualification" margin="normal" required fullWidth />}
               />
 
-              {/* HIGHER QUALIFICATION SUBJECT */}
+              {/* SUBJECT / MAJOR */}
               {higherEducation.includes(formData.qualification) && (
                 <Autocomplete
-                  options={subjectsList} // all relevant subjects
-                  value={selectedHigherSubject || null}
-                  onChange={(e, val) => {
-                    setSelectedHigherSubject(val || "");
-                    setFormData((p) => ({ ...p, subject: val || "" }));
-                    setMajorSubjects([]);
-                  }}
-                  renderInput={(params) => <TextField {...params} label="Higher Qualification Subject" margin="normal" fullWidth required />}
+                  options={filteredMajorSubjects}
+                  value={selectedHigherSubject}
+                  onChange={(_, value) => setSelectedHigherSubject(value || "")}
+                  renderInput={(params) => <TextField {...params} label="Subject / Major" margin="normal" required fullWidth />}
                 />
               )}
 
-              {/* MAJOR SUBJECTS WITH GHOST CHIPS */}
+              {/* MAJOR SUBJECTS - MULTI SELECT */}
               <Autocomplete
                 multiple
                 options={filteredMajorSubjects}
                 value={majorSubjects}
-                onChange={(e, newValue) => newValue.length <= 5 && setMajorSubjects(newValue)}
-                renderTags={(value, getTagProps) => {
-                  if (!value.length && suggestedGhostSubjects.length)
-                    return suggestedGhostSubjects.map((s, i) => (
-                      <Chip key={i} label={s} variant="outlined" sx={{ opacity: 0.5 }} />
-                    ));
-                  return value.map((option, index) => <Chip {...getTagProps({ index })} label={option} color="primary" />);
-                }}
-                renderInput={(params) => <TextField {...params} label="Select Major Subjects (Max 5)" margin="normal" fullWidth />}
-                disableCloseOnSelect
+                onChange={(_, value) => setMajorSubjects(value)}
+                renderInput={(params) => <TextField {...params} label="Major Subjects (Select up to 3)" margin="normal" fullWidth />}
               />
+
+              {/* GHOST SUBJECTS */}
+              {suggestedGhostSubjects.length > 0 && (
+                <Box mt={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    Suggested Subjects:
+                  </Typography>
+                  <Box mt={0.5} display="flex" flexWrap="wrap" gap={1}>
+                    {suggestedGhostSubjects.map((s) => (
+                      <Chip
+                        key={s}
+                        label={s}
+                        color="secondary"
+                        onClick={() => {
+                          if (majorSubjects.length < 3 && !majorSubjects.includes(s)) {
+                            setMajorSubjects([...majorSubjects, s]);
+                          }
+                        }}
+                        clickable
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              )}
 
               {/* EXPERIENCE */}
               <TextField
-                label="Experience (Years)"
+                label="Experience (in years)"
                 name="experience"
-                type="number"
-                inputProps={{ min: 0, max: 40 }}
                 value={formData.experience}
-                onChange={(e) => setFormData({ ...formData, experience: Math.min(40, Math.max(0, Number(e.target.value))) })}
-                required
+                onChange={handleChange}
+                type="number"
                 fullWidth
                 margin="normal"
               />
 
               {/* PHONE */}
-              <TextField label="Contact Number" name="phone" value={formData.phone} onChange={handleChange} required fullWidth margin="normal" />
-
-              {/* BIO */}
               <TextField
-                name="bio"
-                label="Tutor Bio"
-                multiline
-                rows={4}
-                value={formData.bio}
+                label="Phone Number"
+                name="phone"
+                value={formData.phone}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
-                placeholder="Describe your teaching experience"
+                required
               />
 
-              {/* LOCATION */}
-              {locationBlocked && (
-                <Box textAlign="center" mb={2}>
-                  <Button variant="outlined" color="secondary" onClick={() => window.location.reload()}>
-                    📍 Enable Location
-                  </Button>
-                </Box>
-              )}
+              {/* BIO */}
+              <TextField
+                label="Short Bio"
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
+                fullWidth
+                multiline
+                rows={3}
+                margin="normal"
+              />
 
-              {/* TERMS */}
+              {/* AGREEMENT */}
               <FormControlLabel
-                control={<Checkbox checked={formData.agree} onChange={handleChange} name="agree" color="success" />}
+                control={<Checkbox checked={formData.agree} onChange={handleChange} name="agree" />}
                 label={
                   <Typography variant="body2">
-                    I agree to the <MuiLink href="/terms" target="_blank">Terms</MuiLink> and <MuiLink href="/privacy" target="_blank">Privacy Policy</MuiLink>.
+                    I agree to the <MuiLink href="/terms" target="_blank">Terms & Conditions</MuiLink>
                   </Typography>
                 }
               />
 
-              {/* SUBMIT */}
-              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>
-                {loading ? <CircularProgress size={24} /> : "Submit Registration"}
-              </Button>
-
+              {/* MESSAGE */}
               {message && (
-                <Alert severity={message.includes("success") ? "success" : message.startsWith("❌") ? "error" : "info"} sx={{ mt: 3, textAlign: "center" }}>
+                <Alert severity={message.startsWith("✅") ? "success" : "error"} sx={{ mt: 2 }}>
                   {message}
                 </Alert>
               )}
+
+              {/* SUBMIT */}
+              <Box textAlign="center" mt={3}>
+                <Button type="submit" variant="contained" color="primary" disabled={loading} size="large">
+                  {loading ? <CircularProgress size={24} color="inherit" /> : "Register"}
+                </Button>
+              </Box>
             </Box>
           </Paper>
         </Grid>

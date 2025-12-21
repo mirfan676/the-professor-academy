@@ -1,10 +1,12 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from fastapi.responses import StreamingResponse
 from datetime import datetime
 from io import BytesIO
 import requests
 from PIL import Image
-import config.sheets as sheets  # live reference to cached globals
+import config.sheets as sheets
+
+import config.sheets as sheets
 from config.security import verify_request_origin
 
 router = APIRouter(
@@ -14,25 +16,27 @@ router = APIRouter(
 )
 
 # ------------------------------
-# Thumbnail cache in memory
+# Thumbnail cache (profile_id → BytesIO)
 # ------------------------------
 thumbnail_cache = {}
 
+# ------------------------------
+# Cache refresh helper
+# ------------------------------
 def refresh_cache_if_needed():
     now = datetime.utcnow()
+
     if not sheets.cached_tutors or (now - sheets.last_fetch_time) >= sheets.CACHE_DURATION:
         print("⏳ Cache expired or empty. Reloading tutors from sheet...")
         try:
             sheets.preload_tutors()
         except Exception as e:
             print(f"⚠️ Preload failed: {e}")
-            raise HTTPException(status_code=503, detail=f"Failed to load tutors: {e}")
+            raise HTTPException(status_code=503, detail="Failed to load tutors")
 
     if not sheets.cached_tutors:
-        print("⚠️ No verified tutors available after preload.")
-        raise HTTPException(status_code=503, detail="No verified tutors available after preload.")
+        raise HTTPException(status_code=503, detail="No verified tutors available")
 
-    print(f"✅ Using cached tutors. Count: {len(sheets.cached_tutors)}")
     return sheets.cached_tutors
 
 # ------------------------------
@@ -42,81 +46,121 @@ def refresh_cache_if_needed():
 def debug_sheet():
     try:
         rows = sheets.sheet.get_all_records(empty2zero=False, head=1)
-        verified_rows = []
-
-        for idx, r in enumerate(rows):
-            raw_verified = r.get("Verified", "")
-            cleaned = str(raw_verified).strip().lower()
-            if cleaned.startswith("y"):
-                verified_rows.append({"row_index": idx, "row_data": r})
+        verified = [
+            r for r in rows
+            if str(r.get("Verified", "")).strip().lower().startswith("y")
+        ]
 
         return {
             "total_rows": len(rows),
-            "rows_preview": rows[:10],
-            "verified_count": len(verified_rows),
-            "verified_rows_preview": verified_rows[:10]
+            "verified_count": len(verified),
+            "preview": verified[:5]
         }
 
     except Exception as e:
         return {"error": str(e)}
 
 # ------------------------------
-# SECURE THUMBNAIL ROUTE
+# SECURE THUMBNAIL ROUTE (Profile ID based)
 # ------------------------------
-@router.get("/image/{teacher_id}")
-def get_teacher_image(teacher_id: int):
+@router.get("/image/{profile_id}")
+def get_teacher_image(profile_id: str):
     tutors = refresh_cache_if_needed()
-    if teacher_id < 0 or teacher_id >= len(tutors):
+
+    tutor = next(
+        (t for t in tutors if t.get("Profile ID") == profile_id),
+        None
+    )
+
+    if not tutor:
         raise HTTPException(status_code=404, detail="Teacher not found")
 
-    if teacher_id in thumbnail_cache:
-        buffer = thumbnail_cache[teacher_id]
+    if profile_id in thumbnail_cache:
+        buffer = thumbnail_cache[profile_id]
         buffer.seek(0)
-        return StreamingResponse(buffer, media_type="image/jpeg",
-                                 headers={"Cache-Control": "public, max-age=86400", "Content-Disposition": "inline"})
+        return StreamingResponse(
+            buffer,
+            media_type="image/jpeg",
+            headers={"Cache-Control": "public, max-age=86400"}
+        )
 
-    image_url = tutors[teacher_id].get("Image URL")
+    image_url = tutor.get("Image URL")
     if not image_url:
         raise HTTPException(status_code=404, detail="Image not found")
 
     try:
         r = requests.get(image_url, timeout=10)
         r.raise_for_status()
+
         img = Image.open(BytesIO(r.content))
         img.thumbnail((150, 150))
+
         buffer = BytesIO()
         img.save(buffer, format="JPEG", quality=55)
         buffer.seek(0)
-        thumbnail_cache[teacher_id] = buffer
+
+        thumbnail_cache[profile_id] = buffer
         buffer.seek(0)
-        return StreamingResponse(buffer, media_type="image/jpeg",
-                                 headers={"Cache-Control": "public, max-age=86400", "Content-Disposition": "inline"})
+
+        return StreamingResponse(
+            buffer,
+            media_type="image/jpeg",
+            headers={"Cache-Control": "public, max-age=86400"}
+        )
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to process image: {e}")
+        raise HTTPException(status_code=500, detail=f"Image processing failed: {e}")
 
 # ------------------------------
-# NORMAL ROUTES — IMAGE PROTECTED
+# LIST VERIFIED TUTORS
 # ------------------------------
 @router.get("/")
 def get_tutors():
     tutors = refresh_cache_if_needed()
-    protected_list = []
-    for idx, t in enumerate(tutors):
-        t_copy = t.copy()
-        # Use relative URL
-        t_copy["Thumbnail"] = f"/tutors/image/{idx}"
-        t_copy.pop("Image URL", None)
-        protected_list.append(t_copy)
-    return protected_list
+    result = []
 
-@router.get("/{teacher_id}")
-def get_teacher(teacher_id: int):
+    for t in tutors:
+        t_copy = t.copy()
+        pid = t_copy.get("Profile ID")
+
+        t_copy["Thumbnail"] = f"/tutors/image/{pid}"
+        t_copy.pop("Image URL", None)
+
+        result.append(t_copy)
+
+    return result
+
+# ------------------------------
+# SINGLE TUTOR PROFILE (Profile ID)
+# ------------------------------
+@router.get("/profile/{profile_id}")
+def get_teacher(profile_id: str):
     tutors = refresh_cache_if_needed()
-    if teacher_id < 0 or teacher_id >= len(tutors):
+
+    tutor = next(
+        (t for t in tutors if t.get("Profile ID") == profile_id),
+        None
+    )
+
+    if not tutor:
         raise HTTPException(status_code=404, detail="Teacher not found")
 
-    t = tutors[teacher_id].copy()
-    # Use relative URL
-    t["Thumbnail"] = f"/tutors/image/{teacher_id}"
+    t = tutor.copy()
+    t["Thumbnail"] = f"/tutors/image/{profile_id}"
     t.pop("Image URL", None)
+
     return t
+
+# ----------------------------
+# Duplicate id card check
+# ----------------------------
+@router.get("/check-id")
+async def check_id_card(id_card: str = Query(..., min_length=13, max_length=13)):
+    """
+    Checks if a tutor with the given 13-digit ID is already registered.
+    """
+    try:
+        id_exists = sheets.is_id_registered(id_card)
+        return {"exists": id_exists}
+    except Exception as e:
+        return {"exists": False, "error": str(e)}
