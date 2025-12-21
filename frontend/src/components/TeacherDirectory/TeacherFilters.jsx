@@ -5,121 +5,126 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TextField,
+  Box,
+  Button,
+  Drawer,
+  IconButton,
+  useMediaQuery
 } from "@mui/material";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import CloseIcon from "@mui/icons-material/Close";
+import { useState } from "react";
 
 export default function TeacherFilters({
   selectedCity,
   setSelectedCity,
   selectedSubject,
   setSelectedSubject,
-  cities,
-  subjects,
+  cities = [],
+  subjects = [],
+  onReset
 }) {
-  return (
-    <Paper
-      sx={{
-        position: "sticky",
-        top: 60,
-        zIndex: 50,
-        p: 3,
-        mb: 4,
-        borderRadius: "22px",
-        background: "rgba(255,255,255,0.70)",
-        backdropFilter: "blur(14px)",
-        boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
-      }}
-    >
-      <Grid
-        container
-        spacing={3}
-        justifyContent="center"
-        alignItems="center"
-        sx={{ width: "100%", mx: "auto" }}
-      >
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width:900px)");
+
+  // Safe unique options
+  const safeCities = Array.from(new Set(cities.map(c => c != null ? String(c) : ""))).filter(Boolean);
+  const safeSubjects = Array.from(new Set(subjects.map(s => s != null ? String(s) : ""))).filter(Boolean);
+
+  const filterContent = (
+    <Box sx={{ p: 1, width: "100%" }}>
+      {isMobile && (
+        <Box sx={{ textAlign: "right", mb: 2 }}>
+          <IconButton onClick={() => setDrawerOpen(false)}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      )}
+
+      <Grid container spacing={2} direction="column">
         {/* CITY */}
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          md={4}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <FormControl
-            fullWidth
-            sx={{
-              width: {
-                xs: "120px",
-                sm: "80%",
-                md: "320px", // fixed width desktop
-              },
-            }}
-          >
+        <Grid>
+          <FormControl fullWidth>
             <InputLabel>Select City</InputLabel>
             <Select
               value={selectedCity}
               label="Select City"
               onChange={(e) => setSelectedCity(e.target.value)}
-              sx={{
-                height: "52px",
-                borderRadius: "14px",
-                fontSize: "16px",
-              }}
             >
               <MenuItem value="">All Cities</MenuItem>
-              {cities.map((city, i) => (
-                <MenuItem key={i} value={city}>
-                  {city}
-                </MenuItem>
+              {safeCities.map((c, i) => (
+                <MenuItem key={c || i} value={c}>{c}</MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
 
         {/* SUBJECT */}
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          md={4}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <FormControl
+        <Grid>
+          <TextField
+            label="Search Subject"
+            value={selectedSubject}
+            onChange={(e) => setSelectedSubject(e.target.value)}
             fullWidth
-            sx={{
-              width: {
-                xs: "120px",
-                sm: "80%",
-                md: "320px", // fixed width desktop
-              },
-            }}
+          />
+        </Grid>
+
+        {/* RESET BUTTON */}
+        <Grid sx={{ textAlign: "center", mt: 1 }}>
+          <Button
+            onClick={onReset}
+            variant="contained"
+            sx={{ background: "#004aad", px: 4, textTransform: "none" }}
           >
-            <InputLabel>Select Subject</InputLabel>
-            <Select
-              value={selectedSubject}
-              label="Select Subject"
-              onChange={(e) => setSelectedSubject(e.target.value)}
-              sx={{
-                height: "52px",
-                borderRadius: "14px",
-                fontSize: "16px",
-              }}
-            >
-              <MenuItem value="">All Subjects</MenuItem>
-              {subjects.map((sub, i) => (
-                <MenuItem key={i} value={sub}>
-                  {sub}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            Reset Filters
+          </Button>
         </Grid>
       </Grid>
-    </Paper>
+    </Box>
+  );
+
+  return (
+    <>
+      {/* MOBILE FILTER BUTTON */}
+      {isMobile && (
+        <Box sx={{ textAlign: "right", mb: 2 }}>
+          <Button
+            variant="contained"
+            onClick={() => setDrawerOpen(true)}
+            startIcon={<FilterListIcon />}
+            sx={{ background: "#004aad", textTransform: "none", borderRadius: "12px", px: 3 }}
+          >
+            Filters
+          </Button>
+        </Box>
+      )}
+
+      {/* DESKTOP FILTER BAR */}
+      {!isMobile && (
+        <Paper
+          sx={{
+            p: 3,
+            mb: 4,
+            borderRadius: "22px",
+            background: "rgba(255,255,255,0.90)",
+            backdropFilter: "blur(6px)",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.08)"
+          }}
+        >
+          {filterContent}
+        </Paper>
+      )}
+
+      {/* MOBILE DRAWER */}
+      <Drawer
+        anchor="bottom"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        PaperProps={{ sx: { borderTopLeftRadius: "22px", borderTopRightRadius: "22px", p: 2 } }}
+      >
+        {filterContent}
+      </Drawer>
+    </>
   );
 }

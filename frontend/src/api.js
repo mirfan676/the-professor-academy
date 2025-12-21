@@ -6,7 +6,8 @@ const api = axios.create({
 
 // Named export
 export const fetchJobs = async () => {
-  const response = await api.get("/jobs"); 
+  const response = await api.get("/jobs");
+  console.log("Jobs API response", response.data);
   return response.data;
 };
 

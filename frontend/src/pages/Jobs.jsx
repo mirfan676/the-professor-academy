@@ -3,7 +3,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { fetchJobs } from "../api";
 import JobCard from "../components/JobCard";
 import JobFilters from "../components/JobFilters";
-import { Container, Box, Typography, Chip, Stack } from "@mui/material";
+import { Box, Typography, Chip, Stack } from "@mui/material";
 
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -14,8 +14,6 @@ export default function Jobs() {
   const [subject, setSubject] = useState("");
   const [gender, setGender] = useState("");
   const [grade, setGrade] = useState("");
-  const [feeValue, setFeeValue] = useState([0, 50000]);
-  const [feeRange, setFeeRange] = useState([0, 50000]);
 
   // Infinite scroll
   const PAGE_SIZE = 8;
@@ -29,18 +27,6 @@ export default function Jobs() {
       .then((res) => {
         const data = res?.jobs ?? res ?? [];
         setJobs(Array.isArray(data) ? data : []);
-
-        // Compute fee range
-        const fees = (data || [])
-          .map((j) => {
-            const f = Number(j.fee ?? j.Fee ?? j.Fees);
-            return isNaN(f) ? 0 : f;
-          })
-          .filter(Boolean);
-        const min = fees.length ? Math.min(...fees) : 0;
-        const max = fees.length ? Math.max(...fees) : 50000;
-        setFeeRange([Math.max(0, min), Math.max(max, min)]);
-        setFeeValue([Math.max(0, min), Math.max(max, min)]);
       })
       .catch((err) => {
         console.error("Failed to fetch jobs", err);
@@ -49,38 +35,25 @@ export default function Jobs() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Derive filter options (safe string conversion)
+  // Derive filter options
   const cityOptions = Array.from(
-    new Set(
-      jobs
-        .map((j) => String(j.city ?? j.City ?? "").trim())
-        .filter(Boolean)
-    )
+    new Set(jobs.map((j) => String(j.city ?? j.City ?? "").trim()).filter(Boolean))
   );
-
   const gradeOptions = Array.from(
-    new Set(
-      jobs
-        .map((j) => String(j.grade ?? j.Grade ?? j.Class ?? "").trim())
-        .filter(Boolean)
-    )
+    new Set(jobs.map((j) => String(j.grade ?? j.Grade ?? j.Class ?? "").trim()).filter(Boolean))
   );
 
-  // Apply filters (tolerant to any type)
+  // Apply filters
   const filtered = jobs.filter((job) => {
     const jobCity = String(job.city ?? job.City ?? "").toLowerCase();
     const jobSubjects = String(job.subjects ?? job.Subjects ?? job.Subject ?? "").toLowerCase();
     const jobGender = String(job.gender ?? job.Gender ?? "Both").toLowerCase();
     const jobGrade = String(job.grade ?? job.Grade ?? job.Class ?? "").toLowerCase();
 
-    let jobFee = Number(job.fee ?? job.Fee ?? job.Fees);
-    if (isNaN(jobFee)) jobFee = 0;
-
     if (city && jobCity && !jobCity.includes(city.toLowerCase())) return false;
     if (subject && jobSubjects && !jobSubjects.includes(subject.toLowerCase())) return false;
     if (gender && gender !== "Both" && jobGender && !jobGender.includes(gender.toLowerCase())) return false;
     if (grade && jobGrade && !jobGrade.includes(grade.toLowerCase())) return false;
-    if (jobFee < feeValue[0] || jobFee > feeValue[1]) return false;
 
     return true;
   });
@@ -91,7 +64,7 @@ export default function Jobs() {
   // Reset visible count when filters change
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [city, subject, gender, grade, feeValue]);
+  }, [city, subject, gender, grade]);
 
   // Intersection observer for infinite scroll
   const handleObserver = useCallback(
@@ -118,7 +91,6 @@ export default function Jobs() {
     setSubject("");
     setGender("");
     setGrade("");
-    setFeeValue(feeRange);
   };
 
   // Active filter chips
@@ -127,109 +99,93 @@ export default function Jobs() {
     subject && { label: `Subject: ${subject}`, key: "subject", clear: () => setSubject("") },
     gender && { label: `Gender: ${gender}`, key: "gender", clear: () => setGender("") },
     grade && { label: `Grade: ${grade}`, key: "grade", clear: () => setGrade("") },
-    (feeValue[0] !== feeRange[0] || feeValue[1] !== feeRange[1]) && {
-      label: `Fee: ${feeValue[0].toLocaleString()} - ${feeValue[1].toLocaleString()}`,
-      key: "fee",
-      clear: () => setFeeValue(feeRange),
-    },
   ].filter(Boolean);
 
   return (
     <Box sx={{ background: "#e8f2ff", py: 6, px: { xs: 2, md: 4 } }}>
-      <Container maxWidth="lg">
-        <Typography
-          variant="h4"
-          align="center"
-          fontWeight={700}
-          sx={{ mb: 2, color: "#004aad" }}
-        >
-          Latest Home Tutor Jobs
-        </Typography>
+      <Typography variant="h4" align="center" fontWeight={700} sx={{ mb: 2, color: "#004aad" }}>
+        Latest Home Tutor Jobs
+      </Typography>
+      <Typography variant="body1" align="center" sx={{ mb: 4, color: "#333" }}>
+        Browse verified home tuition jobs and connect with parents looking for qualified tutors.
+      </Typography>
 
-        <Typography
-          variant="body1"
-          align="center"
-          sx={{ mb: 4, color: "#333" }}
-        >
-          Browse verified home tuition jobs and connect with parents looking for qualified tutors.
-        </Typography>
-
-        {/* Filters */}
-        <JobFilters
-          city={city}
-          setCity={setCity}
-          subject={subject}
-          setSubject={setSubject}
-          gender={gender}
-          setGender={setGender}
-          grade={grade}
-          setGrade={setGrade}
-          cities={cityOptions}
-          grades={gradeOptions}
-          feeRange={feeRange}
-          feeValue={feeValue}
-          setFeeValue={setFeeValue}
-          onReset={onReset}
-        />
-
-        {/* Active filter chips */}
-        {activeFilters.length > 0 && (
-          <Box sx={{ mb: 3 }}>
-            <Stack direction="row" spacing={1} flexWrap="wrap">
-              {activeFilters.map((f) => (
-                <Chip
-                  key={f.key}
-                  label={f.label}
-                  onDelete={f.clear}
-                  color="primary"
-                  variant="outlined"
-                />
-              ))}
-            </Stack>
-          </Box>
-        )}
-
-        {/* Loading or no items */}
-        {loading && <Typography align="center">Loading jobs...</Typography>}
-        {!loading && filtered.length === 0 && (
-          <Typography align="center" sx={{ mt: 4, color: "gray" }}>
-            No jobs found.
-          </Typography>
-        )}
-
-        {/* Job list */}
-        <Box
-          sx={{
-            display: "grid",
-            gap: 3,
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
-              md: "repeat(3, 1fr)",
-            },
-            justifyContent: "center",
-          }}
-        >
-          {visibleJobs.map((job, i) => (
-            <JobCard key={i} job={job} />
-          ))}
+      {/* Filters + Jobs Layout */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: { xs: 2, md: 3 },
+          alignItems: "flex-start"
+        }}
+      >
+        {/* Left Column: Filters */}
+        <Box sx={{ flex: { xs: "1 1 auto", md: "0 0 280px" }, width: { xs: "100%", md: "280px" } }}>
+          <JobFilters
+            city={city}
+            setCity={setCity}
+            subject={subject}
+            setSubject={setSubject}
+            gender={gender}
+            setGender={setGender}
+            grade={grade}
+            setGrade={setGrade}
+            cities={cityOptions}
+            grades={gradeOptions}
+            onReset={onReset}
+          />
         </Box>
 
-        {/* Loader sentinel */}
-        <div ref={loaderRef} style={{ height: 1 }} />
+        {/* Right Column: Jobs */}
+        <Box sx={{ flex: 1 }}>
+          {/* Active filter chips */}
+          {activeFilters.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Stack direction="row" spacing={1} flexWrap="wrap">
+                {activeFilters.map((f) => (
+                  <Chip
+                    key={f.key}
+                    label={f.label}
+                    onDelete={f.clear}
+                    color="primary"
+                    variant="outlined"
+                  />
+                ))}
+              </Stack>
+            </Box>
+          )}
 
-        {/* Small status */}
-        {!loading && visibleJobs.length < filtered.length && (
-          <Typography align="center" sx={{ mt: 2, color: "#555" }}>
-            Loading more...
-          </Typography>
-        )}
-        {!loading && visibleJobs.length >= filtered.length && filtered.length > 0 && (
-          <Typography align="center" sx={{ mt: 2, color: "#555" }}>
-            You've reached the end.
-          </Typography>
-        )}
-      </Container>
+          {/* Loading / no jobs */}
+          {loading && <Typography align="center">Loading jobs...</Typography>}
+          {!loading && filtered.length === 0 && (
+            <Typography align="center" sx={{ mt: 4, color: "gray" }}>
+              No jobs found.
+            </Typography>
+          )}
+
+          {/* Job cards */}
+          <Stack spacing={3}>
+            {visibleJobs.map((job, i) => (
+              <JobCard key={i} job={job} />
+            ))}
+          </Stack>
+
+          {/* Loader sentinel */}
+          <div ref={loaderRef} style={{ height: 1 }} />
+
+          {/* Status */}
+          {!loading && visibleJobs.length < filtered.length && (
+            <Typography align="center" sx={{ mt: 2, color: "#555" }}>
+              Loading more...
+            </Typography>
+          )}
+          {!loading && visibleJobs.length >= filtered.length && filtered.length > 0 && (
+            <Typography align="center" sx={{ mt: 2, color: "#555" }}>
+              You've reached the end.
+            </Typography>
+          )}
+        </Box>
+      </Box>
     </Box>
   );
 }

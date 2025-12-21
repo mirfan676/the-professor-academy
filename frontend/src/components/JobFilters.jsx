@@ -8,8 +8,6 @@ import {
   MenuItem,
   TextField,
   Box,
-  Typography,
-  Slider,
   Button,
   Drawer,
   IconButton,
@@ -30,146 +28,82 @@ export default function JobFilters({
   setGrade,
   cities = [],
   grades = [],
-  feeRange = [0, 50000],
-  feeValue = [0, 50000],
-  setFeeValue,
   onReset
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width:900px)");
 
-  const [minFee, maxFee] = feeRange;
-
-  const presets = [
-    [0, 5000],
-    [5000, 8000],
-    [8000, 12000],
-    [12000, 20000],
-    [20000, maxFee || 50000]
-  ];
-
-  // Make options safe: convert any value to string
+  // Safe options
   const safeCities = Array.from(new Set(cities.map(c => c != null ? String(c) : ""))).filter(Boolean);
   const safeGrades = Array.from(new Set(grades.map(g => g != null ? String(g) : ""))).filter(Boolean);
 
   const filterContent = (
-    <Box sx={{ p: 3, width: "100%", maxWidth: 960, mx: "auto" }}>
+    <Box sx={{ p: 2, width: "100%" }}>
       {isMobile && (
-        <Box sx={{ textAlign: "right" }}>
+        <Box sx={{ textAlign: "right", mb: 2 }}>
           <IconButton onClick={() => setDrawerOpen(false)}>
             <CloseIcon />
           </IconButton>
         </Box>
       )}
 
-      <Grid container spacing={2} justifyContent="center">
-        <Grid
-          item
-          xs={12}
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 2,
-            justifyContent: isMobile ? "center" : "space-between"
-          }}
-        >
-          {/* CITY */}
-          <FormControl sx={{ flex: isMobile ? "1 1 100%" : "1 1 22%", minWidth: 150 }}>
+      <Grid container spacing={2} direction="column">
+        {/* CITY */}
+        <Grid item xs={12}>
+          <FormControl fullWidth>
             <InputLabel>Select City</InputLabel>
-            <Select
-              value={city}
-              label="Select City"
-              onChange={(e) => setCity(e.target.value)}
-              sx={{ height: "52px", borderRadius: "14px" }}
-            >
+            <Select value={city} label="Select City" onChange={(e) => setCity(e.target.value)}>
               <MenuItem value="">All Cities</MenuItem>
               {safeCities.map((c, i) => (
-                <MenuItem key={i} value={c}>
-                  {c}
-                </MenuItem>
+                <MenuItem key={i} value={c}>{c}</MenuItem>
               ))}
             </Select>
           </FormControl>
+        </Grid>
 
-          {/* SUBJECT */}
+        {/* SUBJECT */}
+        <Grid item xs={12}>
           <TextField
             label="Search Subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            sx={{
-              flex: isMobile ? "1 1 100%" : "1 1 22%",
-              minWidth: 150,
-              "& .MuiInputBase-root": { height: "52px", borderRadius: "14px" },
-            }}
+            fullWidth
           />
+        </Grid>
 
-          {/* GENDER */}
-          <FormControl sx={{ flex: isMobile ? "1 1 100%" : "1 1 22%", minWidth: 150 }}>
+        {/* GENDER */}
+        <Grid item xs={12}>
+          <FormControl fullWidth>
             <InputLabel>Gender</InputLabel>
-            <Select
-              value={gender}
-              label="Gender"
-              onChange={(e) => setGender(e.target.value)}
-              sx={{ height: "52px", borderRadius: "14px" }}
-            >
+            <Select value={gender} label="Gender" onChange={(e) => setGender(e.target.value)}>
               <MenuItem value="">Any</MenuItem>
               <MenuItem value="Male">Male</MenuItem>
               <MenuItem value="Female">Female</MenuItem>
               <MenuItem value="Both">Both</MenuItem>
             </Select>
           </FormControl>
+        </Grid>
 
-          {/* GRADE */}
-          <FormControl sx={{ flex: isMobile ? "1 1 100%" : "1 1 22%", minWidth: 150 }}>
+        {/* GRADE */}
+        <Grid item xs={12}>
+          <FormControl fullWidth>
             <InputLabel>Grade</InputLabel>
-            <Select
-              value={grade}
-              label="Grade"
-              onChange={(e) => setGrade(e.target.value)}
-              sx={{ height: "52px", borderRadius: "14px" }}
-            >
+            <Select value={grade} label="Grade" onChange={(e) => setGrade(e.target.value)}>
               <MenuItem value="">All Grades</MenuItem>
               {safeGrades.map((g, i) => (
-                <MenuItem key={i} value={g}>
-                  {g}
-                </MenuItem>
+                <MenuItem key={i} value={g}>{g}</MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
 
-        {/* Fee Slider */}
-        <Grid item xs={12}>
-          <Box sx={{ width: "100%", maxWidth: 480, mx: "auto" }}>
-            <Typography variant="subtitle2" sx={{ mb: 1, color: "#333", fontWeight: 600 }}>
-              Fee Range: {Number(feeValue[0]).toLocaleString()} — {Number(feeValue[1]).toLocaleString()}
-            </Typography>
-            <Slider
-              value={feeValue}
-              onChange={(e, v) => setFeeValue(v)}
-              valueLabelDisplay="auto"
-              min={minFee}
-              max={maxFee}
-            />
-            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 1 }}>
-              {presets.map((p, i) => (
-                <Button
-                  key={i}
-                  size="small"
-                  variant="outlined"
-                  onClick={() => setFeeValue(p)}
-                  sx={{ textTransform: "none" }}
-                >
-                  {Number(p[0]).toLocaleString()} - {p[1] === maxFee ? `${Number(p[0]).toLocaleString()}+` : Number(p[1]).toLocaleString()}
-                </Button>
-              ))}
-            </Box>
-          </Box>
-        </Grid>
-
         {/* RESET BUTTON */}
-        <Grid item xs={12} sx={{ textAlign: "center", mt: 2 }}>
-          <Button onClick={onReset} variant="contained" sx={{ background: "#004aad", px: 4 }}>
+        <Grid item xs={12} sx={{ textAlign: "center", mt: 1 }}>
+          <Button
+            onClick={onReset}
+            variant="contained"
+            sx={{ background: "#004aad", px: 4, textTransform: "none" }}
+          >
             Reset Filters
           </Button>
         </Grid>
@@ -197,9 +131,6 @@ export default function JobFilters({
       {!isMobile && (
         <Paper
           sx={{
-            position: "sticky",
-            top: 60,
-            zIndex: 50,
             p: 3,
             mb: 4,
             borderRadius: "22px",

@@ -1,196 +1,197 @@
-// TeacherDirectory.jsx
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import axios from "axios";
-import { Container, Typography, Box, Button, Alert } from "@mui/material";
+import { Box, Typography, Grid, Stack, Chip, CircularProgress } from "@mui/material";
 import TeacherFilters from "./TeacherFilters";
-import TeacherList from "./TeacherList";
-import TeacherMapSection from "./TeacherMapSection";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import TeacherCard from "./TeacherCard"; // Ensure this import is present
+import { useMediaQuery } from "@mui/material";
 
-// ------------------------------------------------------
-// FIX LEAFLET ICON ISSUE
-// ------------------------------------------------------
-delete L.Icon.Default.prototype._getIconUrl;
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-});
-
-// Custom tutor icon
-const personIcon = new L.Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/1946/1946429.png",
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-  popupAnchor: [0, -40],
-});
-
-// ------------------------------------------------------
-// FILTER FUNCTION (city + subject + distance)
-// ------------------------------------------------------
-function filterTeachers(teachers, selectedCity, selectedSubject, userLocation) {
-  const [userLat, userLng] = userLocation;
-
-  return teachers
-    .filter((tutor) => {
-      const matchesCity = selectedCity ? tutor.city === selectedCity : true;
-      const matchesSubject = selectedSubject
-        ? tutor.subjects.includes(selectedSubject)
-        : true;
-      return matchesCity && matchesSubject;
-    })
-    .map((tutor) => {
-      const latDiff = (tutor.location?.lat || 0) - userLat;
-      const lngDiff = (tutor.location?.lng || 0) - userLng;
-      return { ...tutor, distance: Math.sqrt(latDiff ** 2 + lngDiff ** 2) };
-    })
-    .sort((a, b) => a.distance - b.distance);
+// Fetch teachers (simulating an API call)
+function fetchTeachers() {
+  return axios.get("https://the-professor-academy.onrender.com/tutors/");
 }
 
-// ------------------------------------------------------
 export default function TeacherDirectory() {
   const [teachers, setTeachers] = useState([]);
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("");
-  const [visibleCount, setVisibleCount] = useState(12);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(8);
   const [error, setError] = useState("");
-  const [mapVisible, setMapVisible] = useState(false);
 
-  const [userLocation, setUserLocation] = useState([31.5204, 74.3587]); // Lahore default
+  // Filters
+  const [city, setCity] = useState("");
+  const [subject, setSubject] = useState("");
+  const [gender, setGender] = useState("");
+  const [grade, setGrade] = useState("");
 
-  const [showMoreBio, setShowMoreBio] = useState({});
-  const [showMoreSubjects, setShowMoreSubjects] = useState({});
+  const loaderRef = useRef(null);
 
-  // ------------------------------------------------------
-  // FETCH TEACHERS + NORMALIZE API FIELDS
-  // ------------------------------------------------------
+  // Fetch teachers on load
   useEffect(() => {
-    axios
-      .get("https://the-professor-academy.onrender.com/tutors/")
-      .then((res) =>
-        setTeachers(
-          res.data.map((t) => ({
-            id: t.id || t._id || Math.random(),
-            name: t.Name || "",
-            city: t.City || "",
-            subjects: t.Subjects || [],
-            bio: t.Bio || "",
-            experience: t.Experience || 0,
-            qualification: t.Qualification || "",
-            thumbnail: t.Thumbnail || "",
-            phone: t.Phone || "",
-            verified: t.Verified === "Yes",
-            location: {
-              lat: Number(t.Latitude) || 31.5204,
-              lng: Number(t.Longitude) || 74.3587,
-            },
-          }))
-        )
-      )
-      .catch(() => setError("Unable to fetch data"))
+    setLoading(true);
+    fetchTeachers()
+      .then((res) => {
+        setTeachers(res.data || []);
+      })
+      .catch((err) => {
+        setError("Unable to fetch data");
+        console.error("Failed to fetch teachers", err);
+      })
       .finally(() => setLoading(false));
   }, []);
 
-  // ------------------------------------------------------
-  // GET USER LIVE LOCATION
-  // ------------------------------------------------------
+  // Derive filter options
+  const cityOptions = Array.from(
+    new Set(teachers.map((t) => String(t.city ?? t.City ?? "").trim()).filter(Boolean))
+  );
+  const gradeOptions = Array.from(
+    new Set(teachers.map((t) => String(t.grade ?? t.Grade ?? "").trim()).filter(Boolean))
+  );
+
+  // Apply filters
+  const filtered = teachers.filter((teacher) => {
+    const teacherCity = String(teacher.city ?? teacher.City ?? "").toLowerCase();
+    const teacherSubjects = String(teacher.subjects ?? teacher.Subjects ?? "").toLowerCase();
+    const teacherGender = String(teacher.gender ?? teacher.Gender ?? "Both").toLowerCase();
+    const teacherGrade = String(teacher.grade ?? teacher.Grade ?? "").toLowerCase();
+
+    if (city && teacherCity && !teacherCity.includes(city.toLowerCase())) return false;
+    if (subject && teacherSubjects && !teacherSubjects.includes(subject.toLowerCase())) return false;
+    if (gender && gender !== "Both" && teacherGender && !teacherGender.includes(gender.toLowerCase())) return false;
+    if (grade && teacherGrade && !teacherGrade.includes(grade.toLowerCase())) return false;
+
+    return true;
+  });
+
+  // Visible teachers slice for infinite scroll
+  const visibleTeachers = filtered.slice(0, Math.min(visibleCount, filtered.length));
+
+  // Reset visible count when filters change
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (pos) =>
-        setUserLocation([pos.coords.latitude, pos.coords.longitude]),
-      () => {} // ignore errors
-    );
-  }, []);
+    setVisibleCount(8);
+  }, [city, subject, gender, grade]);
 
-  // ------------------------------------------------------
-  // UNIQUE SUBJECTS & CITIES
-  // ------------------------------------------------------
-  const subjects = useMemo(
-    () => [...new Set(teachers.flatMap((t) => t.subjects))],
-    [teachers]
+  // Intersection observer for infinite scroll
+  const handleObserver = useCallback(
+    (entries) => {
+      const target = entries[0];
+      if (target.isIntersecting && visibleCount < filtered.length) {
+        setVisibleCount((v) => Math.min(filtered.length, v + 8));
+      }
+    },
+    [visibleCount, filtered.length]
   );
 
-  const cities = useMemo(
-    () => [...new Set(teachers.map((t) => t.city).filter(Boolean))],
-    [teachers]
-  );
+  useEffect(() => {
+    if (filtered.length > 8) {
+      const option = { root: null, rootMargin: "200px", threshold: 0.1 };
+      const observer = new IntersectionObserver(handleObserver, option);
+      if (loaderRef.current) observer.observe(loaderRef.current);
+      return () => observer.disconnect();
+    }
+  }, [handleObserver, filtered.length]);
 
-  // ------------------------------------------------------
-  // FILTERED LIST FINAL
-  // ------------------------------------------------------
-  const filtered = filterTeachers(
-    teachers,
-    selectedCity,
-    selectedSubject,
-    userLocation
-  );
+  const onReset = () => {
+    setCity("");
+    setSubject("");
+    setGender("");
+    setGrade("");
+  };
+
+  // Active filter chips
+  const activeFilters = [
+    city && { label: `City: ${city}`, key: "city", clear: () => setCity("") },
+    subject && { label: `Subject: ${subject}`, key: "subject", clear: () => setSubject("") },
+    gender && { label: `Gender: ${gender}`, key: "gender", clear: () => setGender("") },
+    grade && { label: `Grade: ${grade}`, key: "grade", clear: () => setGrade("") },
+  ].filter(Boolean);
 
   return (
     <Box sx={{ background: "#e8f2ff", py: 6, px: { xs: 2, md: 4 } }}>
-      <Container maxWidth="lg">
-        <Typography
-          variant="h4"
-          align="center"
-          fontWeight={700}
-          sx={{ mb: 4, color: "#004aad" }}
-        >
-          Find Teachers Near You
-        </Typography>
+      <Typography variant="h4" align="center" fontWeight={700} sx={{ mb: 2, color: "#004aad" }}>
+        Find Teachers Near You
+      </Typography>
 
-        {/* MAP SECTION */}
-        <TeacherMapSection
-          mapVisible={mapVisible}
-          setMapVisible={setMapVisible}
-          filtered={filtered}
-          userLocation={userLocation}
-          personIcon={personIcon}
-        />
+      <Typography variant="body1" align="center" sx={{ mb: 4, color: "#333" }}>
+        Browse verified tutors and connect with them directly.
+      </Typography>
 
-        {/* FILTERS */}
-        <TeacherFilters
-          selectedCity={selectedCity}
-          setSelectedCity={setSelectedCity}
-          selectedSubject={selectedSubject}
-          setSelectedSubject={setSelectedSubject}
-          cities={cities}
-          subjects={subjects}
-        />
+      {/* Filters + Teacher Directory Layout */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: { xs: 2, md: 2 },
+          alignItems: "flex-start",
+        }}
+      >
+        {/* Left Column: Filters */}
+        <Box sx={{ flex: { xs: "1 1 auto", md: "0 0 280px" }, width: { xs: "100%", md: "260px" }, position: "sticky", top: 20, zIndex: 10 }}>
+          <TeacherFilters
+            city={city}
+            setCity={setCity}
+            subject={subject}
+            setSubject={setSubject}
+            gender={gender}
+            setGender={setGender}
+            grade={grade}
+            setGrade={setGrade}
+            cities={cityOptions}
+            grades={gradeOptions}
+            onReset={onReset}
+          />
+        </Box>
 
-        {error && <Alert severity="error">{error}</Alert>}
+        {/* Right Column: Teacher Cards */}
+        <Box sx={{ flex: 1 }}>
+          {/* Active filter chips */}
+          {activeFilters.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Stack direction="row" spacing={1} flexWrap="wrap">
+                {activeFilters.map((f) => (
+                  <Chip
+                    key={f.key}
+                    label={f.label}
+                    onDelete={f.clear}
+                    color="primary"
+                    variant="outlined"
+                  />
+                ))}
+              </Stack>
+            </Box>
+          )}
 
-        {/* LIST */}
-        <TeacherList
-          loading={loading}
-          filtered={filtered}
-          visibleCount={visibleCount}
-          showMoreBio={showMoreBio}
-          showMoreSubjects={showMoreSubjects}
-          toggleBio={(id) =>
-            setShowMoreBio((prev) => ({ ...prev, [id]: !prev[id] }))
-          }
-          toggleSubjects={(id) =>
-            setShowMoreSubjects((prev) => ({ ...prev, [id]: !prev[id] }))
-          }
-        />
+          {/* Loading / no teachers */}
+          {loading && <Typography align="center">Loading teachers...</Typography>}
+          {!loading && filtered.length === 0 && (
+            <Typography align="center" sx={{ mt: 4, color: "gray" }}>
+              No teachers found.
+            </Typography>
+          )}
 
-        {!loading && visibleCount < filtered.length && (
-          <Box sx={{ textAlign: "center", mt: 4 }}>
-            <Button
-              variant="contained"
-              sx={{ background: "#004aad", fontWeight: 600 }}
-              onClick={() => setVisibleCount((v) => v + 12)}
-            >
-              Load More
-            </Button>
-          </Box>
-        )}
-      </Container>
+          {/* Teacher cards */}
+          <Grid container spacing={1} justifyContent="flex-start">
+            {visibleTeachers.map((teacher, i) => (
+              <Grid item xs={12} sm={6} md={3} key={teacher.id}>
+                <TeacherCard teacher={teacher} />
+              </Grid>
+            ))}
+          </Grid>
+
+          {/* Loader sentinel */}
+          <div ref={loaderRef} style={{ height: 1 }} />
+
+          {/* Status */}
+          {!loading && visibleTeachers.length < filtered.length && (
+            <Typography align="center" sx={{ mt: 2, color: "#555" }}>
+              Loading more...
+            </Typography>
+          )}
+          {!loading && visibleTeachers.length >= filtered.length && filtered.length > 0 && (
+            <Typography align="center" sx={{ mt: 2, color: "#555" }}>
+              You've reached the end.
+            </Typography>
+          )}
+        </Box>
+      </Box>
     </Box>
   );
 }
