@@ -1,6 +1,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from routes.locations_routes import router as locations_router
 from routes.tutor_register import router as register_router
 from routes.tutors_routes import router as tutors_router
@@ -8,6 +9,8 @@ from routes.jobs_routes import router as jobs_router
 from config.sheets import preload_tutors
 from dotenv import load_dotenv
 from utils.ip_location import router as ip_location_router
+from starlette.responses import Response
+
 # Load environment variables
 load_dotenv()
 
@@ -30,6 +33,28 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- CSP Middleware --- 
+@app.middleware("http")
+async def add_csp_header(request, call_next):
+    response = await call_next(request)
+    # Set Content Security Policy (CSP) header
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com "
+        "https://www.google.com/recaptcha https://www.gstatic.com https://www.google-analytics.com; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com; "
+        "img-src 'self' data: https://*.tawk.to https://www.google-analytics.com "
+        "https://www.googletagmanager.com https://cdn.jsdelivr.net blob:; "
+        "frame-src https://embed.tawk.to https://www.google.com; "
+        "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com "
+        "https://va.tawk.to wss://*.tawk.to https://www.google.com https://www.googleapis.com/sheets/v4; "
+        "object-src 'self' blob:; "
+        "frame-ancestors 'self' https://www.google.com; "
+        "base-uri 'self';"
+    )
+    return response
 
 # --- Register Routers ---
 app.include_router(locations_router)
