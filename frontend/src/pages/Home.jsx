@@ -10,10 +10,10 @@ import FooterCTA from "../components/sections/FooterCTA";
 const Home = () => {
 
   useSEO({
-    title: "A Plus Home Tutors — Trusted Home & Online Tuition in Pakistan",
+    title: "The Professor Academy — Specialist Tutors for O/A Levels, K-12, and all subjects",
     description:
-      "Pakistan’s trusted platform for home and online tuition — connecting students with expert tutors for O/A Levels, Matric, and Quran classes.",
-    canonical: "https://www.aplusacademy.pk/",
+      "Pakistan’s Top Home Tuition Network — connecting students with Specialist tutors for O/A Levels, k-12, and all subjects.",
+    canonical: "https://www.theprofessoracademy.com/",
   });
 
   return (
