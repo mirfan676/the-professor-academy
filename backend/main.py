@@ -18,7 +18,7 @@ ALLOWED_ORIGINS = [
 
 # --- Create App ---
 app = FastAPI(
-    title="APlus Home Tutors API",
+    title="The Professor Academy API",
     version="4.3.0",
 )
 

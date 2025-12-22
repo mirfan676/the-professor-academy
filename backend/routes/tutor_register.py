@@ -46,7 +46,7 @@ async def register_tutor(
         # ------------------------------------
         # 1️⃣ Verify reCAPTCHA Enterprise
         # ------------------------------------
-        verify_recaptcha(recaptcha_token, "tutor_register")
+        verify_recaptcha(recaptcha_token, "tutor_register", request)
 
         # ------------------------------------
         # 2️⃣ Duplicate ID Check

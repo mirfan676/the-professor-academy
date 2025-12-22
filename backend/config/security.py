@@ -1,33 +1,36 @@
 import os
+import re
 from fastapi import Request, HTTPException
 from dotenv import load_dotenv
 
-# Load .env variables
 load_dotenv()
 
-# Parse allowed origins from .env
+# Allowed Domains (also keep in .env)
 ALLOWED_ORIGINS = [
-    o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()
+    o.strip().rstrip("/") for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()
 ]
 
-def verify_request_origin(request: Request):
-    origin = request.headers.get("origin")
-    referer = request.headers.get("referer")
+# Strict Domain Validation
+allowed_regex = re.compile(
+    r"^https?://(localhost(:\d+)?|127\.0\.0\.1(:\d+)?|(\w+\.)*theprofessoracademy\.com)(/|$)",
+    re.IGNORECASE
+)
 
-    # Allow server-to-server requests (no origin or referer)
+
+def verify_request_origin(request: Request):
+    origin = request.headers.get("origin", "")
+    referer = request.headers.get("referer", "")
+
+    # Allow internal server calls
     if not origin and not referer:
         return
 
-    def is_allowed(value: str | None) -> bool:
-        if not value:
-            return False
-        # Exact match or domain included in value
-        return any(value.startswith(domain) or domain in value for domain in ALLOWED_ORIGINS)
+    print(f"Incoming request - origin={origin}, referer={referer}")
 
-    # Debugging: log incoming origins
-    print(f"Incoming request - origin: {origin}, referer: {referer}")
+    def allowed(v: str) -> bool:
+        return bool(v and allowed_regex.match(v))
 
-    if is_allowed(origin) or is_allowed(referer):
+    if allowed(origin) or allowed(referer):
         return
 
     raise HTTPException(
