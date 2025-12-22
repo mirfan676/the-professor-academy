@@ -8,7 +8,7 @@ const AboutUs = () => {
   useSEO({
     title: "About Professor Academy — Premier Home & Online Tutoring",
     description:
-      "Learn about Professor Academy, Pakistan’s leading platform connecting students with qualified home and online tutors for O/A Levels, Matric, and Quran. Discover our mission, vision, and expert services.",
+      "Learn about Professor Academy, Pakistan’s leading platform connecting students with qualified home and online tutors for O/A Levels, Junior Classes, CSS & PMS. Discover our mission, vision, and expert services.",
     canonical: "https://www.theprofessoracademy.com/about",
     ogImage: "https://www.theprofessoracademy.com/logo.png",
     ogUrl: "https://www.theprofessoracademy.com/about",
