@@ -25,61 +25,7 @@
   <meta name="author" content="The Professor Academy" />
 
   <!-- Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy" content="
-  /* Default policy to self */
-  default-src 'self';
-
-  /* Allow external scripts like Google Analytics, Tag Manager, reCAPTCHA */
-  script-src 'self' 
-    'unsafe-inline' 
-    https://www.googletagmanager.com 
-    https://www.google.com/recaptcha 
-    https://www.gstatic.com 
-    https://www.google-analytics.com;
-
-  /* Allow external styles from Google Fonts */
-  style-src 'self' 
-    'unsafe-inline' 
-    https://fonts.googleapis.com;
-
-  /* Allow fonts from Google Fonts */
-  font-src 'self' 
-    https://fonts.gstatic.com;
-
-  /* Allow images from trusted sources and blob URLs */
-  img-src 'self' 
-    data: 
-    https://*.tawk.to 
-    https://www.google-analytics.com 
-    https://www.googletagmanager.com 
-    https://cdn.jsdelivr.net 
-    blob:;
-
-  /* Allow embedding iframes from trusted sources (e.g., Tawk.to, Google) */
-  frame-src 
-    https://embed.tawk.to 
-    https://www.google.com;
-
-  /* Allow connections to Google Sheets API and Tawk.to websocket */
-  connect-src 'self' 
-    https://www.google-analytics.com 
-    https://www.googletagmanager.com 
-    https://va.tawk.to 
-    wss://*.tawk.to 
-    https://www.google.com 
-    https://www.googleapis.com/sheets/v4;
-
-  /* Allow blob URLs for images, videos, etc. */
-  object-src 'self' blob:;
-
-  /* Restrict framing of your content (only self and Google allowed) */
-  frame-ancestors 'self' 
-    https://www.google.com;
-
-  /* Define base URI for loading content */
-  base-uri 'self';
-">
-
+  
 
 
 
