@@ -147,6 +147,7 @@ export default function TutorRegistration() {
       script.src = `https://www.google.com/recaptcha/enterprise.js?render=${RECAPTCHA_SITE_KEY}`;
       script.async = true;
       script.defer = true;
+      script.onload = () => console.log("reCAPTCHA script loaded.");
       document.body.appendChild(script);
     }
   }, []);
@@ -275,12 +276,18 @@ export default function TutorRegistration() {
     setLoading(true);
 
     try {
-      const token = await new Promise((resolve) => {
-        window.grecaptcha?.enterprise?.ready(() => {
-          window.grecaptcha.enterprise
-            .execute(RECAPTCHA_SITE_KEY, { action: "tutor_register" })
-            .then(resolve);
-        });
+      const token = await new Promise((resolve, reject) => {
+        // Ensure reCAPTCHA is ready and get the token
+        if (window.grecaptcha) {
+          window.grecaptcha.enterprise.ready(() => {
+            window.grecaptcha.enterprise
+              .execute(RECAPTCHA_SITE_KEY, { action: "tutor_register" })
+              .then(resolve)
+              .catch(reject);
+          });
+        } else {
+          reject(new Error("reCAPTCHA not loaded"));
+        }
       });
 
       const submissionData = new FormData();
