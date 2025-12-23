@@ -11,7 +11,7 @@ from config.sheets import preload_tutors
 from dotenv import load_dotenv
 from utils.ip_location import router as ip_location_router
 from starlette.responses import Response
-from utils.recaptcha import verify_recaptcha  # <-- Import the verify_recaptcha function
+from config.recaptcha import verify_recaptcha  # <-- Import the verify_recaptcha function
 
 # Setup logging for debugging
 logging.basicConfig(level=logging.DEBUG)
