@@ -181,27 +181,6 @@ export default function TutorRegistration() {
     }
   }, [formData.qualification]);
 
-  // -----------------------
-  // DEBOUNCED ID CARD CHECK
-  // -----------------------
-  useEffect(() => {
-    if (formData.id_card.length !== 13) {
-      setIdError(false);
-      return;
-    }
-
-    const timer = setTimeout(async () => {
-      try {
-        const res = await api.get("/tutors/check-id", { params: { id_card: formData.id_card } });
-        setIdError(res.data.exists);
-      } catch (err) {
-        console.error("ID check failed", err);
-        setIdError(false);
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [formData.id_card]);
 
   // -----------------------
   // HANDLE INPUT CHANGE
@@ -276,6 +255,18 @@ export default function TutorRegistration() {
     setLoading(true);
 
     try {
+
+      // Check if ID card exists in the database after form submission
+    if (formData.id_card.length === 13) {
+      const idCheckResponse = await api.get("/tutors/check-id", { params: { id_card: formData.id_card } });
+      if (idCheckResponse.data.exists) {
+        setIdError(true);
+        setMessage("⚠️ This ID card is already registered.");
+        return;
+      }
+    }
+
+
       const token = await new Promise((resolve, reject) => {
         // Ensure reCAPTCHA is ready and get the token
         if (window.grecaptcha) {
