@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from routes.locations_routes import router as locations_router
@@ -10,6 +10,7 @@ from config.sheets import preload_tutors
 from dotenv import load_dotenv
 from utils.ip_location import router as ip_location_router
 from starlette.responses import Response
+import logging
 
 # Load environment variables
 load_dotenv()
@@ -24,6 +25,10 @@ app = FastAPI(
     title="The Professor Academy API",
     version="4.3.0",
 )
+
+# --- Configure Logging ---
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 # --- CORS Middleware ---
 app.add_middleware(
@@ -78,7 +83,75 @@ def health_check():
 def startup_event():
     try:
         preload_tutors()
-        print("✅ Tutors preloaded successfully on startup")
+        logger.info("✅ Tutors preloaded successfully on startup")
     except Exception as e:
-        print(f"⚠️ Failed to preload tutors on startup: {e}")
+        logger.error(f"⚠️ Failed to preload tutors on startup: {e}")
         # Do not raise exception, server will still start
+
+# --- CORS Debugging ---
+@app.middleware("http")
+async def log_request_origin(request: Request, call_next):
+    origin = request.headers.get("origin", "")
+    referer = request.headers.get("referer", "")
+    logger.debug(f"Request from Origin: {origin}, Referer: {referer}")
+    response = await call_next(request)
+    return response
+
+# --- CORS Middleware and reCAPTCHA Token Verification ---
+@app.post("/tutors/register")
+async def register_tutor(
+    request: Request,
+    recaptcha_token: str,
+    name: str,
+    id_card: str,
+    qualification: str,
+    subject: str,
+    major_subjects: str,
+    experience: int,
+    phone: str,
+    bio: str,
+    lat: str,
+    lng: str,
+    image: str,
+):
+    try:
+        # --- Log the incoming form data ---
+        form_data = await request.form()
+        logger.debug(f"Received form data: {form_data}")
+
+        # --- Log reCAPTCHA token ---
+        logger.debug(f"Received reCAPTCHA token: {recaptcha_token}")
+
+        # --- Verify reCAPTCHA token ---
+        # Assuming you have a function `verify_recaptcha`
+        verify_recaptcha(recaptcha_token, "tutor_register", request)
+
+        # --- Additional Form Processing ---
+        if not name or not id_card or not qualification:
+            raise HTTPException(status_code=400, detail="Missing required fields")
+
+        # Example: If ID is already registered
+        if is_id_registered(id_card):
+            raise HTTPException(status_code=400, detail="⚠️ This ID card is already registered.")
+
+        # --- Save Tutor Details Logic ---
+        # Example: Save to database or a sheet, this is a placeholder for your actual logic
+        profile_id = f"TUTOR-{uuid.uuid4().hex[:8].upper()}"
+        profile_url = f"https://theprofessoracademy.com/tutor/{profile_id}"
+
+        logger.debug(f"Profile ID generated: {profile_id}")
+
+        # Assuming you have a function `save_tutor_details` to save to a database or sheet
+        save_tutor_details(
+            name, id_card, qualification, subject, major_subjects, experience, phone, bio, lat, lng, image
+        )
+
+        return {"message": "✅ Tutor registered successfully", "profile_id": profile_id, "profile_url": profile_url}
+
+    except HTTPException as e:
+        logger.error(f"HTTPException occurred: {str(e)}")
+        raise e
+    except Exception as e:
+        logger.error(f"Exception occurred during form submission: {str(e)}")
+        raise HTTPException(status_code=500, detail="❌ Failed to register tutor")
+
