@@ -20,11 +20,6 @@ logger = logging.getLogger("main")
 # Load environment variables
 load_dotenv()
 
-# Parse allowed origins from .env
-ALLOWED_ORIGINS = [
-    o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()
-]
-
 # --- Create App ---
 app = FastAPI(
     title="The Professor Academy API",
@@ -34,7 +29,6 @@ app = FastAPI(
 # --- CORS Middleware ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,  # only allow domains from .env
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
