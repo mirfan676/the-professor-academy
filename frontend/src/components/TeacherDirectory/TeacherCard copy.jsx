@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { motion } from "framer-motion";
 
-// Function to get experience badge
 const getExperienceBadge = (exp) => {
   const e = Number(exp) || 0;
 
@@ -16,8 +15,8 @@ const getExperienceBadge = (exp) => {
 };
 
 export default function TeacherCard({ teacher }) {
-  const experienceBadge = getExperienceBadge(teacher.experience);
-  const subjects = teacher.subjects || [];
+  const experienceBadge = getExperienceBadge(teacher.Experience);
+  const subjects = teacher.Subjects || [];
 
   return (
     <motion.div
@@ -29,11 +28,11 @@ export default function TeacherCard({ teacher }) {
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center", 
-        alignItems: "center",      
+        justifyContent: "center",  // Corrected typo here
+        alignItems: "center",      // Ensure it is centered
       }}
     >
-      <Box sx={{ p: 0.5, borderRadius: "5px", transition: "all 0.3s ease", background: "transparent", justifyContent:"center" }}>
+      <Box sx={{ p: 0.5, borderRadius: "5px", transition: "all 0.3s ease", background: "transparent", justifyContent:"center", }}>
         <Card
           sx={{
             borderRadius: "20px",
@@ -89,7 +88,7 @@ export default function TeacherCard({ teacher }) {
               </Box>
             </Box>
 
-            <Avatar src={teacher.thumbnail} sx={{ width: 80, height: 80, borderRadius: "14px" }} />
+            <Avatar src={teacher.Thumbnail} sx={{ width: 80, height: 80, borderRadius: "14px" }} />
             <Box sx={{ minWidth: 0 }}>
               <Typography
                 sx={{
@@ -103,26 +102,26 @@ export default function TeacherCard({ teacher }) {
                   whiteSpace: "nowrap",
                 }}
               >
-                {String(teacher.verified || "").toLowerCase() === "yes" && <CheckCircleIcon fontSize="small" color="success" />}
-                {teacher.name || "Unknown"}
+                {String(teacher.Verified || "").toLowerCase() === "yes" && <CheckCircleIcon fontSize="small" color="success" />}
+                {teacher.Name || "Unknown"}
               </Typography>
               <Typography sx={{ fontSize: "0.85rem", color: "#004aad", fontWeight: 700 }}>
-                {teacher.qualification || ""}
+                {teacher.Qualification || ""}
               </Typography>
-              {teacher.experience ? (
-                <Typography sx={{ fontSize: "0.8rem", color: "#555" }}>{teacher.experience} years experience</Typography>
+              {teacher.Experience ? (
+                <Typography sx={{ fontSize: "0.8rem", color: "#555" }}>{teacher.Experience} years experience</Typography>
               ) : null}
-              <Typography sx={{ fontSize: "0.75rem", color: "green" }}>{teacher.city || "Online"}</Typography>
+              <Typography sx={{ fontSize: "0.75rem", color: "green" }}>{teacher.City || "Online"}</Typography>
             </Box>
           </Box>
 
           <Box sx={{ p: 2, flexGrow: 1 }}>
             <Typography sx={{ fontWeight: 700, mb: 0.5 }}>Subjects:</Typography>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              {subjects.map((subject, i) => (
+              {subjects.map((sub, i) => (
                 <Chip
                   key={i}
-                  label={subject}
+                  label={sub}
                   size="small"
                   sx={{ background: "#e8f7ff", color: "#004aad", fontWeight: 600 }}
                 />
@@ -131,7 +130,7 @@ export default function TeacherCard({ teacher }) {
 
             {/* Bio */}
             <Typography sx={{ fontWeight: 700, mt: 2 }}>Bio:</Typography>
-            <Typography sx={{ fontSize: "0.85rem", lineHeight: 1.5 }}>{teacher.bio}</Typography>
+            <Typography sx={{ fontSize: "0.85rem", lineHeight: 1.5 }}>{teacher.Bio}</Typography>
           </Box>
 
           <Box sx={{ display: "flex", gap: 1, p: 2 }}>

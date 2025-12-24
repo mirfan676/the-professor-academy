@@ -29,13 +29,16 @@ const TeacherProfile = () => {
         setLoading(true);
         const res = await axios.get("https://the-professor-academy.onrender.com/tutors/");
         if (Array.isArray(res.data)) {
-          const mapped = res.data.map((t, i) => ({
-            id: i,
-            name: t["Name"] || "Unknown",
-            subjects: Array.isArray(t["Subjects"]) ? t["Subjects"] : [],
+          const mapped = res.data.map((t) => ({
+            id: t["Profile ID"],  // Updated to match the API structure
+            name: t["Name"] || "Unknown",  // Updated name key
+            subjects: String(t["Major Subjects"] || "")
+              .split(",")
+              .map(s => s.trim())
+              .filter(Boolean),
             qualification: t["Qualification"] || "",
-            experience: t["Experience"] || "",
-            city: t["District"] ? String(t["District"]) : "",
+            experience: t["Experience"] || 0,  // Updated experience key
+            city: t["City"] || "Online",  // Updated to match city key
             bio: t["Bio"] || "",
             price: t["Price"] || "Rs 2000",
             thumbnail: t["Thumbnail"] || "",

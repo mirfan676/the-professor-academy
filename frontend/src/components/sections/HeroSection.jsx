@@ -55,6 +55,7 @@ export default function HeroSection() {
         pb: { xs: 6, sm: 8, md: 10 },
         backgroundImage: "url('/background-home-1.png')", 
         backgroundSize: "cover", 
+        backgroundColor: "#000000",
         backgroundPosition: "center", 
         backgroundRepeat: "no-repeat", 
         borderBottom: "5px solid #fddc88",
@@ -68,7 +69,7 @@ export default function HeroSection() {
             fontSize: { xs: "1.8rem", sm: "2.4rem", md: "3.2rem" },
             fontWeight: 800,
             lineHeight: 1.2,
-            color: "#02539b", 
+            color: "#fddc88", 
             mb: 2,
             borderBottom: "1px solid transparent",
             borderTop: "1px solid transparent",
@@ -85,7 +86,7 @@ export default function HeroSection() {
           sx={{
             mt: 2,
             fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
-            color: "#333",
+            color: "#fff",
           }}
         >
           Junior Classes, CSS/PMS, O/A Levels, English Tutors, & Home Schooling
@@ -104,7 +105,7 @@ export default function HeroSection() {
               justifyContent: "center",
               p: 3,
               borderRadius: "12px",
-              backgroundColor: "transparent",
+              backgroundColor: "#000",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
               transition: "transform 0.3s ease",
@@ -124,13 +125,13 @@ export default function HeroSection() {
                 mb: 2,
               }}
             />
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#02539b" }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#fddc88" }}>
               Junior Classes
             </Typography>
             <Typography
               sx={{
                 fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
-                color: "#333",
+                color: "#fff",
                 maxWidth: "150px",
               }}
             >
@@ -149,7 +150,7 @@ export default function HeroSection() {
               justifyContent: "center",
               p: 3,
               borderRadius: "12px",
-              backgroundColor: "transparent",
+              backgroundColor: "#000",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
               transition: "transform 0.3s ease",
@@ -169,13 +170,13 @@ export default function HeroSection() {
                 mb: 2,
               }}
             />
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#02539b" }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#fddc88" }}>
               CSS/PMS
             </Typography>
             <Typography
               sx={{
                 fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
-                color: "#333",
+                color: "#fff",
                 maxWidth: "150px",
               }}
             >
@@ -194,7 +195,7 @@ export default function HeroSection() {
               justifyContent: "center",
               p: 3,
               borderRadius: "12px",
-              backgroundColor: "transparent",
+              backgroundColor: "#000",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
               transition: "transform 0.3s ease",
@@ -214,13 +215,13 @@ export default function HeroSection() {
                 mb: 2,
               }}
             />
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#02539b" }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#fddc88" }}>
               O & A Level
             </Typography>
             <Typography
               sx={{
                 fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
-                color: "#333",
+                color: "#fff",
                 maxWidth: "150px",
               }}
             >
@@ -239,7 +240,7 @@ export default function HeroSection() {
               justifyContent: "center",
               p: 3,
               borderRadius: "12px",
-              backgroundColor: "transparent",
+              backgroundColor: "#000",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
               transition: "transform 0.3s ease",
@@ -259,13 +260,13 @@ export default function HeroSection() {
                 mb: 2,
               }}
             />
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#02539b" }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#fddc88" }}>
               English Tutors
             </Typography>
             <Typography
               sx={{
                 fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
-                color: "#333",
+                color: "#fff",
                 maxWidth: "150px",
               }}
             >
@@ -284,7 +285,7 @@ export default function HeroSection() {
               justifyContent: "center",
               p: 3,
               borderRadius: "12px",
-              backgroundColor: "transparent",
+              backgroundColor: "#000",
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
               textAlign: "center",
               transition: "transform 0.3s ease",
@@ -304,13 +305,13 @@ export default function HeroSection() {
                 mb: 2,
               }}
             />
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#02539b" }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#fddc88" }}>
               Home Schooling
             </Typography>
             <Typography
               sx={{
                 fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
-                color: "#333",
+                color: "#fff",
                 maxWidth: "150px",
               }}
             >
@@ -327,13 +328,13 @@ export default function HeroSection() {
           color="secondary"
           onClick={() => setOpenModal(true)}  // Open modal on button click
           sx={{
-            background: "#dcf2f3ff",
+            background: "#000",
             border:"solid 1px transparent",
-            color:"#02539b",
+            color:"#fddc88",
             "&:hover": {
               background: "transparent",
-              border:"solid 1px #dd5019ff", 
-              color:"#02539b"
+              border:"solid 1px #000", 
+              color:"#fddc88"
             },
             fontSize: "1rem",
             px: 4,

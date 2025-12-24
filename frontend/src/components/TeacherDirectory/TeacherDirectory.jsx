@@ -1,94 +1,87 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
-import { Box, Typography, Grid, Stack, Chip, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Grid,
+  Stack,
+  Chip
+} from "@mui/material";
 import TeacherFilters from "./TeacherFilters";
-import TeacherCard from "./TeacherCard"; // Ensure this import is present
-import { useMediaQuery } from "@mui/material";
-
-// Fetch teachers (simulating an API call)
-function fetchTeachers() {
-  return axios.get("https://the-professor-academy.onrender.com/tutors/");
-}
+import TeacherCard from "./TeacherCard";
 
 export default function TeacherDirectory() {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(8);
-  const [error, setError] = useState("");
-
-  // Filters
   const [city, setCity] = useState("");
   const [subject, setSubject] = useState("");
   const [gender, setGender] = useState("");
   const [grade, setGrade] = useState("");
-
   const loaderRef = useRef(null);
 
-  // Fetch teachers on load
+  const cityOptions = Array.from(new Set(teachers.map(t => t.city))).filter(Boolean);
+  const gradeOptions = ["Grade 1", "Grade 2", "Grade 3", "Grade 4"]; // Example
+
+  const activeFilters = [
+    { key: 'city', label: city, clear: () => setCity('') },
+    { key: 'subject', label: subject, clear: () => setSubject('') },
+    { key: 'gender', label: gender, clear: () => setGender('') },
+    { key: 'grade', label: grade, clear: () => setGrade('') },
+  ].filter(f => f.label);
+
+  // Fetch teacher data
   useEffect(() => {
-    setLoading(true);
-    fetchTeachers()
+    axios
+      .get("https://the-professor-academy.onrender.com/tutors/")
       .then((res) => {
-        setTeachers(res.data || []);
-      })
-      .catch((err) => {
-        setError("Unable to fetch data");
-        console.error("Failed to fetch teachers", err);
+        const normalized = (res.data || []).map((t) => ({
+          id: t["Profile ID"],
+          name: t.Name,
+          qualification: t.Qualification,
+          subjects: String(t["Major Subjects"] || "")
+            .split(",")
+            .map(s => s.trim())
+            .filter(Boolean),
+          experience: Number(t.Experience) || 0,
+          bio: t.Bio,
+          city: t.City || "Online",
+          lat: Number(t.Latitude),
+          lng: Number(t.Longitude),
+          verified: Boolean(t.Verified),
+          thumbnail: t.Thumbnail
+        }));
+        setTeachers(normalized);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [city, subject]);
 
-  // Derive filter options
-  const cityOptions = Array.from(
-    new Set(teachers.map((t) => String(t.city ?? t.City ?? "").trim()).filter(Boolean))
-  );
-  const gradeOptions = Array.from(
-    new Set(teachers.map((t) => String(t.grade ?? t.Grade ?? "").trim()).filter(Boolean))
-  );
-
-  // Apply filters
-  const filtered = teachers.filter((teacher) => {
-    const teacherCity = String(teacher.city ?? teacher.City ?? "").toLowerCase();
-    const teacherSubjects = String(teacher.subjects ?? teacher.Subjects ?? "").toLowerCase();
-    const teacherGender = String(teacher.gender ?? teacher.Gender ?? "Both").toLowerCase();
-    const teacherGrade = String(teacher.grade ?? teacher.Grade ?? "").toLowerCase();
-
-    if (city && teacherCity && !teacherCity.includes(city.toLowerCase())) return false;
-    if (subject && teacherSubjects && !teacherSubjects.includes(subject.toLowerCase())) return false;
-    if (gender && gender !== "Both" && teacherGender && !teacherGender.includes(gender.toLowerCase())) return false;
-    if (grade && teacherGrade && !teacherGrade.includes(grade.toLowerCase())) return false;
-
+  // Filter teachers based on selected filters
+  const filtered = teachers.filter(t => {
+    if (city && !t.city.toLowerCase().includes(city.toLowerCase())) return false;
+    if (subject && !t.subjects.join(",").toLowerCase().includes(subject.toLowerCase())) return false;
     return true;
   });
 
-  // Visible teachers slice for infinite scroll
-  const visibleTeachers = filtered.slice(0, Math.min(visibleCount, filtered.length));
+  const visibleTeachers = filtered.slice(0, visibleCount);
 
-  // Reset visible count when filters change
-  useEffect(() => {
-    setVisibleCount(8);
-  }, [city, subject, gender, grade]);
-
-  // Intersection observer for infinite scroll
+  // Infinite scroll handler
   const handleObserver = useCallback(
     (entries) => {
-      const target = entries[0];
-      if (target.isIntersecting && visibleCount < filtered.length) {
-        setVisibleCount((v) => Math.min(filtered.length, v + 8));
+      if (entries[0].isIntersecting && visibleCount < filtered.length) {
+        setVisibleCount(v => v + 8);
       }
     },
     [visibleCount, filtered.length]
   );
 
   useEffect(() => {
-    if (filtered.length > 8) {
-      const option = { root: null, rootMargin: "200px", threshold: 0.1 };
-      const observer = new IntersectionObserver(handleObserver, option);
-      if (loaderRef.current) observer.observe(loaderRef.current);
-      return () => observer.disconnect();
-    }
-  }, [handleObserver, filtered.length]);
+    const observer = new IntersectionObserver(handleObserver, { rootMargin: "200px" });
+    if (loaderRef.current) observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
 
+  // Reset filters
   const onReset = () => {
     setCity("");
     setSubject("");
@@ -96,33 +89,23 @@ export default function TeacherDirectory() {
     setGrade("");
   };
 
-  // Active filter chips
-  const activeFilters = [
-    city && { label: `City: ${city}`, key: "city", clear: () => setCity("") },
-    subject && { label: `Subject: ${subject}`, key: "subject", clear: () => setSubject("") },
-    gender && { label: `Gender: ${gender}`, key: "gender", clear: () => setGender("") },
-    grade && { label: `Grade: ${grade}`, key: "grade", clear: () => setGrade("") },
-  ].filter(Boolean);
-
   return (
-    <Box sx={{ background: "#e8f2ff", py: 6, px: { xs: 2, md: 4 } }}>
-      <Typography variant="h4" align="center" fontWeight={700} sx={{ mb: 2, color: "#004aad" }}>
-        Find Teachers Near You
+    <Box sx={{ background: "#0b1020", minHeight: "100vh", py: 6, px: 2 }}>
+      <Typography variant="h4" align="center" sx={{ color: "#f6c144", fontWeight: 800 }}>
+        Find Verified Teachers
+      </Typography>
+      <Typography align="center" sx={{ color: "#aab0c4", mb: 4 }}>
+        Learn from experienced tutors near you
       </Typography>
 
-      <Typography variant="body1" align="center" sx={{ mb: 4, color: "#333" }}>
-        Browse verified tutors and connect with them directly.
-      </Typography>
-
-      {/* Filters + Teacher Directory Layout */}
-      <Box
-        sx={{
+      {/* Filters and Teacher Cards Layout */}
+      <Box sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           gap: { xs: 2, md: 2 },
           alignItems: "flex-start",
-        }}
-      >
+        }}>
+
         {/* Left Column: Filters */}
         <Box sx={{ flex: { xs: "1 1 auto", md: "0 0 280px" }, width: { xs: "100%", md: "260px" }, position: "sticky", top: 20, zIndex: 10 }}>
           <TeacherFilters
@@ -169,7 +152,7 @@ export default function TeacherDirectory() {
 
           {/* Teacher cards */}
           <Grid container spacing={1} justifyContent="flex-start">
-            {visibleTeachers.map((teacher, i) => (
+            {visibleTeachers.map((teacher) => (
               <Grid item xs={12} sm={6} md={3} key={teacher.id}>
                 <TeacherCard teacher={teacher} />
               </Grid>
@@ -185,6 +168,7 @@ export default function TeacherDirectory() {
               Loading more...
             </Typography>
           )}
+
           {!loading && visibleTeachers.length >= filtered.length && filtered.length > 0 && (
             <Typography align="center" sx={{ mt: 2, color: "#555" }}>
               You've reached the end.
