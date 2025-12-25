@@ -12,7 +12,7 @@ const FooterCTA = () => {
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
-        background: "linear-gradient(140deg, #000000 10%, #0B1E3E 40%, #1F4FB8 100%)",
+        background: "linear-gradient(135deg, #0B0E2A 10%, #113065 45%, #1F4FB8 100%)",
       }}
     >
       {/* Glass Card */}
@@ -59,20 +59,19 @@ const FooterCTA = () => {
             variant="contained"
             size="large"
             sx={{
+              textTransform: "none",
+              fontWeight: 700,
+              fontSize: "1.1rem",
               px: 5,
               py: 1.8,
+              border:"transparent",
+              borderRadius: "12px",
               background: "linear-gradient(135deg, #D4AF37, #fddc88)",
               color: "#000",
-              fontWeight: 700,
-              textTransform: "none",
-              borderRadius: "12px",
-              fontSize: "1.1rem",
-              boxShadow: "0 0 25px rgba(255,215,136,0.6)",
               transition: "0.3s",
               "&:hover": {
-                boxShadow: "0 0 40px rgba(255,215,136,1)",
-                transform: "scale(1.05)",
                 background: "linear-gradient(135deg, #fddc88, #D4AF37)",
+                transform: "translateY(-2px)",
               },
             }}
           >

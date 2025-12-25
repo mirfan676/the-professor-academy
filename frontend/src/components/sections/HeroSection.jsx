@@ -161,15 +161,14 @@ export default function HeroSection() {
             py: 1.2,
             borderRadius: "12px",
             fontSize: "1.1rem",
-            boxShadow: "0 0 25px rgba(255,215,136,0.6)",
             transition: "0.3s",
             "&:hover": {
-              boxShadow: "0 0 40px rgba(255,215,136,1)",
-              transform: "scale(1.05)",
+              background: "linear-gradient(135deg, #D4AF37, #fddc88 )",
+              transform: "translateY(-2px)",
             },
           }}
         >
-          Book Free Demo
+          Book A Free Demo Class
         </Button>
       </Box>
 

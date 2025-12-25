@@ -70,7 +70,7 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/teacher/:id" element={<TeacherProfile />} />
+          <Route path="/tutors/profile/:id" element={<TeacherProfile />} />
           <Route path="/hire/:id" element={<HireForm />} />
           <Route path="/jobs" element={<Jobs />} />
         </Routes>

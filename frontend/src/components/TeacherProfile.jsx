@@ -27,36 +27,39 @@ const TeacherProfile = () => {
     const fetchTeacher = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("https://the-professor-academy.onrender.com/tutors/");
-        if (Array.isArray(res.data)) {
-          const mapped = res.data.map((t) => ({
-            id: t["Profile ID"],  // Updated to match the API structure
-            name: t["Name"] || "Unknown",  // Updated name key
-            subjects: String(t["Major Subjects"] || "")
-              .split(",")
-              .map(s => s.trim())
-              .filter(Boolean),
-            qualification: t["Qualification"] || "",
-            experience: t["Experience"] || 0,  // Updated experience key
-            city: t["City"] || "Online",  // Updated to match city key
-            bio: t["Bio"] || "",
-            price: t["Price"] || "Rs 2000",
-            thumbnail: t["Thumbnail"] || "",
-            lat: isNaN(parseFloat(t["Latitude"])) ? 31.5204 : parseFloat(t["Latitude"]),
-            lng: isNaN(parseFloat(t["Longitude"])) ? 74.3587 : parseFloat(t["Longitude"]),
-            verified: t["Verified"]?.trim(),
-            featured: t["Featured"]?.trim(),
-            Area1: t["Area1"] || "",
-            Area2: t["Area2"] || "",
-            Area3: t["Area3"] || "",
-            rating: t["Rating"] || 5,
-          }));
-          const found = mapped.find((t) => Number(t.id) === Number(id));
-          if (found) setTeacher(found);
-          else setError("Teacher not found.");
-        } else {
-          setError("No teacher data available.");
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/tutors/profile/${id}`
+        );
+
+        if (!res.data || Object.keys(res.data).length === 0) {
+          setError("Teacher not found.");
+          return;
         }
+
+        const t = res.data;
+
+        setTeacher({
+          id: t["Profile ID"],
+          name: t["Name"] || "Unknown",
+          subjects: String(t["Major Subjects"] || "")
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          qualification: t["Qualification"] || "",
+          experience: Number(t["Experience"]) || 0,
+          city: t["City"] || "Online",
+          bio: t["Bio"] || "",
+          price: t["Price"] || "Rs 2000",
+          thumbnail: t["Thumbnail"]
+            ? `${import.meta.env.VITE_API_URL}${t["Thumbnail"]}`
+            : "",
+          verified: t["Verified"] || "",
+          featured: t["Featured"] || "",
+          Area1: t["Area1"] || "",
+          Area2: t["Area2"] || "",
+          Area3: t["Area3"] || "",
+          rating: Number(t["Rating"]) || 5,
+        });
       } catch (err) {
         console.error(err);
         setError("Failed to load teacher profile.");
@@ -113,7 +116,15 @@ const TeacherProfile = () => {
                 boxShadow: "0 0 15px rgba(0,0,0,0.2)",
               }}
             />
-            <Box sx={{ mt: 2, display: "flex", justifyContent: "center", gap: 1, flexWrap: "wrap" }}>
+            <Box
+              sx={{
+                mt: 2,
+                display: "flex",
+                justifyContent: "center",
+                gap: 1,
+                flexWrap: "wrap",
+              }}
+            >
               {teacher.verified?.toLowerCase() === "yes" && (
                 <Chip
                   icon={<CheckCircle />}
@@ -179,18 +190,20 @@ const TeacherProfile = () => {
         )}
 
         {/* Preferred Areas */}
-        <Box sx={{ mt: 3 }}>
-          <Typography variant="h6" fontWeight={700} color="#004aad" gutterBottom>
-            Preferred Areas
-          </Typography>
-          {[teacher.Area1, teacher.Area2, teacher.Area3]
-            .filter(Boolean)
-            .map((area, i) => (
-              <Typography key={i} variant="body1" sx={{ mb: 0.5 }}>
-                📍 {area}
-              </Typography>
-            ))}
-        </Box>
+        {[teacher.Area1, teacher.Area2, teacher.Area3].some(Boolean) && (
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="h6" fontWeight={700} color="#004aad" gutterBottom>
+              Preferred Areas
+            </Typography>
+            {[teacher.Area1, teacher.Area2, teacher.Area3]
+              .filter(Boolean)
+              .map((area, i) => (
+                <Typography key={i} variant="body1" sx={{ mb: 0.5 }}>
+                  📍 {area}
+                </Typography>
+              ))}
+          </Box>
+        )}
 
         {/* Bio */}
         {teacher.bio && (

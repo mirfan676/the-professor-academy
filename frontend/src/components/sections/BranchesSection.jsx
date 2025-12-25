@@ -32,7 +32,7 @@ export default function HeroSection() {
         pb: { xs: 6, sm: 8, md: 10 },
 
         /* 🎨 New Premium Gradient */
-        background: "linear-gradient(140deg, #000000 10%, #0B1E3E 40%, #1F4FB8 100%)",
+        background: "linear-gradient(135deg, #0B0E2A 10%, #113065 45%, #1F4FB8 100%)",
         borderBottom:"5px solid #fddc88",
       }}
     >

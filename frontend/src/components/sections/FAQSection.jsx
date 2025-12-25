@@ -18,8 +18,8 @@ const FAQSection = () => {
         py: 8,
         px: { xs: 2, md: 6 },
         background: "linear-gradient(135deg, #000000 40%, #1a1a1a 100%)",
-        borderTop: "4px solid #c9a227",
-        borderBottom: "5px solid #c9a227",
+        borderTop: "4px solid #fddc88",
+        borderBottom: "5px solid #fddc88",
       }}
     >
       <Typography
@@ -28,7 +28,7 @@ const FAQSection = () => {
         sx={{
           mb: 6,
           textAlign: "center",
-          color: "#c9a227",
+          color: "#fddc88",
           fontSize: { xs: "1.6rem", md: "2.2rem" },
           letterSpacing: "1px",
           textTransform: "uppercase",
@@ -59,13 +59,13 @@ const FAQSection = () => {
                 boxShadow: "0 15px 30px rgba(0,0,0,0.6)",
                 "&:before": { display: "none" },
                 "&:hover": {
-                  border: "1px solid #c9a227",
+                  border: "1px solid #fddc88",
                   boxShadow: "0 25px 40px rgba(201,162,39,0.25)",
                 },
               }}
             >
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon sx={{ color: "#c9a227" }} />}
+                expandIcon={<ExpandMoreIcon sx={{ color: "#fddc88" }} />}
                 sx={{
                   px: 4,
                   py: 2,
