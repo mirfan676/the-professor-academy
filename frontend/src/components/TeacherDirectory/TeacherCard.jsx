@@ -164,7 +164,7 @@ export default function TeacherCard({ teacher }) {
           <Box sx={{ display: "flex", gap: 1, p: 2 }}>
             <Button
               component={Link}
-              to={`/teacher/${teacher.id}`}
+              to={`/tutors/profile/${teacher.id}`}
               variant="contained"
               sx={{
                 flex: 1,

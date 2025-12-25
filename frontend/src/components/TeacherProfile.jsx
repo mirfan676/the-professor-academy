@@ -28,7 +28,7 @@ const TeacherProfile = () => {
       try {
         setLoading(true);
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/tutors/profile/${id}`
+          `${import.meta.env.VITE_API_URL.replace(/\/$/, "")}/tutors/profile/${id}`
         );
 
         if (!res.data || Object.keys(res.data).length === 0) {
@@ -38,8 +38,14 @@ const TeacherProfile = () => {
 
         const t = res.data;
 
+        // Build thumbnail URL
+        const thumbnailUrl =
+          t["Thumbnail"] && !t["Thumbnail"].startsWith("http")
+            ? `${import.meta.env.VITE_API_URL.replace(/\/$/, "")}${t["Thumbnail"]}`
+            : t["Thumbnail"];
+
         setTeacher({
-          id: t["Profile ID"],
+          id: t["Profile ID"] || "",
           name: t["Name"] || "Unknown",
           subjects: String(t["Major Subjects"] || "")
             .split(",")
@@ -50,9 +56,7 @@ const TeacherProfile = () => {
           city: t["City"] || "Online",
           bio: t["Bio"] || "",
           price: t["Price"] || "Rs 2000",
-          thumbnail: t["Thumbnail"]
-            ? `${import.meta.env.VITE_API_URL}${t["Thumbnail"]}`
-            : "",
+          thumbnail: thumbnailUrl || "",
           verified: t["Verified"] || "",
           featured: t["Featured"] || "",
           Area1: t["Area1"] || "",
@@ -142,7 +146,7 @@ const TeacherProfile = () => {
                   sx={{ fontWeight: 600 }}
                 />
               )}
-              {teacher.rating && (
+              {teacher.rating > 0 && (
                 <Chip
                   icon={<Star />}
                   label={`${teacher.rating} ★`}
@@ -174,7 +178,7 @@ const TeacherProfile = () => {
         </Grid>
 
         {/* Subjects */}
-        {teacher.subjects?.length > 0 && (
+        {teacher.subjects.length > 0 && (
           <Box sx={{ mt: 4 }}>
             <Typography variant="h6" fontWeight={700} color="#004aad" gutterBottom>
               Subjects
@@ -182,7 +186,12 @@ const TeacherProfile = () => {
             <Grid container spacing={1}>
               {teacher.subjects.map((sub, i) => (
                 <Grid item key={i}>
-                  <Chip label={sub} color="primary" variant="outlined" sx={{ fontWeight: 600 }} />
+                  <Chip
+                    label={sub}
+                    color="primary"
+                    variant="outlined"
+                    sx={{ fontWeight: 600 }}
+                  />
                 </Grid>
               ))}
             </Grid>
