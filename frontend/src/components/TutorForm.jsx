@@ -167,6 +167,23 @@ export default function TutorRegistration() {
     }
 
     setLoading(true);
+    //id card check
+    if (formData.id_card.length === 13) {
+      try {
+        const idCheckResponse = await api.get("/tutors/check-id", { params: { id_card: formData.id_card } });
+        if (idCheckResponse.data.exists) {
+          setIdError(true);
+          setMessage("⚠️ This ID card is already registered.");
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error("ID check failed:", err);
+        setMessage("❌ Could not verify ID card.");
+        setLoading(false);
+        return;
+      }
+    }
     try {
       const token = window.grecaptcha
         ? await new Promise((resolve, reject) => {
@@ -294,6 +311,56 @@ export default function TutorRegistration() {
                 <Avatar src={URL.createObjectURL(formData.image)} sx={{ width: 100, height: 100, mx: "auto", mt: 2 }} />
               )}
             </Box>
+            
+            {/* Full Name */}
+            <TextField
+              label="Full Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+              sx={{
+                  input: { color: "#fff" },
+                  label: { color: "#fff", opacity: 0.85 },
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "#121212",
+                    "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
+                    "&:hover fieldset": { borderColor: "#00ff8f" },
+                    "&.Mui-focused fieldset": { borderColor: "#00ff8f" },
+                  },
+                }}
+            />
+
+            {/* ID Card */}
+            <TextField
+              label="ID Card Number"
+              name="id_card"
+              value={formData.id_card}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+              error={idError || (formData.id_card && formData.id_card.length !== 13)}
+              helperText={
+                idError
+                  ? "⚠️ ID already registered"
+                  : formData.id_card && formData.id_card.length !== 13
+                  ? "ID must be 13 digits"
+                  : ""
+              }
+              sx={{
+                input: { color: "#fff" },
+                label: { color: "#fff", opacity: 0.85 },
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "#121212",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
+                  "&:hover fieldset": { borderColor: "#00ff8f" },
+                  "&.Mui-focused fieldset": { borderColor: "#00ff8f" },
+                },
+              }}
+            />
 
             {/* QUALIFICATION */}
             <Autocomplete
@@ -400,19 +467,15 @@ export default function TutorRegistration() {
             )}
 
             {/* Other text fields */}
-            {["name", "id_card", "experience", "phone", "bio"].map((field) => (
+            {["experience", "phone", "bio"].map((field) => (
               <TextField
                 key={field}
                 label={
                   field === "bio"
                     ? "Short Bio"
-                    : field === "id_card"
-                    ? "ID Card Number"
                     : field === "experience"
                     ? "Experience (in years)"
-                    : field === "phone"
-                    ? "Phone Number"
-                    : "Full Name"
+                    : "Phone Number" 
                 }
                 name={field}
                 value={formData[field]}
@@ -435,6 +498,7 @@ export default function TutorRegistration() {
                 }}
               />
             ))}
+
 
             {/* Agreement */}
             <FormControlLabel
