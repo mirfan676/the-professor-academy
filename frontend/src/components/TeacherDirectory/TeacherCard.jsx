@@ -18,10 +18,10 @@ export default function TeacherCard({ teacher }) {
   const subjects = teacher.subjects || [];
 
   // Ensure thumbnail URL is complete
-  const thumbnailUrl =
-    teacher.thumbnail && !teacher.thumbnail.startsWith("http")
-      ? `${import.meta.env.VITE_API_URL}${teacher.thumbnail}`
-      : teacher.thumbnail;
+ const thumbnailUrl =
+  teacher.thumbnail && !teacher.thumbnail.startsWith("http")
+    ? `${import.meta.env.VITE_API_URL}${teacher.thumbnail}`
+    : teacher.thumbnail;
 
   return (
     <motion.div

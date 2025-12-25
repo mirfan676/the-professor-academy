@@ -64,7 +64,9 @@ def get_teacher_image(profile_id: str):
     if profile_id in thumbnail_cache:
         buffer = thumbnail_cache[profile_id]
         buffer.seek(0)
-        return StreamingResponse(buffer, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=86400"})
+        return StreamingResponse(
+            buffer, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=86400"}
+        )
 
     image_url = tutor.get("Image URL")
     if not image_url:
@@ -74,15 +76,24 @@ def get_teacher_image(profile_id: str):
         r = requests.get(image_url, timeout=10)
         r.raise_for_status()
         img = Image.open(BytesIO(r.content))
+
+        # Convert palette (P) or other non-RGB modes to RGB
+        if img.mode != "RGB":
+            img = img.convert("RGB")
+
         img.thumbnail((150, 150))
         buffer = BytesIO()
         img.save(buffer, format="JPEG", quality=55)
         buffer.seek(0)
         thumbnail_cache[profile_id] = buffer
         buffer.seek(0)
-        return StreamingResponse(buffer, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=86400"})
+        return StreamingResponse(
+            buffer, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=86400"}
+        )
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Image processing failed: {e}")
+
 
 # ------------------------------
 # LIST ALL TUTORS
