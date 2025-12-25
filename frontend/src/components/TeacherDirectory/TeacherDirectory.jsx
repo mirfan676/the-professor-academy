@@ -90,92 +90,136 @@ export default function TeacherDirectory() {
   };
 
   return (
-    <Box sx={{ background: "#0b1020", minHeight: "100vh", py: 6, px: 2 }}>
-      <Typography variant="h4" align="center" sx={{ color: "#f6c144", fontWeight: 800 }}>
-        Find Verified Teachers
-      </Typography>
-      <Typography align="center" sx={{ color: "#aab0c4", mb: 4 }}>
-        Learn from experienced tutors near you
-      </Typography>
+  <Box sx={{ background: "#0a0a0a", minHeight: "100vh", py: 6, px: { xs: 2, md: 6 } }}>
+    {/* Header */}
+    <Typography
+      variant="h4"
+      align="center"
+      sx={{
+        color: "#ffd700", // gold heading
+        fontWeight: 800,
+        mb: 1,
+      }}
+    >
+      Find Verified Teachers
+    </Typography>
+    <Typography
+      align="center"
+      sx={{ color: "#aab0c4", mb: 4 }}
+    >
+      Learn from experienced tutors near you
+    </Typography>
 
-      {/* Filters and Teacher Cards Layout */}
-      <Box sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          gap: { xs: 2, md: 2 },
-          alignItems: "flex-start",
-        }}>
+    {/* Layout: Filters + Teacher Cards */}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        gap: { xs: 3, md: 4 },
+        alignItems: "flex-start",
+      }}
+    >
+      {/* Left Column: Filters */}
+      <Box
+        sx={{
+          flex: { xs: "1 1 auto", md: "0 0 280px" },
+          width: { xs: "100%", md: "260px" },
+          position: { md: "sticky" },
+          top: 20,
+          zIndex: 10,
+          background: "rgba(255,255,255,0.05)",
+          backdropFilter: "blur(10px)",
+          borderRadius: "16px",
+          p: 3,
+          boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
+        }}
+      >
+        <TeacherFilters
+          city={city}
+          setCity={setCity}
+          subject={subject}
+          setSubject={setSubject}
+          gender={gender}
+          setGender={setGender}
+          grade={grade}
+          setGrade={setGrade}
+          cities={cityOptions}
+          grades={gradeOptions}
+          onReset={onReset}
+        />
+      </Box>
 
-        {/* Left Column: Filters */}
-        <Box sx={{ flex: { xs: "1 1 auto", md: "0 0 280px" }, width: { xs: "100%", md: "260px" }, position: "sticky", top: 20, zIndex: 10 }}>
-          <TeacherFilters
-            city={city}
-            setCity={setCity}
-            subject={subject}
-            setSubject={setSubject}
-            gender={gender}
-            setGender={setGender}
-            grade={grade}
-            setGrade={setGrade}
-            cities={cityOptions}
-            grades={gradeOptions}
-            onReset={onReset}
-          />
-        </Box>
+      {/* Right Column: Teacher Cards */}
+      <Box sx={{ flex: 1 }}>
+        {/* Active Filter Chips */}
+        {activeFilters.length > 0 && (
+          <Box sx={{ mb: 3 }}>
+            <Stack direction="row" spacing={1} flexWrap="wrap">
+              {activeFilters.map((f) => (
+                <Chip
+                  key={f.key}
+                  label={f.label}
+                  onDelete={f.clear}
+                  sx={{
+                    borderColor: "#ffd700",
+                    color: "#ffd700",
+                    "& .MuiChip-deleteIcon": { color: "#ffd700" },
+                  }}
+                  variant="outlined"
+                />
+              ))}
+            </Stack>
+          </Box>
+        )}
 
-        {/* Right Column: Teacher Cards */}
-        <Box sx={{ flex: 1 }}>
-          {/* Active filter chips */}
-          {activeFilters.length > 0 && (
-            <Box sx={{ mb: 3 }}>
-              <Stack direction="row" spacing={1} flexWrap="wrap">
-                {activeFilters.map((f) => (
-                  <Chip
-                    key={f.key}
-                    label={f.label}
-                    onDelete={f.clear}
-                    color="primary"
-                    variant="outlined"
-                  />
-                ))}
-              </Stack>
-            </Box>
-          )}
+        {/* Loading / No Teachers */}
+        {loading && (
+          <Typography align="center" sx={{ color: "#fff", mt: 4 }}>
+            Loading teachers...
+          </Typography>
+        )}
+        {!loading && filtered.length === 0 && (
+          <Typography align="center" sx={{ mt: 4, color: "#777" }}>
+            No teachers found.
+          </Typography>
+        )}
 
-          {/* Loading / no teachers */}
-          {loading && <Typography align="center">Loading teachers...</Typography>}
-          {!loading && filtered.length === 0 && (
-            <Typography align="center" sx={{ mt: 4, color: "gray" }}>
-              No teachers found.
-            </Typography>
-          )}
+        {/* Teacher Cards Grid */}
+        <Grid container spacing={3}>
+          {visibleTeachers.map((teacher) => (
+            <Grid item xs={12} sm={6} md={3} key={teacher.id}>
+              <TeacherCard
+                teacher={teacher}
+                sx={{
+                  background: "rgba(255,255,255,0.05)",
+                  backdropFilter: "blur(10px)",
+                  borderRadius: "16px",
+                  p: 2,
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
+                  "&:hover": { transform: "scale(1.02)", transition: "all 0.3s" },
+                }}
+              />
+            </Grid>
+          ))}
+        </Grid>
 
-          {/* Teacher cards */}
-          <Grid container spacing={1} justifyContent="flex-start">
-            {visibleTeachers.map((teacher) => (
-              <Grid item xs={12} sm={6} md={3} key={teacher.id}>
-                <TeacherCard teacher={teacher} />
-              </Grid>
-            ))}
-          </Grid>
+        {/* Loader Sentinel */}
+        <div ref={loaderRef} style={{ height: 1 }} />
 
-          {/* Loader sentinel */}
-          <div ref={loaderRef} style={{ height: 1 }} />
-
-          {/* Status */}
-          {!loading && visibleTeachers.length < filtered.length && (
-            <Typography align="center" sx={{ mt: 2, color: "#555" }}>
-              Loading more...
-            </Typography>
-          )}
-
-          {!loading && visibleTeachers.length >= filtered.length && filtered.length > 0 && (
-            <Typography align="center" sx={{ mt: 2, color: "#555" }}>
-              You've reached the end.
-            </Typography>
-          )}
-        </Box>
+        {/* End Status */}
+        {!loading && visibleTeachers.length < filtered.length && (
+          <Typography align="center" sx={{ mt: 2, color: "#777" }}>
+            Loading more...
+          </Typography>
+        )}
+        {!loading && visibleTeachers.length >= filtered.length && filtered.length > 0 && (
+          <Typography align="center" sx={{ mt: 2, color: "#777" }}>
+            You've reached the end.
+          </Typography>
+        )}
       </Box>
     </Box>
-  );
+  </Box>
+);
+
 }

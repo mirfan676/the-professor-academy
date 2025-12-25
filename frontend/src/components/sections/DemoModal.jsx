@@ -1,4 +1,3 @@
-// DemoModal.js
 import React, { useState } from 'react';
 import { Modal, Paper, Box, Typography, TextField, Button, CircularProgress } from '@mui/material';
 import axios from 'axios';
@@ -16,20 +15,15 @@ export default function DemoModal({ openModal, setOpenModal }) {
     setLoading(true);
 
     try {
-      // Send data to Formspree
-      console.log('Sending form data...');
       await axios.post('https://formspree.io/f/mpwvojwr', {
         phone: phoneNumber,
       });
 
-      // WhatsApp link
       const whatsappNumber = '+923066762289';
       const message = `Booking Demo - Phone: ${phoneNumber}`;
       const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
 
-      // Open WhatsApp link in a new tab
-      window.open(whatsappUrl, '_blank');
       setOpenModal(false);
       alert('Your demo booking has been received!');
     } catch (error) {
@@ -41,15 +35,98 @@ export default function DemoModal({ openModal, setOpenModal }) {
   };
 
   return (
-    <Modal open={openModal} onClose={() => setOpenModal(false)} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Paper sx={{ display: 'flex', maxWidth: '80%', p: 4, borderRadius: '12px' }}>
-        <Box sx={{ flex: 1, backgroundImage: "url('/background-home-1.png')", backgroundSize: 'cover', backgroundPosition: 'center', borderRadius: '12px', marginRight: 2 }} />
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <Typography variant="h5" sx={{ mb: 3, textAlign: 'center' }}>Book a Free Demo Class</Typography>
+    <Modal
+      open={openModal}
+      onClose={() => setOpenModal(false)}
+      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+    >
+      <Paper
+        sx={{
+          width: { xs: '90%', sm: '85%', md: '60%' },
+          maxWidth: 900,
+          p: { xs: 3, md: 4 },
+          borderRadius: '16px',
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          gap: 3
+        }}
+      >
+        {/* Logo Section */}
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '12px',
+            background: '#000',
+            p: 2
+          }}
+        >
+          <Box
+            component="img"
+            src="/logo-nav.svg"    
+            alt="A Plus Tutors Logo"
+            sx={{
+              width: { xs: '70%', sm: '60%', md: '80%' },
+              objectFit: 'contain'
+            }}
+          />
+        </Box>
+
+        {/* Form Section */}
+        <Box sx={{ flex: 1 }}>
+          <Typography
+            variant="h5"
+            sx={{
+              mb: 2,
+              textAlign: 'center',
+              fontWeight: 700
+            }}
+          >
+            Book a Free Demo Class
+          </Typography>
+
+          <Typography
+            sx={{
+              textAlign: 'center',
+              mb: 3,
+              color: 'gray'
+            }}
+          >
+            Enter your WhatsApp number & we’ll contact you shortly
+          </Typography>
+
           <form onSubmit={handleSubmit}>
-            <TextField label="Phone Number" variant="outlined" fullWidth name="phone" value={phoneNumber} onChange={handlePhoneNumberChange} sx={{ mb: 3 }} />
-            <Button type="submit" variant="contained" color="primary" sx={{ width: '100%', background: '#02539b', "&:hover": { background: '#003f88' }, fontSize: '1rem', py: 1, borderRadius: '10px' }}>
-              {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Submit'}
+            <TextField
+              label="Phone Number"
+              variant="outlined"
+              fullWidth
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+              required
+              type="tel"
+              sx={{ mb: 3 }}
+            />
+
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              disabled={loading}
+              sx={{
+                background: 'linear-gradient(90deg,#fddc88,#cfa84f)',
+                color: '#000',
+                fontWeight: 700,
+                py: 1.2,
+                borderRadius: '10px',
+                fontSize: '1rem',
+                "&:hover": {
+                  background: 'linear-gradient(90deg,#ffe4a6,#e2b95c)'
+                }
+              }}
+            >
+              {loading ? <CircularProgress size={24} sx={{ color: 'black' }} /> : 'Submit'}
             </Button>
           </form>
         </Box>

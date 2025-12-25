@@ -13,25 +13,16 @@ const faqList = [
 
 const FAQSection = () => {
   return (
-    <Box
-      sx={{
-        py: 8,
-        px: { xs: 2, md: 6 },
-        background: "linear-gradient(135deg, #000000 40%, #1a1a1a 100%)",
-        borderTop: "4px solid #c9a227",
-        borderBottom: "5px solid #c9a227",
-      }}
-    >
+    <Box sx={{ py: 8, px: { xs: 2, md: 6 }, backgroundColor: "#f0f4f8", borderBottom:"5px solid #030303ff", }}>
       <Typography
         variant="h4"
-        fontWeight={800}
+        fontWeight={700}
         sx={{
           mb: 6,
           textAlign: "center",
-          color: "#c9a227",
+          color: "#02539b",
           fontSize: { xs: "1.6rem", md: "2.2rem" },
-          letterSpacing: "1px",
-          textTransform: "uppercase",
+          
         }}
       >
         Frequently Asked Questions
@@ -53,41 +44,24 @@ const FAQSection = () => {
             <Accordion
               sx={{
                 mb: 3,
-                borderRadius: "16px",
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(201,162,39,0.4)",
-                boxShadow: "0 15px 30px rgba(0,0,0,0.6)",
+                borderRadius: "20px",
+                background: "rgba(255,255,255,0.25)",
+                backdropFilter: "blur(15px)",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
                 "&:before": { display: "none" },
-                "&:hover": {
-                  border: "1px solid #c9a227",
-                  boxShadow: "0 25px 40px rgba(201,162,39,0.25)",
-                },
               }}
             >
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon sx={{ color: "#c9a227" }} />}
+                expandIcon={<ExpandMoreIcon sx={{ color: "#fddc88" }} />}
                 sx={{
                   px: 4,
                   py: 2,
-                  "& .MuiTypography-root": {
-                    fontWeight: 700,
-                    color: "#ffffff",
-                    letterSpacing: "0.5px",
-                  },
+                  "& .MuiTypography-root": { fontWeight: 600, color: "#02539b" },
                 }}
               >
                 <Typography>{item.q}</Typography>
               </AccordionSummary>
-
-              <AccordionDetails
-                sx={{
-                  px: 4,
-                  py: 2,
-                  color: "#d1d1d1",
-                  fontSize: "0.95rem",
-                  lineHeight: 1.7,
-                }}
-              >
+              <AccordionDetails sx={{ px: 4, py: 2, color: "#0b1b39", fontSize: "0.95rem" }}>
                 {item.a}
               </AccordionDetails>
             </Accordion>

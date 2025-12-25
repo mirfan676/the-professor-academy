@@ -102,24 +102,33 @@ export default function Jobs() {
   ].filter(Boolean);
 
   return (
-    <Box sx={{ background: "#e8f2ff", py: 6, px: { xs: 2, md: 4 } }}>
-      <Typography variant="h4" align="center" fontWeight={700} sx={{ mb: 2, color: "#004aad" }}>
+    <Box sx={{ background: "#0a0a0a", py: 8, px: { xs: 2, md: 6 } }}>
+      <Typography
+        variant="h4"
+        align="center"
+        fontWeight={700}
+        sx={{
+          mb: 2,
+          background: "linear-gradient(135deg, #a8862b, #ffd700)",
+          WebkitBackgroundClip: "text",
+          color: "transparent",
+        }}
+      >
         Latest Home Tutor Jobs
       </Typography>
-      <Typography variant="body1" align="center" sx={{ mb: 4, color: "#333" }}>
+      <Typography variant="body1" align="center" sx={{ mb: 4, color: "#fff", opacity: 0.75 }}>
         Browse verified home tuition jobs and connect with parents looking for qualified tutors.
       </Typography>
 
-      {/* Filters + Jobs Layout */}
       <Box
         sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           gap: { xs: 2, md: 3 },
-          alignItems: "flex-start"
+          alignItems: "flex-start",
         }}
       >
-        {/* Left Column: Filters */}
+        {/* Filters Column */}
         <Box sx={{ flex: { xs: "1 1 auto", md: "0 0 280px" }, width: { xs: "100%", md: "280px" } }}>
           <JobFilters
             city={city}
@@ -133,10 +142,11 @@ export default function Jobs() {
             cities={cityOptions}
             grades={gradeOptions}
             onReset={onReset}
+            darkTheme // Pass prop to apply dark styles in JobFilters
           />
         </Box>
 
-        {/* Right Column: Jobs */}
+        {/* Jobs Column */}
         <Box sx={{ flex: 1 }}>
           {/* Active filter chips */}
           {activeFilters.length > 0 && (
@@ -147,7 +157,11 @@ export default function Jobs() {
                     key={f.key}
                     label={f.label}
                     onDelete={f.clear}
-                    color="primary"
+                    sx={{
+                      borderColor: "#ffd700",
+                      color: "#ffd700",
+                      "& .MuiChip-deleteIcon": { color: "#ffd700" },
+                    }}
                     variant="outlined"
                   />
                 ))}
@@ -155,8 +169,12 @@ export default function Jobs() {
             </Box>
           )}
 
-          {/* Loading / no jobs */}
-          {loading && <Typography align="center">Loading jobs...</Typography>}
+          {/* Loading / No jobs */}
+          {loading && (
+            <Typography align="center" sx={{ color: "#fff", opacity: 0.7 }}>
+              Loading jobs...
+            </Typography>
+          )}
           {!loading && filtered.length === 0 && (
             <Typography align="center" sx={{ mt: 4, color: "gray" }}>
               No jobs found.
@@ -166,7 +184,7 @@ export default function Jobs() {
           {/* Job cards */}
           <Stack spacing={3}>
             {visibleJobs.map((job, i) => (
-              <JobCard key={i} job={job} />
+              <JobCard key={i} job={job} darkTheme />
             ))}
           </Stack>
 
@@ -175,12 +193,12 @@ export default function Jobs() {
 
           {/* Status */}
           {!loading && visibleJobs.length < filtered.length && (
-            <Typography align="center" sx={{ mt: 2, color: "#555" }}>
+            <Typography align="center" sx={{ mt: 2, color: "#fff", opacity: 0.6 }}>
               Loading more...
             </Typography>
           )}
           {!loading && visibleJobs.length >= filtered.length && filtered.length > 0 && (
-            <Typography align="center" sx={{ mt: 2, color: "#555" }}>
+            <Typography align="center" sx={{ mt: 2, color: "#fff", opacity: 0.6 }}>
               You've reached the end.
             </Typography>
           )}

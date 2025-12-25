@@ -1,43 +1,33 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Grid } from '@mui/material';
-import DemoModal from './DemoModal';  // Modal component import
+import DemoModal from './DemoModal';
 import axios from 'axios';
 
 export default function HeroSection() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [openModal, setOpenModal] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state
-
-  const handlePhoneNumberChange = (e) => {
-    setPhoneNumber(e.target.value);
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading spinner
+    setLoading(true);
 
     try {
-      // Send data to Formspree
-      console.log('Sending form data...');
       await axios.post('https://formspree.io/f/mpwvojwr', {
         phone: phoneNumber,
       });
 
-      // WhatsApp link
-      const whatsappNumber = '+923066762289'; // Replace with your WhatsApp number
+      const whatsappNumber = '+923066762289';
       const message = `Booking Demo - Phone: ${phoneNumber}`;
       const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
 
-      // Open WhatsApp link in a new tab
-      window.open(whatsappUrl, '_blank');
-      setOpenModal(false);  // Close the modal after submission
+      setOpenModal(false);
       alert('Your demo booking has been received!');
     } catch (error) {
-      console.error('Error sending form data', error);
       alert('There was an error booking the demo.');
     } finally {
-      setLoading(false); // Stop loading spinner
+      setLoading(false);
     }
   };
 
@@ -45,7 +35,7 @@ export default function HeroSection() {
     <Box
       sx={{
         width: "100%",
-        minHeight: { xs: "70vh", sm: "75vh", md: "85vh" },
+        minHeight: { xs: "70vh", sm: "75vh", md: "90vh" },
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -53,302 +43,137 @@ export default function HeroSection() {
         px: { xs: 3, sm: 5, md: 10 },
         pt: { xs: 6, sm: 8, md: 10 },
         pb: { xs: 6, sm: 8, md: 10 },
-        backgroundImage: "url('/background-home-1.png')", 
-        backgroundSize: "cover", 
-        backgroundColor: "#000000",
-        backgroundPosition: "center", 
-        backgroundRepeat: "no-repeat", 
+
+        // 🌈 Gradient Background
+        background: "linear-gradient(135deg, #000000 50%, #1a1a1a 70%, #c7a243 100%)",
         borderBottom: "5px solid #fddc88",
       }}
     >
-      {/* Title Section */}
+      {/* Title */}
       <Box sx={{ textAlign: "center", mb: 6 }}>
         <Typography
           variant="h2"
           sx={{
             fontSize: { xs: "1.8rem", sm: "2.4rem", md: "3.2rem" },
-            fontWeight: 800,
-            lineHeight: 1.2,
-            color: "#fddc88", 
+            fontWeight: 900,
+            color: "#fddc88",
+            textShadow: "0px 0px 10px rgba(255,215,128,0.5)",
+            letterSpacing: "1px",
             mb: 2,
-            borderBottom: "1px solid transparent",
-            borderTop: "1px solid transparent",
-            padding: "15px",
-            "&:hover": {
-              borderBottom: "1px solid #fddc88",
-              borderTop: "1px solid #fddc88",
-            },
           }}
         >
           Expert Home & Online Tuition
         </Typography>
+
         <Typography
           sx={{
             mt: 2,
             fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
             color: "#fff",
+            opacity: 0.9,
           }}
         >
-          Junior Classes, CSS/PMS, O/A Levels, English Tutors, & Home Schooling
+          Junior Classes • CSS/PMS • O/A Levels • English Tutors • Home Schooling
         </Typography>
       </Box>
 
+      {/* Cards */}
       <Grid container spacing={3} sx={{ justifyContent: "center", mb: 6 }}>
-        
-        {/* Junior Classes */}
-        <Grid item xs={6} sm={4} md={2.5}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 3,
-              borderRadius: "12px",
-              backgroundColor: "#000",
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-          >
+        {[
+          { img: "/icons/creative-learning.png", title: "Junior Classes", text: "Foundation for Future Learning" },
+          { img: "/icons/css-pms.png", title: "CSS/PMS", text: "Expert Exam Preparation" },
+          { img: "/icons/O-A-level.png", title: "O & A Level", text: "Specialist Tutors" },
+          { img: "/icons/ielts.png", title: "English Tutors", text: "Fluency & Confidence" },
+          { img: "/icons/hometutor.png", title: "Home Schooling", text: "Personalized Learning" },
+        ].map((item, i) => (
+          <Grid item xs={6} sm={4} md={2.6} key={i}>
             <Box
-              component="img"
-              src="/icons/creative-learning.png" // Replace with actual icon image
-              alt="Junior Classes"
               sx={{
-                width: "120px",
-                height: "120px",
-                objectFit: "contain",
-                mb: 2,
-              }}
-            />
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#fddc88" }}>
-              Junior Classes
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
-                color: "#fff",
-                maxWidth: "150px",
-              }}
-            >
-              Foundation for Future Learning
-            </Typography>
-          </Box>
-        </Grid>
+                p: 3,
+                borderRadius: "16px",
+                background: "rgba(0,0,0,0.6)",
+                border: "1px solid rgba(255,215,136,0.3)",
+                boxShadow: "0 0 25px rgba(0,0,0,0.4)",
+                backdropFilter: "blur(5px)",
+                textAlign: "center",
+                transition: "all 0.4s ease",
+                cursor: "pointer",
+                maxWidth:{ xs: "140px", sm: "160px", md: "215px" },
+                minWidth:{ xs: "140px", sm: "160px", md: "215px" },
 
-        {/* CSS/PMS Classes */}
-        <Grid item xs={6} sm={4} md={2.5}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 3,
-              borderRadius: "12px",
-              backgroundColor: "#000",
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            <Box
-              component="img"
-              src="/icons/css-pms.png" // Replace with actual icon image
-              alt="CSS/PMS"
-              sx={{
-                width: "120px",
-                height: "120px",
-                objectFit: "contain",
-                mb: 2,
-              }}
-            />
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#fddc88" }}>
-              CSS/PMS
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
-                color: "#fff",
-                maxWidth: "150px",
+                "&:hover": {
+                  transform: "translateY(-10px) scale(1.03)",
+                  boxShadow: "0 0 30px rgba(255,215,136,0.7)",
+                  borderColor: "#fddc88",
+                },
               }}
             >
-              Expert Tutors for CSS/PMS Exam Preparation
-            </Typography>
-          </Box>
-        </Grid>
+              <Box
+                component="img"
+                src={item.img}
+                alt={item.title}
+                sx={{
+                  width:{ xs: "90px", sm: "100px", md: "115px" },
+                  height:{ xs: "90px", sm: "100px", md: "115px" },
+                  objectFit: "contain",
+                  mb: 2,
+                  transition: "0.3s",
+                  "&:hover": { transform: "scale(1.1)" },
+                }}
+              />
 
-        {/* O/A Levels */}
-        <Grid item xs={6} sm={4} md={2.5}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 3,
-              borderRadius: "12px",
-              backgroundColor: "#000",
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            <Box
-              component="img"
-              src="/icons/O-A-level.png" // Replace with actual icon image
-              alt="O/A Level"
-              sx={{
-                width: "120px",
-                height: "120px",
-                objectFit: "contain",
-                mb: 2,
-              }}
-            />
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#fddc88" }}>
-              O & A Level
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
-                color: "#fff",
-                maxWidth: "150px",
-              }}
-            >
-              Specialist Tutors Home & Online
-            </Typography>
-          </Box>
-        </Grid>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  color: "#fddc88",
+                  
+                }}
+              >
+                {item.title}
+              </Typography>
 
-        {/* English Tutors */}
-        <Grid item xs={6} sm={4} md={2.5}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 3,
-              borderRadius: "12px",
-              backgroundColor: "#000",
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            <Box
-              component="img"
-              src="/icons/ielts.png" // Replace with actual icon image
-              alt="English Tutors"
-              sx={{
-                width: "120px",
-                height: "120px",
-                objectFit: "contain",
-                mb: 2,
-              }}
-            />
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#fddc88" }}>
-              English Tutors
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
-                color: "#fff",
-                maxWidth: "150px",
-              }}
-            >
-              Experienced Tutors for All Levels
-            </Typography>
-          </Box>
-        </Grid>
-
-        {/* Home Schooling */}
-        <Grid item xs={6} sm={4} md={2.5}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 3,
-              borderRadius: "12px",
-              backgroundColor: "#000",
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            <Box
-              component="img"
-              src="/icons/hometutor.png" // Replace with actual icon image
-              alt="Home Schooling"
-              sx={{
-                width: "120px",
-                height: "120px",
-                objectFit: "contain",
-                mb: 2,
-              }}
-            />
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#fddc88" }}>
-              Home Schooling
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: "0.75rem", sm: "0.8rem", md: "1rem" },
-                color: "#fff",
-                maxWidth: "150px",
-              }}
-            >
-              Personalized Learning at Home
-            </Typography>
-          </Box>
-        </Grid>
+              <Typography
+                sx={{
+                  color: "#fff",
+                  fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" },
+                  opacity: 0.9,
+                  mt: 1,
+                }}
+              >
+                {item.text}
+              </Typography>
+            </Box>
+          </Grid>
+        ))}
       </Grid>
 
-      {/* "Book Free Demo" Button Section */}
-      <Box sx={{ textAlign: "center", mb: 6 }}>
+      {/* Button */}
+      <Box sx={{ textAlign: "center" }}>
         <Button
           variant="contained"
-          color="secondary"
-          onClick={() => setOpenModal(true)}  // Open modal on button click
+          onClick={() => setOpenModal(true)}
           sx={{
-            background: "#000",
-            border:"solid 1px transparent",
-            color:"#fddc88",
-            "&:hover": {
-              background: "transparent",
-              border:"solid 1px #000", 
-              color:"#fddc88"
-            },
-            fontSize: "1rem",
+            background: "linear-gradient(90deg, #fddc88, #cfa84f)",
+            color: "#000",
+            fontWeight: 700,
             px: 4,
-            py: 1,
-            borderRadius: "10px",
-            transition: "all 0.3s ease", 
+            py: 1.2,
+            borderRadius: "12px",
+            fontSize: "1.1rem",
+            boxShadow: "0 0 25px rgba(255,215,136,0.6)",
+            transition: "0.3s",
+            "&:hover": {
+              boxShadow: "0 0 40px rgba(255,215,136,1)",
+              transform: "scale(1.05)",
+            },
           }}
         >
           Book Free Demo
         </Button>
       </Box>
 
-      {/* Modal Component */}
-      <DemoModal openModal={openModal} setOpenModal={setOpenModal} />  {/* Use the modal component */}
+      <DemoModal openModal={openModal} setOpenModal={setOpenModal} />
     </Box>
   );
 }

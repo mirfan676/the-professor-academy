@@ -1,6 +1,7 @@
 import { Box, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import { motion } from "framer-motion";
 
 const FooterCTA = () => {
   return (
@@ -12,7 +13,7 @@ const FooterCTA = () => {
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
-        background: "linear-gradient(140deg, #000000 10%, #0B1E3E 40%, #1F4FB8 100%)",
+        background: "linear-gradient(135deg, rgba(2, 83, 155, 0.85), rgba(11, 27, 57, 0.95))", // Dark Blue and Vivid Azure gradient
       }}
     >
       {/* Glass Card */}
@@ -20,10 +21,11 @@ const FooterCTA = () => {
         sx={{
           position: "relative",
           p: { xs: 4, md: 6 },
-          background: "rgba(255, 255, 255, 0.1)",
-          backdropFilter: "blur(15px)",
+          background: "rgba(255, 255, 255, 0.1)", // Transparent background for glass effect
+          backdropFilter: "blur(15px)", // Glassmorphism effect
           boxShadow: "0 15px 40px rgba(0, 0, 0, 0.25)",
-          borderRadius: "20px",
+          border: "0px solid",
+          borderImage: "linear-gradient(135deg, #fddc88, #e2ddb8) 1", // Pastel Orange to Light Yellow border
           maxWidth: 700,
           width: "100%",
         }}
@@ -34,13 +36,13 @@ const FooterCTA = () => {
           fontWeight={700}
           sx={{
             mb: 2,
-            color: "#fddc88",
+            color: "#fddc88", // Pastel Orange for the heading
             fontSize: { xs: "1.6rem", md: "2rem" },
           }}
         >
           Ready to Hire an Expert Tutor?
         </Typography>
-        <Typography sx={{ mb: 4, color: "#a09b90", fontSize: "1rem" }}>
+        <Typography sx={{ mb: 4, color: "#a09b90", fontSize: "1rem" }}> {/* Grey Orange text */}
           Contact us to get the best tutor matched within minutes.
         </Typography>
 
@@ -61,18 +63,12 @@ const FooterCTA = () => {
             sx={{
               px: 5,
               py: 1.8,
-              background: "linear-gradient(135deg, #D4AF37, #fddc88)",
-              color: "#000",
-              fontWeight: 700,
+              background: "linear-gradient(135deg, #02539b, #fddc88)", // Vivid Azure to Pastel Orange gradient
+              color: "#fff",
+              fontWeight: 600,
               textTransform: "none",
-              borderRadius: "12px",
-              fontSize: "1.1rem",
-              boxShadow: "0 0 25px rgba(255,215,136,0.6)",
-              transition: "0.3s",
               "&:hover": {
-                boxShadow: "0 0 40px rgba(255,215,136,1)",
-                transform: "scale(1.05)",
-                background: "linear-gradient(135deg, #fddc88, #D4AF37)",
+                background: "linear-gradient(135deg, #fddc88, #02539b)", // Reversed gradient on hover
               },
             }}
           >
@@ -85,18 +81,15 @@ const FooterCTA = () => {
             target="_blank"
             variant="outlined"
             sx={{
-              textTransform: "none",
-              fontWeight: 700,
-              fontSize: "1.1rem",
               px: 5,
               py: 1.8,
-              border:"transparent",
-              borderRadius: "12px",
-              background: "linear-gradient(135deg, #25D366, #128C7E)",
-              color:"#fff",
+              textTransform: "none",
+              border: "2px solid",
+              borderImage: "linear-gradient(135deg, #02539b, #fddc88) 1", // Vivid Azure to Pastel Orange border
+              color: "#fff",
+              backdropFilter: "blur(20px)", // Glassmorphism effect
               "&:hover": {
-                background: "linear-gradient(135deg, #128C7E, #25D366)",
-                transform: "translateY(-2px)",
+                background: "rgba(255, 220, 136, 0.15)", // Light Yellow hover effect
               },
             }}
           >

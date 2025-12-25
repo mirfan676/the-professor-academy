@@ -1,20 +1,13 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import axios from "axios";
-import { Box, Typography, Grid, Stack, Chip, CircularProgress } from "@mui/material";
-import TeacherFilters from "./TeacherFilters";
-import TeacherCard from "./TeacherCard"; // Ensure this import is present
-import { useMediaQuery } from "@mui/material";
+// src/pages/Jobs.jsx
+import { useEffect, useState, useRef, useCallback } from "react";
+import { fetchJobs } from "../api";
+import JobCard from "../components/JobCard";
+import JobFilters from "../components/JobFilters";
+import { Box, Typography, Chip, Stack } from "@mui/material";
 
-// Fetch teachers (simulating an API call)
-function fetchTeachers() {
-  return axios.get("https://the-professor-academy.onrender.com/tutors/");
-}
-
-export default function TeacherDirectory() {
-  const [teachers, setTeachers] = useState([]);
+export default function Jobs() {
+  const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(8);
-  const [error, setError] = useState("");
 
   // Filters
   const [city, setCity] = useState("");
@@ -22,63 +15,55 @@ export default function TeacherDirectory() {
   const [gender, setGender] = useState("");
   const [grade, setGrade] = useState("");
 
+  // Infinite scroll
+  const PAGE_SIZE = 8;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const loaderRef = useRef(null);
 
-  // Fetch teachers on load
+  // Fetch jobs
   useEffect(() => {
     setLoading(true);
-    fetchTeachers()
-    .then((res) => {
-      const normalized = (res.data || []).map((t) => ({
-        id: t["Profile ID"],
-        name: t.Name,
-        qualification: t.Qualification,
-        subjects: String(t["Major Subjects"] || "")
-          .split(",")
-          .map(s => s.trim())
-          .filter(Boolean),
-        experience: Number(t.Experience) || 0,
-        bio: t.Bio,
-        city: t.City || "Online",
-        lat: Number(t.Latitude),
-        lng: Number(t.Longitude),
-        verified: Boolean(t.Verified),
-        thumbnail: t.Thumbnail
-      }));
-
-      setTeachers(normalized);
-    })
+    fetchJobs()
+      .then((res) => {
+        const data = res?.jobs ?? res ?? [];
+        setJobs(Array.isArray(data) ? data : []);
+      })
       .catch((err) => {
-        setError("Unable to fetch data");
-        console.error("Failed to fetch teachers", err);
+        console.error("Failed to fetch jobs", err);
+        setJobs([]);
       })
       .finally(() => setLoading(false));
   }, []);
 
   // Derive filter options
   const cityOptions = Array.from(
-    new Set(teachers.map((t) => String(t.city ?? t.City ?? "").trim()).filter(Boolean))
+    new Set(jobs.map((j) => String(j.city ?? j.City ?? "").trim()).filter(Boolean))
   );
   const gradeOptions = Array.from(
-    new Set(teachers.map((t) => String(t.grade ?? t.Grade ?? "").trim()).filter(Boolean))
+    new Set(jobs.map((j) => String(j.grade ?? j.Grade ?? j.Class ?? "").trim()).filter(Boolean))
   );
 
   // Apply filters
-  const filtered = teachers.filter((teacher) => {
-  if (city && !teacher.city.toLowerCase().includes(city.toLowerCase())) return false;
-  if (
-    subject &&
-    !teacher.subjects.join(",").toLowerCase().includes(subject.toLowerCase())
-  ) return false;
-  return true;
-});
+  const filtered = jobs.filter((job) => {
+    const jobCity = String(job.city ?? job.City ?? "").toLowerCase();
+    const jobSubjects = String(job.subjects ?? job.Subjects ?? job.Subject ?? "").toLowerCase();
+    const jobGender = String(job.gender ?? job.Gender ?? "Both").toLowerCase();
+    const jobGrade = String(job.grade ?? job.Grade ?? job.Class ?? "").toLowerCase();
 
-  // Visible teachers slice for infinite scroll
-  const visibleTeachers = filtered.slice(0, Math.min(visibleCount, filtered.length));
+    if (city && jobCity && !jobCity.includes(city.toLowerCase())) return false;
+    if (subject && jobSubjects && !jobSubjects.includes(subject.toLowerCase())) return false;
+    if (gender && gender !== "Both" && jobGender && !jobGender.includes(gender.toLowerCase())) return false;
+    if (grade && jobGrade && !jobGrade.includes(grade.toLowerCase())) return false;
+
+    return true;
+  });
+
+  // Visible jobs slice for infinite scroll
+  const visibleJobs = filtered.slice(0, Math.min(visibleCount, filtered.length));
 
   // Reset visible count when filters change
   useEffect(() => {
-    setVisibleCount(8);
+    setVisibleCount(PAGE_SIZE);
   }, [city, subject, gender, grade]);
 
   // Intersection observer for infinite scroll
@@ -86,14 +71,14 @@ export default function TeacherDirectory() {
     (entries) => {
       const target = entries[0];
       if (target.isIntersecting && visibleCount < filtered.length) {
-        setVisibleCount((v) => Math.min(filtered.length, v + 8));
+        setVisibleCount((v) => Math.min(filtered.length, v + PAGE_SIZE));
       }
     },
     [visibleCount, filtered.length]
   );
 
   useEffect(() => {
-    if (filtered.length > 8) {
+    if (filtered.length > PAGE_SIZE) {
       const option = { root: null, rootMargin: "200px", threshold: 0.1 };
       const observer = new IntersectionObserver(handleObserver, option);
       if (loaderRef.current) observer.observe(loaderRef.current);
@@ -119,25 +104,24 @@ export default function TeacherDirectory() {
   return (
     <Box sx={{ background: "#e8f2ff", py: 6, px: { xs: 2, md: 4 } }}>
       <Typography variant="h4" align="center" fontWeight={700} sx={{ mb: 2, color: "#004aad" }}>
-        Find Teachers Near You
+        Latest Home Tutor Jobs
       </Typography>
-
       <Typography variant="body1" align="center" sx={{ mb: 4, color: "#333" }}>
-        Browse verified tutors and connect with them directly.
+        Browse verified home tuition jobs and connect with parents looking for qualified tutors.
       </Typography>
 
-      {/* Filters + Teacher Directory Layout */}
+      {/* Filters + Jobs Layout */}
       <Box
         sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
-          gap: { xs: 2, md: 2 },
-          alignItems: "flex-start",
+          gap: { xs: 2, md: 3 },
+          alignItems: "flex-start"
         }}
       >
         {/* Left Column: Filters */}
-        <Box sx={{ flex: { xs: "1 1 auto", md: "0 0 280px" }, width: { xs: "100%", md: "260px" }, position: "sticky", top: 20, zIndex: 10 }}>
-          <TeacherFilters
+        <Box sx={{ flex: { xs: "1 1 auto", md: "0 0 280px" }, width: { xs: "100%", md: "280px" } }}>
+          <JobFilters
             city={city}
             setCity={setCity}
             subject={subject}
@@ -152,7 +136,7 @@ export default function TeacherDirectory() {
           />
         </Box>
 
-        {/* Right Column: Teacher Cards */}
+        {/* Right Column: Jobs */}
         <Box sx={{ flex: 1 }}>
           {/* Active filter chips */}
           {activeFilters.length > 0 && (
@@ -171,33 +155,31 @@ export default function TeacherDirectory() {
             </Box>
           )}
 
-          {/* Loading / no teachers */}
-          {loading && <Typography align="center">Loading teachers...</Typography>}
+          {/* Loading / no jobs */}
+          {loading && <Typography align="center">Loading jobs...</Typography>}
           {!loading && filtered.length === 0 && (
             <Typography align="center" sx={{ mt: 4, color: "gray" }}>
-              No teachers found.
+              No jobs found.
             </Typography>
           )}
 
-          {/* Teacher cards */}
-          <Grid container spacing={1} justifyContent="flex-start">
-            {visibleTeachers.map((teacher, i) => (
-              <Grid item xs={12} sm={6} md={3} key={teacher.id}>
-                <TeacherCard teacher={teacher} />
-              </Grid>
+          {/* Job cards */}
+          <Stack spacing={3}>
+            {visibleJobs.map((job, i) => (
+              <JobCard key={i} job={job} />
             ))}
-          </Grid>
+          </Stack>
 
           {/* Loader sentinel */}
           <div ref={loaderRef} style={{ height: 1 }} />
 
           {/* Status */}
-          {!loading && visibleTeachers.length < filtered.length && (
+          {!loading && visibleJobs.length < filtered.length && (
             <Typography align="center" sx={{ mt: 2, color: "#555" }}>
               Loading more...
             </Typography>
           )}
-          {!loading && visibleTeachers.length >= filtered.length && filtered.length > 0 && (
+          {!loading && visibleJobs.length >= filtered.length && filtered.length > 0 && (
             <Typography align="center" sx={{ mt: 2, color: "#555" }}>
               You've reached the end.
             </Typography>

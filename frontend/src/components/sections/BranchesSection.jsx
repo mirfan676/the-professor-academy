@@ -10,20 +10,11 @@ export default function HeroSection() {
 
   const toggleCityBranches = (city) => {
     switch (city) {
-      case "Islamabad":
-        setIsIslamabadOpen(!isIslamabadOpen);
-        break;
-      case "Karachi":
-        setIsKarachiOpen(!isKarachiOpen);
-        break;
-      case "Lahore":
-        setIsLahoreOpen(!isLahoreOpen);
-        break;
-      case "Multan":
-        setIsMultanOpen(!isMultanOpen);
-        break;
-      default:
-        break;
+      case "Islamabad": setIsIslamabadOpen(!isIslamabadOpen); break;
+      case "Karachi": setIsKarachiOpen(!isKarachiOpen); break;
+      case "Lahore": setIsLahoreOpen(!isLahoreOpen); break;
+      case "Multan": setIsMultanOpen(!isMultanOpen); break;
+      default: break;
     }
   };
 
@@ -39,10 +30,9 @@ export default function HeroSection() {
         px: { xs: 3, sm: 5, md: 10 },
         pt: { xs: 6, sm: 8, md: 10 },
         pb: { xs: 6, sm: 8, md: 10 },
-        backgroundImage: "url('/background-home-1.png')", 
-        backgroundSize: "cover", 
-        backgroundPosition: "center", 
-        backgroundRepeat: "no-repeat", 
+
+        /* 🎨 New Premium Gradient */
+        background: "linear-gradient(140deg, #000000 10%, #0B1E3E 40%, #1F4FB8 100%)",
         borderBottom:"5px solid #fddc88",
       }}
     >
@@ -54,232 +44,123 @@ export default function HeroSection() {
             fontSize: { xs: "1.8rem", sm: "2.4rem", md: "3.2rem" },
             fontWeight: 800,
             lineHeight: 1.2,
-            color: "#02539b", // Vivid Azure
+            color: "#fddc88",
             mb: 2,
             borderBottom: "1px solid transparent",
             borderTop: "1px solid transparent",
             padding:"15px",
             "&:hover": {
-              borderBottom: "1px solid #fddc88", 
+              borderBottom: "1px solid #fddc88",
               borderTop:"1px solid #fddc88"
             },
           }}
         >
           Our Branches
         </Typography>
+
         <Typography
           sx={{
             mt: 2,
             fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
-            color: "#333",
+            color: "#ffffff",
           }}
         >
           Offering Expert Services in 5 Major Cities & Online Globally
         </Typography>
       </Box>
 
-      {/* Categories Section */}
+      {/* Branch Cards */}
       <Grid container spacing={3} sx={{ justifyContent: "center", mb: 6 }}>
-        {/* City 1: Islamabad */}
-        <Grid item xs={6} sm={4} md={2.5}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 3,
-              borderRadius: "12px",
-              backgroundColor: "transparent",
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-            onClick={() => toggleCityBranches("Islamabad")}
-          >
+        
+        {/* Reusable Card Style */}
+        {[
+          { city: "Islamabad", img: "/assets/Islamabad.svg", branches: ["F7 Branch", "F6 Branch"] },
+          { city: "Karachi", img: "/assets/Karachi.svg", branches: ["Korangi Branch", "Saddar Branch"] },
+          { city: "Lahore", img: "/assets/Lahore.svg", branches: ["DHA Branch", "Gulberg Branch"] },
+          { city: "Multan", img: "/assets/Multan.svg", branches: ["Multan Cantt Branch"] }
+        ].map((item, index) => (
+          <Grid item xs={6} sm={4} md={2.5} key={index}>
             <Box
-              component="img"
-              src="/assets/Islamabad.svg"
-              alt="Islamabad"
               sx={{
-                width: "120px",
-                height: "120px",
-                objectFit: "contain",
-                mb: 2,
-              }}
-            />
-            <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
-              Islamabad
-            </Typography>
-          </Box>
-          <Collapse in={isIslamabadOpen}>
-            <Box sx={{ mt: 2, textAlign: "center" }}>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                F7 Branch
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                F6 Branch
-              </Typography>
-            </Box>
-          </Collapse>
-        </Grid>
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                p: 3,
+                borderRadius: "12px",
 
-        {/* City 2: Karachi */}
-        <Grid item xs={6} sm={4} md={2.5}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 3,
-              borderRadius: "12px",
-              backgroundColor: "transparent",
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-            onClick={() => toggleCityBranches("Karachi")}
-          >
-            <Box
-              component="img"
-              src="/assets/Karachi.svg" 
-              alt="Karachi"
-              sx={{
-                width: "120px",
-                height: "120px",
-                objectFit: "contain",
-                mb: 2,
-              }}
-            />
-            <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
-              Karachi
-            </Typography>
-          </Box>
-          <Collapse in={isKarachiOpen}>
-            <Box sx={{ mt: 2, textAlign: "center" }}>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                Korangi Branch
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                Saddar Branch
-              </Typography>
-            </Box>
-          </Collapse>
-        </Grid>
+                background:
+                  "linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
+                border: "1px solid rgba(255,255,255,0.2)",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
 
-        {/* City 3: Lahore */}
-        <Grid item xs={6} sm={4} md={2.5}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 3,
-              borderRadius: "12px",
-              backgroundColor: "transparent",
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-            onClick={() => toggleCityBranches("Lahore")}
-          >
-            <Box
-              component="img"
-              src="/assets/Lahore.svg" 
-              alt="Lahore"
-              sx={{
-                width: "120px",
-                height: "120px",
-                objectFit: "contain",
-                mb: 2,
-              }}
-            />
-            <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
-              Lahore
-            </Typography>
-          </Box>
-          <Collapse in={isLahoreOpen}>
-            <Box sx={{ mt: 2, textAlign: "center" }}>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                DHA Branch
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                Gulberg Branch
-              </Typography>
-            </Box>
-          </Collapse>
-        </Grid>
+                textAlign: "center",
+                transition: "all 0.3s ease",
+                cursor: "pointer",
 
-        {/* City 4: Multan */}
-        <Grid item xs={6} sm={4} md={2.5}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 3,
-              borderRadius: "12px",
-              backgroundColor: "transparent",
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-            onClick={() => toggleCityBranches("Multan")}
-          >
-            <Box
-              component="img"
-              src="/assets/Multan.svg" 
-              alt="Multan"
-              sx={{
-                width: "120px",
-                height: "120px",
-                objectFit: "contain",
-                mb: 2,
+                "&:hover": {
+                  transform: "scale(1.06)",
+                  border: "1px solid #fddc88",
+                  boxShadow: "0 15px 40px rgba(0,0,0,0.7)",
+                },
               }}
-            />
-            <Typography variant="h6" sx={{ fontWeight: 600, color: "#02539b" }}>
-              Multan
-            </Typography>
-          </Box>
-          <Collapse in={isMultanOpen}>
-            <Box sx={{ mt: 2, textAlign: "center" }}>
-              <Typography variant="body2" sx={{ color: "#333" }}>
-                Multan Cantt Branch
+              onClick={() => toggleCityBranches(item.city)}
+            >
+              <Box
+                component="img"
+                src={item.img}
+                alt={item.city}
+                sx={{
+                  width: "120px",
+                  height: "120px",
+                  objectFit: "contain",
+                  mb: 2,
+                  filter: "drop-shadow(0px 8px 15px rgba(0,0,0,0.6))"
+                }}
+              />
+              <Typography variant="h6" sx={{ fontWeight: 700, color: "#fddc88" }}>
+                {item.city}
               </Typography>
             </Box>
-          </Collapse>
-        </Grid>
+
+            <Collapse
+              in={
+                item.city === "Islamabad"
+                  ? isIslamabadOpen
+                  : item.city === "Karachi"
+                  ? isKarachiOpen
+                  : item.city === "Lahore"
+                  ? isLahoreOpen
+                  : isMultanOpen
+              }
+            >
+              <Box sx={{ mt: 2, textAlign: "center" }}>
+                {item.branches.map((b, i) => (
+                  <Typography key={i} variant="body2" sx={{ color: "#ffffff" }}>
+                    {b}
+                  </Typography>
+                ))}
+              </Box>
+            </Collapse>
+          </Grid>
+        ))}
       </Grid>
 
-      {/* "Read More" Button Section */}
+      {/* Read More Button */}
       <Box sx={{ textAlign: "center" }}>
         <Button
           variant="contained"
           component={Link}
           to={"/about"}
-          color="primary"
           sx={{
-            background: "#02539b", // Vivid Azure
-            "&:hover": { background: "#003f88" },
+            background: "#fddc88",
+            color: "#000",
+            "&:hover": { background: "#e0bb55" },
             fontSize: "1rem",
             px: 5,
             py: 1,
             borderRadius: "10px",
+            fontWeight: 700,
           }}
         >
           Read More
