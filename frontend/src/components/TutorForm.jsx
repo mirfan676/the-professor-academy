@@ -243,113 +243,132 @@ export default function TutorRegistration() {
   };
 
   return (
-    <Box sx={{ bgcolor: "#0a0a0a", py: 10, px: { xs: 3, md: 6 } }}>
-      <Box textAlign="center" mb={5}>
-        <Typography
-          variant="h4"
-          fontWeight={700}
-          sx={{
-            background: "linear-gradient(135deg, #00a6ff, #00ff8f)",
-            WebkitBackgroundClip: "text",
-            color: "transparent",
-          }}
-        >
-          Tutor Registration
-        </Typography>
-        <Typography variant="subtitle1" sx={{ color: "#fff", opacity: 0.85, mt: 1 }}>
-          Fill the Complete Form Carefully to Join The Professor Academy Platform
-        </Typography>
-      </Box>
+    <Box sx={{ bgcolor: "#0a0a0a", py: { xs: 8, md: 10 }, px: { xs: 3, md: 6 } }}>
+  {/* Main Heading */}
+  <Box textAlign="center" mb={6}>
+    <Typography
+      variant="h4"
+      fontWeight={700}
+      sx={{
+        background: "linear-gradient(135deg, #00a6ff, #00ff8f)",
+        WebkitBackgroundClip: "text",
+        color: "transparent",
+      }}
+    >
+      Tutor Registration
+    </Typography>
+    <Typography variant="subtitle1" sx={{ color: "#fff", opacity: 0.85, mt: 1 }}>
+      Fill the Complete Form Carefully to Join The Professor Academy Platform
+    </Typography>
+  </Box>
 
-      <Grid container justifyContent="center">
-        <Grid item xs={12} md={6}>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
+  <Grid container justifyContent="center">
+    {/* Increased width for desktop */}
+    <Grid item xs={12} sm={10} md={9} lg={7} sx={{
+      minWidth: { xs: "100%", sm: "400px", md: "600px" }, 
+    }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          p: { xs: 4, md: 6 },
+          borderRadius: "20px",
+          background: "rgba(255,255,255,0.05)",
+          backdropFilter: "blur(10px)",
+          boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
+          display: "flex",
+          flexDirection: "column",
+          gap: { xs: 2.5, md: 3 },
+        }}
+      >
+        {/* Image Upload */}
+        <Box textAlign="center" mb={3}>
+          <Button
+            variant="contained"
+            component="label"
             sx={{
-              p: { xs: 4, md: 6 },
-              borderRadius: "20px",
-              background: "rgba(255,255,255,0.05)",
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
+              background: "linear-gradient(135deg, #00a6ff, #00ff8f)",
+              color: "#000",
+              fontWeight: 700,
+              "&:hover": {
+                background: "linear-gradient(135deg, #00ff8f, #00a6ff)",
+                transform: "scale(1.03)",
+              },
             }}
           >
-            {/* Register Header */}
-            <Typography
-              variant="h5"
-              fontWeight={700}
-              textAlign="center"
-              mb={3}
-              sx={{
-                background: "linear-gradient(135deg, #00a6ff, #00ff8f)",
-                WebkitBackgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              Register as Tutor
-            </Typography>
-
-            {/* Image Upload */}
-            <Box textAlign="center" mb={3}>
-              <Button
-                variant="contained"
-                component="label"
-                sx={{
-                  background: "linear-gradient(135deg, #00a6ff, #00ff8f)",
-                  color: "#000",
-                  fontWeight: 700,
-                  "&:hover": {
-                    background: "linear-gradient(135deg, #00ff8f, #00a6ff)",
-                    transform: "scale(1.03)",
-                  },
-                }}
-              >
-                Upload Profile Picture
-                <input type="file" hidden accept="image/*" name="image" onChange={handleChange} />
-              </Button>
-              {formData.image && (
-                <Avatar src={URL.createObjectURL(formData.image)} sx={{ width: 100, height: 100, mx: "auto", mt: 2 }} />
-              )}
-            </Box>
-            
-            {/* Full Name */}
-            <TextField
-              label="Full Name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              required
-              sx={{
-                  input: { color: "#fff" },
-                  label: { color: "#fff", opacity: 0.85 },
-                  "& .MuiOutlinedInput-root": {
-                    backgroundColor: "#121212",
-                    "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
-                    "&:hover fieldset": { borderColor: "#00ff8f" },
-                    "&.Mui-focused fieldset": { borderColor: "#00ff8f" },
-                  },
-                }}
+            Upload Profile Picture
+            <input type="file" hidden accept="image/*" name="image" onChange={handleChange} />
+          </Button>
+          {formData.image && (
+            <Avatar
+              src={URL.createObjectURL(formData.image)}
+              sx={{ width: 100, height: 100, mx: "auto", mt: 2 }}
             />
+          )}
+        </Box>
 
-            {/* ID Card */}
+        {/* Full Name */}
+        <TextField
+          label="Full Name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          fullWidth
+          required
+          margin="normal"
+          sx={{
+            input: { color: "#fff" },
+            label: { color: "#fff", opacity: 0.85 },
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "#121212",
+              "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
+              "&:hover fieldset": { borderColor: "#00ff8f" },
+              "&.Mui-focused fieldset": { borderColor: "#00ff8f" },
+            },
+          }}
+        />
+
+        {/* ID Card */}
+        <TextField
+          label="ID Card Number"
+          name="id_card"
+          value={formData.id_card}
+          onChange={handleChange}
+          fullWidth
+          required
+          margin="normal"
+          error={idError || (formData.id_card && formData.id_card.length !== 13)}
+          helperText={
+            idError
+              ? "⚠️ ID already registered"
+              : formData.id_card && formData.id_card.length !== 13
+              ? "ID must be 13 digits"
+              : ""
+          }
+          sx={{
+            input: { color: "#fff" },
+            label: { color: "#fff", opacity: 0.85 },
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "#121212",
+              "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
+              "&:hover fieldset": { borderColor: "#00ff8f" },
+              "&.Mui-focused fieldset": { borderColor: "#00ff8f" },
+            },
+          }}
+        />
+
+        {/* Qualification */}
+        <Autocomplete
+          options={qualificationsList}
+          value={formData.qualification}
+          onChange={(_, value) => setFormData((p) => ({ ...p, qualification: value || "" }))}
+          renderInput={(params) => (
             <TextField
-              label="ID Card Number"
-              name="id_card"
-              value={formData.id_card}
-              onChange={handleChange}
+              {...params}
+              label="Qualification"
               fullWidth
-              margin="normal"
               required
-              error={idError || (formData.id_card && formData.id_card.length !== 13)}
-              helperText={
-                idError
-                  ? "⚠️ ID already registered"
-                  : formData.id_card && formData.id_card.length !== 13
-                  ? "ID must be 13 digits"
-                  : ""
-              }
+              margin="normal"
               sx={{
                 input: { color: "#fff" },
                 label: { color: "#fff", opacity: 0.85 },
@@ -361,131 +380,22 @@ export default function TutorRegistration() {
                 },
               }}
             />
+          )}
+        />
 
-            {/* QUALIFICATION */}
-            <Autocomplete
-              options={qualificationsList}
-              value={formData.qualification}
-              onChange={(_, value) => setFormData((p) => ({ ...p, qualification: value || "" }))}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Qualification"
-                  margin="normal"
-                  required
-                  fullWidth
-                  sx={{
-                    input: { color: "#fff" },
-                    label: { color: "#fff", opacity: 0.85 },
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: "#121212",
-                      "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
-                      "&:hover fieldset": { borderColor: "#00ff8f" },
-                      "&.Mui-focused fieldset": { borderColor: "#00ff8f" },
-                    },
-                  }}
-                />
-              )}
-            />
-
-            {/* SUBJECT / MAJOR */}
-            {higherEducation.includes(formData.qualification) && (
-              <Autocomplete
-                options={filteredMajorSubjects}
-                value={selectedHigherSubject}
-                onChange={(_, value) => setSelectedHigherSubject(value || "")}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Subject / Major"
-                    margin="normal"
-                    required
-                    fullWidth
-                    sx={{
-                      input: { color: "#fff" },
-                      label: { color: "#fff", opacity: 0.85 },
-                      "& .MuiOutlinedInput-root": {
-                        backgroundColor: "#121212",
-                        "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
-                        "&:hover fieldset": { borderColor: "#00ff8f" },
-                        "&.Mui-focused fieldset": { borderColor: "#00ff8f" },
-                      },
-                    }}
-                  />
-                )}
-              />
-            )}
-
-            {/* MAJOR SUBJECTS */}
-            <Autocomplete
-              multiple
-              options={filteredMajorSubjects}
-              value={majorSubjects}
-              onChange={(_, value) => setMajorSubjects(value)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Major Subjects (Select up to 3)"
-                  margin="normal"
-                  fullWidth
-                  sx={{
-                    input: { color: "#fff" },
-                    label: { color: "#fff", opacity: 0.85 },
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: "#121212",
-                      "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
-                      "&:hover fieldset": { borderColor: "#00ff8f" },
-                      "&.Mui-focused fieldset": { borderColor: "#00ff8f" },
-                    },
-                  }}
-                />
-              )}
-            />
-
-            {/* SUGGESTED GHOST SUBJECTS */}
-            {suggestedGhostSubjects.length > 0 && (
-              <Box mt={1}>
-                <Typography variant="body2" sx={{ color: "#fff", opacity: 0.6 }}>
-                  Suggested Subjects:
-                </Typography>
-                <Box mt={0.5} display="flex" flexWrap="wrap" gap={1}>
-                  {suggestedGhostSubjects.map((s) => (
-                    <Chip
-                      key={s}
-                      label={s}
-                      onClick={() => {
-                        if (majorSubjects.length < 3 && !majorSubjects.includes(s)) {
-                          setMajorSubjects([...majorSubjects, s]);
-                        }
-                      }}
-                      clickable
-                      sx={{ background: "#00ff8f22", color: "#00ff8f", fontWeight: 600 }}
-                    />
-                  ))}
-                </Box>
-              </Box>
-            )}
-
-            {/* Other text fields */}
-            {["experience", "phone", "bio"].map((field) => (
+        {/* Subject / Major (conditional) */}
+        {higherEducation.includes(formData.qualification) && (
+          <Autocomplete
+            options={filteredMajorSubjects}
+            value={selectedHigherSubject}
+            onChange={(_, value) => setSelectedHigherSubject(value || "")}
+            renderInput={(params) => (
               <TextField
-                key={field}
-                label={
-                  field === "bio"
-                    ? "Short Bio"
-                    : field === "experience"
-                    ? "Experience (in years)"
-                    : "Phone Number" 
-                }
-                name={field}
-                value={formData[field]}
-                onChange={handleChange}
-                type={field === "experience" ? "number" : "text"}
-                multiline={field === "bio"}
-                rows={field === "bio" ? 3 : undefined}
+                {...params}
+                label="Subject / Major"
                 fullWidth
+                required
                 margin="normal"
-                required={field !== "experience"}
                 sx={{
                   input: { color: "#fff" },
                   label: { color: "#fff", opacity: 0.85 },
@@ -497,47 +407,138 @@ export default function TutorRegistration() {
                   },
                 }}
               />
-            ))}
+            )}
+          />
+        )}
 
-
-            {/* Agreement */}
-            <FormControlLabel
-              control={<Checkbox checked={formData.agree} onChange={handleChange} name="agree" />}
-              label={
-                <Typography variant="body2" sx={{ color: "#fff", opacity: 0.85 }}>
-                  I agree to the <MuiLink href="/terms" target="_blank">Terms & Conditions</MuiLink>
-                </Typography>
-              }
-              sx={{ mt: 2 }}
+        {/* Major Subjects */}
+        <Autocomplete
+          multiple
+          options={filteredMajorSubjects}
+          value={majorSubjects}
+          onChange={(_, value) => setMajorSubjects(value)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Major Subjects (Select up to 3)"
+              fullWidth
+              margin="normal"
+              sx={{
+                input: { color: "#fff" },
+                label: { color: "#fff", opacity: 0.85 },
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "#121212",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
+                  "&:hover fieldset": { borderColor: "#00ff8f" },
+                  "&.Mui-focused fieldset": { borderColor: "#00ff8f" },
+                },
+              }}
             />
+          )}
+        />
 
-            {/* Message */}
-            {message && <Alert severity={message.startsWith("✅") ? "success" : "error"} sx={{ mt: 2 }}>{message}</Alert>}
-
-            {/* Submit */}
-            <Box textAlign="center" mt={3}>
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={loading}
-                size="large"
-                sx={{
-                  py: 1.8,
-                  background: "linear-gradient(135deg, #00a6ff, #00ff8f)",
-                  color: "#000",
-                  fontWeight: 700,
-                  fontSize: "1.1rem",
-                  borderRadius: "12px",
-                  boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
-                  "&:hover": { background: "linear-gradient(135deg, #00ff8f, #00a6ff)", transform: "scale(1.03)" },
-                }}
-              >
-                {loading ? <CircularProgress size={24} color="inherit" /> : "Register"}
-              </Button>
+        {/* Suggested Ghost Subjects */}
+        {suggestedGhostSubjects.length > 0 && (
+          <Box mt={1}>
+            <Typography variant="body2" sx={{ color: "#fff", opacity: 0.6 }}>
+              Suggested Subjects:
+            </Typography>
+            <Box mt={0.5} display="flex" flexWrap="wrap" gap={1}>
+              {suggestedGhostSubjects.map((s) => (
+                <Chip
+                  key={s}
+                  label={s}
+                  onClick={() => {
+                    if (majorSubjects.length < 3 && !majorSubjects.includes(s)) {
+                      setMajorSubjects([...majorSubjects, s]);
+                    }
+                  }}
+                  clickable
+                  sx={{ background: "#00ff8f22", color: "#00ff8f", fontWeight: 600 }}
+                />
+              ))}
             </Box>
           </Box>
-        </Grid>
-      </Grid>
-    </Box>
+        )}
+
+        {/* Experience, Phone, Bio */}
+        {["experience", "phone", "bio"].map((field) => (
+          <TextField
+            key={field}
+            label={
+              field === "bio"
+                ? "Short Bio"
+                : field === "experience"
+                ? "Experience (in years)"
+                : "Phone Number"
+            }
+            name={field}
+            value={formData[field]}
+            onChange={handleChange}
+            type={field === "experience" ? "number" : "text"}
+            multiline={field === "bio"}
+            rows={field === "bio" ? 3 : undefined}
+            fullWidth
+            margin="normal"
+            required={field !== "experience"}
+            sx={{
+              input: { color: "#fff" },
+              label: { color: "#fff", opacity: 0.85 },
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "#121212",
+                "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
+                "&:hover fieldset": { borderColor: "#00ff8f" },
+                "&.Mui-focused fieldset": { borderColor: "#00ff8f" },
+              },
+            }}
+          />
+        ))}
+
+        {/* Agreement */}
+        <FormControlLabel
+          control={<Checkbox checked={formData.agree} onChange={handleChange} name="agree" />}
+          label={
+            <Typography variant="body2" sx={{ color: "#fff", opacity: 0.85 }}>
+              I agree to the <MuiLink href="/terms" target="_blank">Terms & Conditions</MuiLink>
+            </Typography>
+          }
+          sx={{ mt: 2 }}
+        />
+
+        {/* Message */}
+        {message && (
+          <Alert severity={message.startsWith("✅") ? "success" : "error"} sx={{ mt: 2 }}>
+            {message}
+          </Alert>
+        )}
+
+        {/* Submit */}
+        <Box textAlign="center" mt={3}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            fullWidth
+            size="large"
+            sx={{
+              py: { xs: 1, sm: 1.5 },           
+              px: { xs: 2, sm: 3 }, 
+              background: "linear-gradient(135deg, #00a6ff, #00ff8f)",
+              color: "#000",
+              fontWeight: 700,
+              fontSize: "1rem",
+              borderRadius: "12px",
+              boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
+              "&:hover": { background: "linear-gradient(135deg, #00ff8f, #00a6ff)", transform: "scale(1.03)" },
+            }}
+          >
+            {loading ? <CircularProgress size={24} color="inherit" /> : "Register"}
+          </Button>
+        </Box>
+      </Box>
+    </Grid>
+  </Grid>
+</Box>
+
   );
 }

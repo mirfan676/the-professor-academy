@@ -13,87 +13,94 @@ const PrivacyPolicy = () => {
   });
 
   return (
-    <Container sx={{ py: 6 }}>
-      <Typography variant="h4" color="primary" fontWeight="bold" gutterBottom>
-        Privacy Policy
-      </Typography>
-
-      <Typography variant="body1" sx={{ mb: 2 }}>
-        At <strong>The Professor Academy</strong>, your privacy is important to us.
-        This policy explains how we collect, use, and protect your personal
-        information.
-      </Typography>
-
-      <Box>
-        <Typography variant="h6" color="primary" sx={{ mt: 3 }}>
-          1. Information We Collect
-        </Typography>
-        <Typography variant="body1">
-          We may collect your name, phone number, email address, location,
-          academic details, and tutoring requirements when you contact or
-          register with us.
+    <Box sx={{ backgroundColor: "#0a0a0a", minHeight: "100vh", py: 6 }}>
+      <Container maxWidth="md">
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          gutterBottom
+          sx={{
+            background: "linear-gradient(135deg, #ffd700, #bfa12f)",
+            WebkitBackgroundClip: "text",
+            color: "transparent",
+            mb: 4,
+          }}
+        >
+          Privacy Policy
         </Typography>
 
-        <Typography variant="h6" color="primary" sx={{ mt: 3 }}>
-          2. How We Use Your Information
-        </Typography>
-        <Typography variant="body1">
-          Your information is used to match you with tutors, communicate service
-          updates, process requests, improve our platform, and provide customer
-          support.
+        <Typography variant="body1" sx={{ mb: 2, color: "#e0e0e0" }}>
+          At <strong>The Professor Academy</strong>, your privacy is important to us.
+          This policy explains how we collect, use, and protect your personal
+          information.
         </Typography>
 
-        <Typography variant="h6" color="primary" sx={{ mt: 3 }}>
-          3. Cookies & Analytics
-        </Typography>
-        <Typography variant="body1">
-          We use cookies, Google Analytics, and similar tools to analyze traffic
-          and improve user experience. You can manage cookies through your
-          browser settings.
-        </Typography>
-
-        <Typography variant="h6" color="primary" sx={{ mt: 3 }}>
-          4. Data Security
-        </Typography>
-        <Typography variant="body1">
-          We implement technical and organizational security measures to protect
-          your data from unauthorized access or misuse.
-        </Typography>
-
-        <Typography variant="h6" color="primary" sx={{ mt: 3 }}>
-          5. Third-Party Services
-        </Typography>
-        <Typography variant="body1">
-          We may use trusted third-party services (e.g. analytics, communication
-          tools) that comply with applicable data protection standards.
-        </Typography>
-
-        <Typography variant="h6" color="primary" sx={{ mt: 3 }}>
-          6. Your Rights
-        </Typography>
-        <Typography variant="body1">
-          You may request access, correction, or deletion of your personal data
-          by contacting us.
-        </Typography>
-
-        <Typography variant="h6" color="primary" sx={{ mt: 3 }}>
-          7. Policy Updates
-        </Typography>
-        <Typography variant="body1">
-          This privacy policy may be updated periodically. Continued use of our
-          services indicates acceptance of the updated policy.
-        </Typography>
-
-        <Typography variant="h6" color="primary" sx={{ mt: 3 }}>
-          8. Contact Us
-        </Typography>
-        <Typography variant="body1">
-          For privacy-related questions, email us at{" "}
-          <strong>theprofessoracademy@gmail.com</strong> or WhatsApp{" "}
-          <strong>+92 301 503 7768</strong>.
-        </Typography>
-      </Box>
-    </Container>
+        <Box sx={{ mt: 3 }}>
+          {[
+            {
+              title: "1. Information We Collect",
+              content:
+                "We may collect your name, phone number, email address, location, academic details, and tutoring requirements when you contact or register with us.",
+            },
+            {
+              title: "2. How We Use Your Information",
+              content:
+                "Your information is used to match you with tutors, communicate service updates, process requests, improve our platform, and provide customer support.",
+            },
+            {
+              title: "3. Cookies & Analytics",
+              content:
+                "We use cookies, Google Analytics, and similar tools to analyze traffic and improve user experience. You can manage cookies through your browser settings.",
+            },
+            {
+              title: "4. Data Security",
+              content:
+                "We implement technical and organizational security measures to protect your data from unauthorized access or misuse.",
+            },
+            {
+              title: "5. Third-Party Services",
+              content:
+                "We may use trusted third-party services (e.g. analytics, communication tools) that comply with applicable data protection standards.",
+            },
+            {
+              title: "6. Your Rights",
+              content:
+                "You may request access, correction, or deletion of your personal data by contacting us.",
+            },
+            {
+              title: "7. Policy Updates",
+              content:
+                "This privacy policy may be updated periodically. Continued use of our services indicates acceptance of the updated policy.",
+            },
+            {
+              title: "8. Contact Us",
+              content:
+                "For privacy-related questions, email us at " +
+                "<strong>theprofessoracademy@gmail.com</strong> or WhatsApp " +
+                "<strong>+92 301 503 7768</strong>.",
+            },
+          ].map((section, idx) => (
+            <Box key={idx} sx={{ mb: 3 }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "#ffd700",
+                  fontWeight: 700,
+                  mb: 1,
+                }}
+              >
+                {section.title}
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{ color: "#e0e0e0", lineHeight: 1.7 }}
+                dangerouslySetInnerHTML={{ __html: section.content }}
+              />
+            </Box>
+          ))}
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

@@ -144,12 +144,13 @@ export default function JobFilters({
             onClick={onReset}
             variant="contained"
             sx={{
-              background: darkTheme ? "linear-gradient(135deg, #a8862b, #ffd700)" : "#004aad",
-              color: darkTheme ? "#000" : "#fff",
-              px: 4,
+              background: "linear-gradient(135deg, #00a6ff, #00ff8f)",
+              color: "#000",
               textTransform: "none",
+              borderRadius: "12px",
+              px: 3,
               "&:hover": {
-                background: darkTheme ? "linear-gradient(135deg, #ffd700, #a8862b)" : undefined,
+                background: "linear-gradient(135deg, #00ff8f, #00a6ff)",
               },
             }}
           >
