@@ -58,8 +58,13 @@ export default function TeacherDirectory() {
 
   // Filter teachers based on selected filters
   const filtered = teachers.filter(t => {
-    if (city && !t.city.toLowerCase().includes(city.toLowerCase())) return false;
-    if (subject && !t.subjects.join(",").toLowerCase().includes(subject.toLowerCase())) return false;
+
+    const cityVal = String(t.city || "").toLowerCase();
+    const subjectVal = t.subjects.join(",").toLowerCase();
+
+    if (city && !cityVal.includes(city.toLowerCase())) return false;
+    if (subject && !subjectVal.includes(subject.toLowerCase())) return false;
+    
     return true;
   });
 

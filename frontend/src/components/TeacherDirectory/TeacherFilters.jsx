@@ -17,10 +17,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 
 export default function TeacherFilters({
-  selectedCity,
-  setSelectedCity,
-  selectedSubject,
-  setSelectedSubject,
+  city,
+  setCity,
+  subject,
+  setSubject,
   cities = [],
   subjects = [],
   onReset,
@@ -28,8 +28,13 @@ export default function TeacherFilters({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width:900px)");
 
-  const safeCities = Array.from(new Set(cities.map((c) => (c != null ? String(c) : "")))).filter(Boolean);
-  const safeSubjects = Array.from(new Set(subjects.map((s) => (s != null ? String(s) : "")))).filter(Boolean);
+  const safeCities = Array.from(
+    new Set(cities.map((c) => (c ? String(c) : "")))
+  ).filter(Boolean);
+
+  const safeSubjects = Array.from(
+    new Set(subjects.map((s) => (s ? String(s) : "")))
+  ).filter(Boolean);
 
   const filterContent = (
     <Box sx={{ p: 1, width: "100%" }}>
@@ -46,18 +51,24 @@ export default function TeacherFilters({
         <Grid item>
           <FormControl fullWidth sx={{ background: "#121212", borderRadius: 2 }}>
             <InputLabel sx={{ color: "#fff" }}>Select City</InputLabel>
+
             <Select
-              value={selectedCity}
+              value={city}
               label="Select City"
-              onChange={(e) => setSelectedCity(e.target.value)}
+              onChange={(e) => setCity(e.target.value)}
               sx={{
                 color: "#fff",
-                "& .MuiOutlinedInput-notchedOutline": { borderColor: "rgba(255,255,255,0.3)" },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "rgba(255,255,255,0.3)",
+                },
                 "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#00ff8f" },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#00ff8f" },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#00ff8f",
+                },
               }}
             >
               <MenuItem value="">All Cities</MenuItem>
+
               {safeCities.map((c, i) => (
                 <MenuItem key={c || i} value={c}>
                   {c}
@@ -71,8 +82,8 @@ export default function TeacherFilters({
         <Grid item>
           <TextField
             label="Search Subject"
-            value={selectedSubject}
-            onChange={(e) => setSelectedSubject(e.target.value)}
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
             fullWidth
             sx={{
               input: { color: "#fff" },
@@ -87,7 +98,7 @@ export default function TeacherFilters({
           />
         </Grid>
 
-        {/* RESET BUTTON */}
+        {/* RESET */}
         <Grid item sx={{ textAlign: "center", mt: 1 }}>
           <Button
             onClick={onReset}
@@ -98,7 +109,9 @@ export default function TeacherFilters({
               fontWeight: 700,
               px: 4,
               textTransform: "none",
-              "&:hover": { background: "linear-gradient(135deg, #00ff8f, #00a6ff)" },
+              "&:hover": {
+                background: "linear-gradient(135deg, #00ff8f, #00a6ff)",
+              },
             }}
           >
             Reset Filters
@@ -110,7 +123,7 @@ export default function TeacherFilters({
 
   return (
     <>
-      {/* MOBILE FILTER BUTTON */}
+      {/* MOBILE BUTTON */}
       {isMobile && (
         <Box sx={{ textAlign: "right", mb: 2 }}>
           <Button
@@ -123,7 +136,9 @@ export default function TeacherFilters({
               textTransform: "none",
               borderRadius: "12px",
               px: 3,
-              "&:hover": { background: "linear-gradient(135deg, #00ff8f, #00a6ff)" },
+              "&:hover": {
+                background: "linear-gradient(135deg, #00ff8f, #00a6ff)",
+              },
             }}
           >
             Filters
@@ -131,7 +146,7 @@ export default function TeacherFilters({
         </Box>
       )}
 
-      {/* DESKTOP FILTER BAR */}
+      {/* DESKTOP FILTER */}
       {!isMobile && (
         <Paper
           sx={{
@@ -153,7 +168,12 @@ export default function TeacherFilters({
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         PaperProps={{
-          sx: { borderTopLeftRadius: "22px", borderTopRightRadius: "22px", p: 2, background: "#0b1020" },
+          sx: {
+            borderTopLeftRadius: "22px",
+            borderTopRightRadius: "22px",
+            p: 2,
+            background: "#0b1020",
+          },
         }}
       >
         {filterContent}

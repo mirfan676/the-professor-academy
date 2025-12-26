@@ -27,9 +27,9 @@ const TeacherProfile = () => {
     const fetchTeacher = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL.replace(/\/$/, "")}/tutors/profile/${id}`
-        );
+        const apiBase = import.meta.env.VITE_API_URL.replace(/\/$/, "");
+
+        const res = await axios.get(`${apiBase}/tutors/profile/${id}`);
 
         if (!res.data || Object.keys(res.data).length === 0) {
           setError("Teacher not found.");
@@ -41,8 +41,14 @@ const TeacherProfile = () => {
         // Build thumbnail URL
         const thumbnailUrl =
           t["Thumbnail"] && !t["Thumbnail"].startsWith("http")
-            ? `${import.meta.env.VITE_API_URL.replace(/\/$/, "")}${t["Thumbnail"]}`
+            ? `${apiBase}${t["Thumbnail"]}`
             : t["Thumbnail"];
+
+        // Normalize boolean flags
+        const normalizeBool = (val) => {
+          const str = String(val || "").toLowerCase();
+          return str === "yes" || str === "true" || str === "1";
+        };
 
         setTeacher({
           id: t["Profile ID"] || "",
@@ -57,8 +63,8 @@ const TeacherProfile = () => {
           bio: t["Bio"] || "",
           price: t["Price"] || "Rs 2000",
           thumbnail: thumbnailUrl || "",
-          verified: t["Verified"] || "",
-          featured: t["Featured"] || "",
+          verified: normalizeBool(t["Verified"]),
+          featured: normalizeBool(t["Featured"]),
           Area1: t["Area1"] || "",
           Area2: t["Area2"] || "",
           Area3: t["Area3"] || "",
@@ -120,6 +126,7 @@ const TeacherProfile = () => {
                 boxShadow: "0 0 15px rgba(0,0,0,0.2)",
               }}
             />
+
             <Box
               sx={{
                 mt: 2,
@@ -129,7 +136,7 @@ const TeacherProfile = () => {
                 flexWrap: "wrap",
               }}
             >
-              {teacher.verified?.toLowerCase() === "yes" && (
+              {teacher.verified && (
                 <Chip
                   icon={<CheckCircle />}
                   label="Verified"
@@ -138,7 +145,8 @@ const TeacherProfile = () => {
                   sx={{ fontWeight: 600 }}
                 />
               )}
-              {teacher.featured?.toLowerCase() === "yes" && (
+
+              {teacher.featured && (
                 <Chip
                   label="Featured"
                   color="primary"
@@ -146,6 +154,7 @@ const TeacherProfile = () => {
                   sx={{ fontWeight: 600 }}
                 />
               )}
+
               {teacher.rating > 0 && (
                 <Chip
                   icon={<Star />}
@@ -171,7 +180,10 @@ const TeacherProfile = () => {
             <Typography variant="subtitle2" color="text.secondary">
               {teacher.city}
             </Typography>
-            <Typography variant="h6" sx={{ mt: 1, color: "#29b554", fontWeight: 700 }}>
+            <Typography
+              variant="h6"
+              sx={{ mt: 1, color: "#29b554", fontWeight: 700 }}
+            >
               {teacher.price}/hr
             </Typography>
           </Grid>
@@ -224,7 +236,7 @@ const TeacherProfile = () => {
           </Box>
         )}
 
-        {/* Contact & Hire Button */}
+        {/* Buttons */}
         <Box
           sx={{
             mt: 4,
@@ -243,6 +255,7 @@ const TeacherProfile = () => {
           >
             Hire {teacher.name?.split(" ")[0] || "Teacher"}
           </Button>
+
           <Button variant="outlined" onClick={() => window.history.back()}>
             Back
           </Button>

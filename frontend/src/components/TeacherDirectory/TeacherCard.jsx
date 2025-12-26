@@ -41,12 +41,13 @@ export default function TeacherCard({ teacher }) {
         <Card
           sx={{
             borderRadius: "20px",
-            minHeight: 420,
+            minHeight: "420px",
             display: "flex",
             flexDirection: "column",
             position: "relative",
             overflow: "hidden",
-            maxWidth: 320,
+            maxWidth: "320px",
+            minWidth: "320px",
             width: "100%",
             background: "#0b1020",
             boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
