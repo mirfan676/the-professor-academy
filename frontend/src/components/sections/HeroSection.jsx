@@ -50,6 +50,20 @@ export default function HeroSection() {
       }}
     >
       {/* Title */}
+      <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mb: 3,
+              justifyContent: { xs: "center", md: "flex-start" },
+            }}
+          >
+            <img
+              src="logo-footer.svg"
+              alt="APlus Home Tutors"
+              style={{ height: "120px", marginRight: "10px" }}
+            />
+          </Box>
       <Box sx={{ textAlign: "center", mb: 6 }}>
         <Typography
           variant="h2"
@@ -62,18 +76,7 @@ export default function HeroSection() {
             mb: 2,
           }}
         >
-          Expert Home & Online Tuition
-        </Typography>
-
-        <Typography
-          sx={{
-            mt: 2,
-            fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
-            color: "#fff",
-            opacity: 0.9,
-          }}
-        >
-          Junior Classes • CSS/PMS • O/A Levels • English Tutors • Home Schooling
+          O / A Level Specialists
         </Typography>
       </Box>
 

@@ -94,7 +94,7 @@ export default function DemoModal({ openModal, setOpenModal }) {
               color: 'gray'
             }}
           >
-            Enter your WhatsApp number & we’ll contact you shortly
+            Enter your WhatsApp number <br></br> & we’ll contact you shortly
           </Typography>
 
           <form onSubmit={handleSubmit}>

@@ -26,10 +26,20 @@ app = FastAPI(
     version="4.3.0",
 )
 
-# --- CORS Middleware ---
+# --------------------------------------------------
+# ✅ CORS (PRODUCTION SAFE)
+# --------------------------------------------------
+ALLOWED_ORIGINS = [
+    "https://theprofessoracademy.com",
+    "https://www.theprofessoracademy.com",
+    "https://the-professor-academy.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -42,17 +52,28 @@ async def add_csp_header(request, call_next):
     # Set Content Security Policy (CSP) header
     response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com "
-        "https://www.google.com/recaptcha https://www.gstatic.com https://www.google-analytics.com; "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' "
+        "https://www.google.com/recaptcha "
+        "https://www.gstatic.com "
+        "https://www.googletagmanager.com "
+        "https://www.google-analytics.com; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com; "
-        "img-src 'self' data: https://*.tawk.to https://www.google-analytics.com "
-        "https://www.googletagmanager.com https://cdn.jsdelivr.net blob:; "
+        "img-src 'self' data: blob: "
+        "https://*.tawk.to "
+        "https://cdn.jsdelivr.net "
+        "https://www.google-analytics.com "
+        "https://www.googletagmanager.com; "
         "frame-src https://embed.tawk.to https://www.google.com; "
-        "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com "
-        "https://va.tawk.to wss://*.tawk.to https://www.google.com https://www.googleapis.com/sheets/v4; "
-        "object-src 'self' blob:; "
-        "frame-ancestors 'self' https://www.google.com; "
+        "connect-src 'self' "
+        "https://the-professor-academy.onrender.com "
+        "https://www.google.com "
+        "https://www.googleapis.com "
+        "https://va.tawk.to "
+        "wss://*.tawk.to "
+        "https://www.google-analytics.com "
+        "https://www.googletagmanager.com; "
+        "object-src 'none'; "
         "base-uri 'self';"
     )
     return response
