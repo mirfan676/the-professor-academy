@@ -10,7 +10,8 @@ import HireForm from "./components/HireForm";
 import CookieConsent from "./components/CookieConsent";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 
 import { ThemeProvider, CssBaseline, Container, Card, CardContent } from "@mui/material";
 import theme from "./theme";
@@ -73,6 +74,8 @@ function App() {
           <Route path="/tutors/profile/:id" element={<TeacherProfile />} />
           <Route path="/hire/:id" element={<HireForm />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
 
         {/* Footer */}

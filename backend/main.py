@@ -1,33 +1,52 @@
 import os
 import logging
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from dotenv import load_dotenv
+
+# Routers & utils
 from routes.locations_routes import router as locations_router
 from routes.tutor_register import router as register_router
 from routes.tutors_routes import router as tutors_router
 from routes.jobs_routes import router as jobs_router
-from config.sheets import preload_tutors
-from dotenv import load_dotenv
 from utils.ip_location import router as ip_location_router
-from starlette.responses import Response
-from config.recaptcha import verify_recaptcha  # <-- Import the verify_recaptcha function
+from admin.admin_routes import router as admin_router
 
-# Setup logging for debugging
+from config.sheets import preload_tutors
+from config.recaptcha import verify_recaptcha
+
+# --------------------------------------------------
+# Logging
+# --------------------------------------------------
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("main")
 
-# Load environment variables
+# --------------------------------------------------
+# Environment
+# --------------------------------------------------
 load_dotenv()
 
-# --- Create App ---
+# --------------------------------------------------
+# Paths (IMPORTANT: Vite uses dist/, not build/)
+# --------------------------------------------------
+BASE_DIR = Path(__file__).resolve().parent.parent
+FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
+STATIC_PATH = FRONTEND_DIST / "assets"
+
+# --------------------------------------------------
+# Create App
+# --------------------------------------------------
 app = FastAPI(
     title="The Professor Academy API",
     version="4.3.0",
 )
 
 # --------------------------------------------------
-# ✅ CORS (PRODUCTION SAFE)
+# CORS (Production Safe)
 # --------------------------------------------------
 ALLOWED_ORIGINS = [
     "https://theprofessoracademy.com",
@@ -45,102 +64,83 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- CSP Middleware --- 
-@app.middleware("http")
-async def add_csp_header(request, call_next):
-    response = await call_next(request)
-    # Set Content Security Policy (CSP) header
-    response.headers['Content-Security-Policy'] = (
-        "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' "
-        "https://www.google.com/recaptcha "
-        "https://www.gstatic.com "
-        "https://www.googletagmanager.com "
-        "https://www.google-analytics.com; "
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-        "font-src 'self' https://fonts.gstatic.com; "
-        "img-src 'self' data: blob: "
-        "https://*.tawk.to "
-        "https://cdn.jsdelivr.net "
-        "https://www.google-analytics.com "
-        "https://www.googletagmanager.com; "
-        "frame-src https://embed.tawk.to https://www.google.com; "
-        "connect-src 'self' "
-        "https://the-professor-academy.onrender.com "
-        "https://www.google.com "
-        "https://www.googleapis.com "
-        "https://va.tawk.to "
-        "wss://*.tawk.to "
-        "https://www.google-analytics.com "
-        "https://www.googletagmanager.com; "
-        "object-src 'none'; "
-        "base-uri 'self';"
-    )
-    return response
+# --------------------------------------------------
+# Serve React Static Files (ONLY if built)
+# --------------------------------------------------
+if STATIC_PATH.exists():
+    app.mount("/assets", StaticFiles(directory=STATIC_PATH), name="assets")
+    logger.info("✅ React assets mounted at /assets")
+else:
+    logger.warning("⚠️ React dist/assets not found")
 
-# --- Register Routers ---
+# --------------------------------------------------
+# Register Routers
+# --------------------------------------------------
+app.include_router(admin_router)
 app.include_router(locations_router)
 app.include_router(register_router)
 app.include_router(tutors_router)
 app.include_router(jobs_router)
 app.include_router(ip_location_router)
 
-# --- Root Endpoint ---
+# --------------------------------------------------
+# Root & Health
+# --------------------------------------------------
 @app.get("/")
 def home():
-    return {"message": "API disabled for unauthorized access"}
+    return {"message": "API running"}
 
-# --- Health Check ---
 @app.get("/healthz")
 def health_check():
     return {"status": "ok"}
 
-# --- Startup Event ---
+# --------------------------------------------------
+# Startup Event
+# --------------------------------------------------
 @app.on_event("startup")
 def startup_event():
     try:
         preload_tutors()
-        print("✅ Tutors preloaded successfully on startup")
+        logger.info("✅ Tutors preloaded successfully on startup")
     except Exception as e:
-        print(f"⚠️ Failed to preload tutors on startup: {e}")
-        # Do not raise exception, server will still start
+        logger.error(f"⚠️ Failed to preload tutors: {e}")
 
-# --- Debugging for POST /tutors/register ---
+# --------------------------------------------------
+# Tutor Register (Debug + reCAPTCHA)
+# --------------------------------------------------
 @app.post("/tutors/register")
 async def register_tutor(request: Request):
-    logger.debug("Form submission attempt detected.")
-    
-    # Log the origin and referer headers for debugging
+    logger.debug("Tutor registration attempt")
+
     origin = request.headers.get("origin", "")
     referer = request.headers.get("referer", "")
-    logger.debug(f"Request from Origin: {origin}, Referer: {referer}")
+    logger.debug(f"Origin: {origin}, Referer: {referer}")
 
     form_data = await request.form()
-    
-    # Log form data for debugging
-    logger.debug(f"Form data received: {dict(form_data)}")
-    
-    recaptcha_token = form_data.get('recaptcha_token')
+    logger.debug(f"Form data: {dict(form_data)}")
+
+    recaptcha_token = form_data.get("recaptcha_token")
     if not recaptcha_token:
-        logger.error("No reCAPTCHA token received.")
         raise HTTPException(status_code=400, detail="Missing reCAPTCHA token")
-    
-    # Add reCAPTCHA token validation debug log
-    logger.debug(f"Received reCAPTCHA token: {recaptcha_token}")
 
     try:
-        # Call the actual reCAPTCHA verification function here
         verify_recaptcha(recaptcha_token, "tutor_register", request)
-        logger.debug("reCAPTCHA verified successfully.")
+        logger.debug("reCAPTCHA verified")
     except HTTPException as e:
-        logger.error(f"reCAPTCHA verification failed: {e.detail}")
-        raise HTTPException(status_code=400, detail=f"reCAPTCHA verification failed: {e.detail}")
+        raise HTTPException(status_code=400, detail=f"reCAPTCHA failed: {e.detail}")
 
-    # Perform other validations and proceed as per your original code
-    # ...
-
-    # For debugging purposes, log each key point:
-    logger.debug("All form fields validated successfully.")
-
-    # At this point, if form submission is successful:
     return {"message": "✅ Tutor registered successfully"}
+
+# --------------------------------------------------
+# React Router Fallback (IMPORTANT)
+# --------------------------------------------------
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    """
+    Serve React index.html for all frontend routes
+    (supports /admin/login, refresh, direct URLs)
+    """
+    index_path = FRONTEND_DIST / "index.html"
+    if index_path.exists():
+        return FileResponse(index_path)
+    return {"error": "Frontend not built"}

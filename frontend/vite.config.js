@@ -6,3 +6,4 @@ export default defineConfig({
   plugins: [react()],
   base: '/', // 👈 ensures assets resolve correctly on Netlify
 })
+
