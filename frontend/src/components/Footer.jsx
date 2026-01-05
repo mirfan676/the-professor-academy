@@ -80,18 +80,18 @@ const Footer = () => {
           </Typography>
 
           {[
-            "About Us",
-            "Find a Tutor",
-            "Become a Tutor",
-            "Study Abroad",
-            "Referral Program",
-            "Career Opportunities",
-            "Languages",
-            "Buy Courses",
+            { name: "About Us", link: "/about" },
+            { name: "Find a Tutor", link: "/teachers" },
+            { name: "Become a Tutor", link: "/register" },
+            { name: "Study Abroad", link: "#" },
+            { name: "Referral Program", link: "#" },
+            { name: "Career Opportunities", link: "/register" },
+            { name: "Privacy Policy", link: "/privacy" },
+            { name: "Terms & Conditions", link: "/terms" },
           ].map((item) => (
             <Link
-              key={item}
-              href="#"
+              key={item.name}
+              href={item.link}
               underline="none"
               sx={{
                 display: "block",
@@ -106,7 +106,7 @@ const Footer = () => {
                 },
               }}
             >
-              {item}
+              {item.name}
             </Link>
           ))}
         </Grid>
@@ -126,21 +126,19 @@ const Footer = () => {
             Classes
           </Typography>
 
-          {[
-            "K-12",
-            "O & A Level",
-            "Bachelors / Masters",
-            "Competitive Exams",
-            "IT & Technology",
-            "Programming",
-            "Qur’an & Tajweed",
-            "English Language",
-            "IELTS",
-            "Graphics & Multimedia",
+          {[        
+            { name: "Junior Classes", link: "/about" },
+            { name: "O & A Level", link: "#" },
+            { name: "Bachelors / Masters", link: "#" },
+            { name: "Competitive Exams", link: "#" },
+            { name: "IT & Technology", link: "#" },
+            { name: "Programming", link: "#" },
+            { name: "English Language", link: "#" },
+            { name: "Qur’an & Tajweed", link: "#" }
           ].map((item) => (
             <Link
-              key={item}
-              href="#"
+              key={item.name}
+              href={item.link}
               underline="none"
               sx={{
                 display: "block",
@@ -155,7 +153,7 @@ const Footer = () => {
                 },
               }}
             >
-              {item}
+              {item.name}
             </Link>
           ))}
         </Grid>

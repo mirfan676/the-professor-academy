@@ -7,6 +7,7 @@ export default function HeroSection() {
   const [isKarachiOpen, setIsKarachiOpen] = useState(false);
   const [isLahoreOpen, setIsLahoreOpen] = useState(false);
   const [isMultanOpen, setIsMultanOpen] = useState(false);
+  const [isFaisalabadOpen, setIsFaisalabadOpen] = useState(false);
 
   const toggleCityBranches = (city) => {
     switch (city) {
@@ -14,6 +15,7 @@ export default function HeroSection() {
       case "Karachi": setIsKarachiOpen(!isKarachiOpen); break;
       case "Lahore": setIsLahoreOpen(!isLahoreOpen); break;
       case "Multan": setIsMultanOpen(!isMultanOpen); break;
+      case "Faisalabad": setIsFaisalabadOpen(!isFaisalabadOpen); break;
       default: break;
     }
   };
@@ -77,7 +79,8 @@ export default function HeroSection() {
           { city: "Islamabad", img: "/assets/Islamabad.svg", branches: ["F7 Branch", "F6 Branch"] },
           { city: "Karachi", img: "/assets/Karachi.svg", branches: ["Korangi Branch", "Saddar Branch"] },
           { city: "Lahore", img: "/assets/Lahore.svg", branches: ["DHA Branch", "Gulberg Branch"] },
-          { city: "Multan", img: "/assets/Multan.svg", branches: ["Multan Cantt Branch"] }
+          { city: "Multan", img: "/assets/Multan.svg", branches: ["Multan Cantt Branch"] },
+          { city: "Faisalabad", img: "/assets/Faisalabad.svg", branches: ["Faisalabad City Branch"] }
         ].map((item, index) => (
           <Grid item xs={6} sm={4} md={2.5} key={index}>
             <Box
@@ -131,7 +134,9 @@ export default function HeroSection() {
                   ? isKarachiOpen
                   : item.city === "Lahore"
                   ? isLahoreOpen
-                  : isMultanOpen
+                  : item.city === "Multan"
+                  ? isMultanOpen
+                  : isFaisalabadOpen
               }
             >
               <Box sx={{ mt: 2, textAlign: "center" }}>
