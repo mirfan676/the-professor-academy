@@ -1,4 +1,3 @@
-// JobFilters.jsx
 import {
   Grid,
   Paper,
@@ -11,7 +10,7 @@ import {
   Button,
   Drawer,
   IconButton,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
@@ -29,84 +28,50 @@ export default function JobFilters({
   cities = [],
   grades = [],
   onReset,
-  darkTheme = true // New prop for dark styling
+  darkTheme = true,
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width:900px)");
 
-  // Safe options
-  const safeCities = Array.from(new Set(cities.map(c => c != null ? String(c) : ""))).filter(Boolean);
-  const safeGrades = Array.from(new Set(grades.map(g => g != null ? String(g) : ""))).filter(Boolean);
+  const safeCities = Array.from(new Set(cities.map(String))).filter(Boolean);
+  const safeGrades = Array.from(new Set(grades.map(String))).filter(Boolean);
 
   const filterContent = (
-    <Box sx={{ p: 2, width: "100%" }}>
+    <Box sx={{ p: 2 }}>
       {isMobile && (
-        <Box sx={{ textAlign: "right", mb: 2 }}>
-          <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: darkTheme ? "#ffd700" : undefined }}>
+        <Box textAlign="right">
+          <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: "#ffd700" }}>
             <CloseIcon />
           </IconButton>
         </Box>
       )}
 
       <Grid container spacing={2} direction="column">
-        {/* CITY */}
-        <Grid item xs={12}>
+        <Grid item>
           <FormControl fullWidth>
-            <InputLabel sx={{ color: darkTheme ? "#fff" : undefined }}>Select City</InputLabel>
-            <Select
-              value={city}
-              label="Select City"
-              onChange={(e) => setCity(e.target.value)}
-              sx={{
-                color: darkTheme ? "#fff" : undefined,
-                "& .MuiOutlinedInput-notchedOutline": { borderColor: darkTheme ? "rgba(255,255,255,0.2)" : undefined },
-                "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: darkTheme ? "#ffd700" : undefined },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: darkTheme ? "#ffd700" : undefined },
-              }}
-            >
+            <InputLabel sx={{ color: "#fff" }}>City</InputLabel>
+            <Select value={city} label="City" onChange={(e) => setCity(e.target.value)}>
               <MenuItem value="">All Cities</MenuItem>
-              {safeCities.map((c, i) => (
-                <MenuItem key={i} value={c}>{c}</MenuItem>
+              {safeCities.map((c) => (
+                <MenuItem key={c} value={c}>{c}</MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
 
-        {/* SUBJECT */}
-        <Grid item xs={12}>
+        <Grid item>
           <TextField
-            label="Search Subject"
+            label="Subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             fullWidth
-            sx={{
-              input: { color: darkTheme ? "#fff" : undefined },
-              label: { color: darkTheme ? "#fff" : undefined },
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: darkTheme ? "#121212" : undefined,
-                "& fieldset": { borderColor: darkTheme ? "rgba(255,255,255,0.15)" : undefined },
-                "&:hover fieldset": { borderColor: darkTheme ? "#ffd700" : undefined },
-                "&.Mui-focused fieldset": { borderColor: darkTheme ? "#ffd700" : undefined },
-              },
-            }}
           />
         </Grid>
 
-        {/* GENDER */}
-        <Grid item xs={12}>
+        <Grid item>
           <FormControl fullWidth>
-            <InputLabel sx={{ color: darkTheme ? "#fff" : undefined }}>Gender</InputLabel>
-            <Select
-              value={gender}
-              label="Gender"
-              onChange={(e) => setGender(e.target.value)}
-              sx={{
-                color: darkTheme ? "#fff" : undefined,
-                "& .MuiOutlinedInput-notchedOutline": { borderColor: darkTheme ? "rgba(255,255,255,0.2)" : undefined },
-                "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: darkTheme ? "#ffd700" : undefined },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: darkTheme ? "#ffd700" : undefined },
-              }}
-            >
+            <InputLabel sx={{ color: "#fff" }}>Gender</InputLabel>
+            <Select value={gender} label="Gender" onChange={(e) => setGender(e.target.value)}>
               <MenuItem value="">Any</MenuItem>
               <MenuItem value="Male">Male</MenuItem>
               <MenuItem value="Female">Female</MenuItem>
@@ -115,45 +80,20 @@ export default function JobFilters({
           </FormControl>
         </Grid>
 
-        {/* GRADE */}
-        <Grid item xs={12}>
+        <Grid item>
           <FormControl fullWidth>
-            <InputLabel sx={{ color: darkTheme ? "#fff" : undefined }}>Grade</InputLabel>
-            <Select
-              value={grade}
-              label="Grade"
-              onChange={(e) => setGrade(e.target.value)}
-              sx={{
-                color: darkTheme ? "#fff" : undefined,
-                "& .MuiOutlinedInput-notchedOutline": { borderColor: darkTheme ? "rgba(255,255,255,0.2)" : undefined },
-                "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: darkTheme ? "#ffd700" : undefined },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: darkTheme ? "#ffd700" : undefined },
-              }}
-            >
+            <InputLabel sx={{ color: "#fff" }}>Grade</InputLabel>
+            <Select value={grade} label="Grade" onChange={(e) => setGrade(e.target.value)}>
               <MenuItem value="">All Grades</MenuItem>
-              {safeGrades.map((g, i) => (
-                <MenuItem key={i} value={g}>{g}</MenuItem>
+              {safeGrades.map((g) => (
+                <MenuItem key={g} value={g}>{g}</MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
 
-        {/* RESET BUTTON */}
-        <Grid item xs={12} sx={{ textAlign: "center", mt: 1 }}>
-          <Button
-            onClick={onReset}
-            variant="contained"
-            sx={{
-              background: "linear-gradient(135deg, #00a6ff, #00ff8f)",
-              color: "#000",
-              textTransform: "none",
-              borderRadius: "12px",
-              px: 3,
-              "&:hover": {
-                background: "linear-gradient(135deg, #00ff8f, #00a6ff)",
-              },
-            }}
-          >
+        <Grid item textAlign="center">
+          <Button onClick={onReset} variant="contained">
             Reset Filters
           </Button>
         </Grid>
@@ -163,58 +103,18 @@ export default function JobFilters({
 
   return (
     <>
-      {/* MOBILE FILTER BUTTON */}
-      {isMobile && (
-        <Box sx={{ textAlign: "right", mb: 2 }}>
-          <Button
-            variant="contained"
-            onClick={() => setDrawerOpen(true)}
-            startIcon={<FilterListIcon />}
-            sx={{
-              background: darkTheme ? "linear-gradient(135deg, #a8862b, #ffd700)" : "#004aad",
-              textTransform: "none",
-              borderRadius: "12px",
-              px: 3,
-              color: darkTheme ? "#000" : "#fff",
-            }}
-          >
+      {isMobile ? (
+        <>
+          <Button startIcon={<FilterListIcon />} onClick={() => setDrawerOpen(true)}>
             Filters
           </Button>
-        </Box>
+          <Drawer anchor="bottom" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+            {filterContent}
+          </Drawer>
+        </>
+      ) : (
+        <Paper sx={{ p: 3 }}>{filterContent}</Paper>
       )}
-
-      {/* DESKTOP FILTER BAR */}
-      {!isMobile && (
-        <Paper
-          sx={{
-            p: 3,
-            mb: 4,
-            borderRadius: "22px",
-            background: darkTheme ? "rgba(18,18,18,0.9)" : "rgba(255,255,255,0.9)",
-            backdropFilter: "blur(6px)",
-            boxShadow: "0 6px 18px rgba(0,0,0,0.3)",
-          }}
-        >
-          {filterContent}
-        </Paper>
-      )}
-
-      {/* MOBILE DRAWER */}
-      <Drawer
-        anchor="bottom"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        PaperProps={{
-          sx: {
-            borderTopLeftRadius: "22px",
-            borderTopRightRadius: "22px",
-            p: 2,
-            background: darkTheme ? "#121212" : "#fff",
-          },
-        }}
-      >
-        {filterContent}
-      </Drawer>
     </>
   );
 }

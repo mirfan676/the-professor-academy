@@ -21,7 +21,6 @@ api.interceptors.request.use((config) => {
 // Admin login
 export const adminLogin = async (username, password) => {
   const response = await api.post("/api/admin/login", { username, password });
-  // Save token to localStorage for future requests
   if (response.data.token) {
     localStorage.setItem("adminToken", response.data.token);
   }
@@ -36,41 +35,30 @@ export const fetchTutors = async () => {
 
 // Update a tutor
 export const updateTutor = async (tutorId, data) => {
-  try {
-    console.log("Updating tutor with Profile ID:", tutorId);  // Log the tutor ID
-    console.log("Data being sent to the backend:", data);  // Log the data being passed
+  const updatedData = {
+    DateAdded: data.DateAdded || new Date().toISOString(),
+    ProfileID: tutorId,
+    ProfileURL: data.ProfileURL || `https://theprofessoracademy.com/tutor/${tutorId}`,
+    FullName: data.FullName,
+    IDCardNumber: data.IDCardNumber,
+    Qualification: data.Qualification,
+    PrimarySubject: data.PrimarySubject,
+    MajorSubjects: data.MajorSubjects,
+    Experience: data.Experience,
+    Phone: data.Phone,
+    Bio: data.Bio,
+    Province: data.Province,
+    District: data.District,
+    Tehsil: data.Tehsil,
+    City: data.City,
+    Latitude: data.Latitude,
+    Longitude: data.Longitude,
+    ImageURL: data.ImageURL,
+    Verified: data.Verified || "No",
+  };
 
-    // Ensure the data has the expected fields
-    const updatedData = {
-      DateAdded: data.DateAdded || new Date().toISOString(), // Default to current date if missing
-      ProfileID: tutorId,  // Ensure ProfileID is always sent
-      ProfileURL: data.ProfileURL || `https://theprofessoracademy.com/tutor/${tutorId}`,  // Default URL if not provided
-      FullName: data.FullName,
-      IDCardNumber: data.IDCardNumber,
-      Qualification: data.Qualification,
-      PrimarySubject: data.PrimarySubject,
-      MajorSubjects: data.MajorSubjects,
-      Experience: data.Experience,
-      Phone: data.Phone,
-      Bio: data.Bio,
-      Province: data.Province,
-      District: data.District,
-      Tehsil: data.Tehsil,
-      City: data.City,
-      Latitude: data.Latitude,
-      Longitude: data.Longitude,
-      ImageURL: data.ImageURL,
-      Verified: data.Verified || "No", // Default to "No" if not provided
-    };
-
-    // Send the data to the backend
-    const response = await api.put(`/api/admin/tutors/${tutorId}`, updatedData);
-    console.log("Tutor Updated:", response.data);  // Log the response to verify
-    return response.data;
-  } catch (error) {
-    console.error("Error updating tutor:", error);
-    throw new Error("Unable to update tutor.");
-  }
+  const response = await api.put(`/api/admin/tutors/${tutorId}`, updatedData);
+  return response.data;
 };
 
 // Verify a tutor
@@ -80,19 +68,29 @@ export const verifyTutor = async (tutorId, verified) => {
 };
 
 // -------------------------
-// Jobs API
+// Admin Jobs API
 // -------------------------
 
-// Fetch all jobs
-export const fetchJobs = async () => {
-  const response = await api.get("/api/admin/jobs");
-  return response.data;
+// Fetch all jobs (admin view, protected)
+export const fetchAdminJobs = async () => {
+  const response = await api.get("/jobs/"); // calls protected jobs route
+  return response.data.jobs ?? []; // always return array
 };
 
 // Update a job
 export const updateJob = async (jobId, data) => {
   const response = await api.put(`/api/admin/jobs/${jobId}`, data);
   return response.data;
+};
+
+// -------------------------
+// Public Jobs API (Website)
+// -------------------------
+
+// Fetch jobs for website/public view
+export const fetchPublicJobs = async () => {
+  const response = await api.get("/jobs/public"); // public endpoint
+  return response.data ?? [];
 };
 
 export default api;
