@@ -30,50 +30,57 @@
 
     <!-- =======================
          Content Security Policy
-         (Fully fixed, no 'unsafe-inline')
+         (GA4 + Google Ads + reCAPTCHA + Tawk.to)
     ======================== -->
     <meta
       http-equiv="Content-Security-Policy"
       content="
         default-src 'self';
-        script-src 'self'
+        script-src
+          'self'
+          'unsafe-inline'
           https://www.google.com
           https://www.gstatic.com
           https://www.googletagmanager.com
           https://googleads.g.doubleclick.net
           https://www.googleadservices.com
           https://embed.tawk.to
-          https://cdn.jsdelivr.net
-          'nonce-12345';
-        script-src-elem 'self'
+          https://cdn.jsdelivr.net;
+        script-src-elem
+          'self'
+          'unsafe-inline'
           https://www.google.com
           https://www.gstatic.com
           https://www.googletagmanager.com
           https://googleads.g.doubleclick.net
           https://www.googleadservices.com
           https://embed.tawk.to
-          https://cdn.jsdelivr.net
-          'nonce-12345';
-        frame-src https://www.google.com
+          https://cdn.jsdelivr.net;
+        frame-src
+          https://www.google.com
           https://www.googletagmanager.com
           https://embed.tawk.to
           https://googleads.g.doubleclick.net;
-        connect-src 'self'
-          https://the-professor-academy.onrender.com
+        connect-src
+          'self'
           https://www.google-analytics.com
           https://www.googletagmanager.com
           https://www.google.com
           https://www.googleadservices.com
           https://googleads.g.doubleclick.net
-          https://embed.tawk.to
-          https://va.tawk.to;
-        img-src 'self'
+          https://embed.tawk.to;
+        img-src
+          'self'
           data:
           https://www.google.com
-          https://www.gstatic.com
-          https://www.google.com.pk;
-        style-src 'self' https://fonts.googleapis.com;
-        font-src 'self' https://fonts.gstatic.com;
+          https://www.gstatic.com;
+        style-src
+          'self'
+          'unsafe-inline'
+          https://fonts.googleapis.com;
+        font-src
+          'self'
+          https://fonts.gstatic.com;
       "
     />
 
@@ -111,21 +118,31 @@
     />
 
     <!-- =======================
-         GA4 External Script
+         Google Analytics (GA4)
     ======================== -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4E9T96ZWWJ" nonce="12345"></script>
-    <script src="/scripts/gtag-config.js" nonce="12345"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4E9T96ZWWJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4E9T96ZWWJ');
+    </script>
 
     <!-- =======================
-         Google Ads External Script
+         Google Ads Tag
     ======================== -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17871840299" nonce="12345"></script>
-    <script src="/scripts/ads-config.js" nonce="12345"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17871840299"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-17871840299');
+    </script>
 
     <!-- =======================
          JSON-LD Structured Data
     ======================== -->
-    <script type="application/ld+json" nonce="12345">
+    <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
@@ -145,19 +162,23 @@
     </script>
 
     <!-- =======================
-         reCAPTCHA
+         reCAPTCHA Enterprise
     ======================== -->
-    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Ldu0TUsAAAAAApGl4KHrjtG6LG-JVrXIKfWupqK" async defer nonce="12345"></script>
+    <script
+      src="https://www.google.com/recaptcha/enterprise.js?render=6Ldu0TUsAAAAAApGl4KHrjtG6LG-JVrXIKfWupqK"
+      async
+      defer>
+    </script>
   </head>
 
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx" nonce="12345"></script>
+    <script type="module" src="/src/main.jsx"></script>
 
     <!-- =======================
          Tawk.to Live Chat
     ======================== -->
-    <script type="text/javascript" nonce="12345">
+    <script type="text/javascript">
       var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
       (function () {
         var s1 = document.createElement("script"),
