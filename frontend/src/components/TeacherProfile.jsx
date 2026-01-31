@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -28,7 +28,6 @@ const TeacherProfile = () => {
       try {
         setLoading(true);
         const apiBase = import.meta.env.VITE_API_URL.replace(/\/$/, "");
-
         const res = await axios.get(`${apiBase}/tutors/profile/${id}`);
 
         if (!res.data || Object.keys(res.data).length === 0) {
@@ -38,13 +37,11 @@ const TeacherProfile = () => {
 
         const t = res.data;
 
-        // Build thumbnail URL
         const thumbnailUrl =
           t["Thumbnail"] && !t["Thumbnail"].startsWith("http")
             ? `${apiBase}${t["Thumbnail"]}`
             : t["Thumbnail"];
 
-        // Normalize boolean flags
         const normalizeBool = (val) => {
           const str = String(val || "").toLowerCase();
           return str === "yes" || str === "true" || str === "1";
@@ -81,6 +78,37 @@ const TeacherProfile = () => {
     fetchTeacher();
   }, [id]);
 
+  const handleHireOnWhatsApp = () => {
+    if (!teacher) return;
+
+    const profileUrl = window.location.href;
+
+    const message = `
+Hello The Professor Academy 👋
+
+I would like to hire ${teacher.name}.
+
+📚 Subjects: ${
+      teacher.subjects.length ? teacher.subjects.join(", ") : "Various subjects"
+    }
+🎓 Qualification: ${teacher.qualification}
+📍 City: ${teacher.city}
+💰 Fee: ${teacher.price}/hr
+
+🔗 Teacher Profile:
+${profileUrl}
+
+Please guide me with next steps.
+    `.trim();
+
+    const whatsappNumber = "923015037768"; 
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+
+    window.open(whatsappUrl, "_blank");
+  };
+
   if (loading)
     return (
       <Box sx={{ textAlign: "center", mt: 10 }}>
@@ -109,10 +137,8 @@ const TeacherProfile = () => {
           boxShadow: 6,
           border: "4px solid",
           borderImage: "linear-gradient(45deg, #4facfe, #00f2fe) 1",
-          overflow: "hidden",
         }}
       >
-        {/* Top Section */}
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} sm={4} textAlign="center">
             <Avatar
@@ -121,48 +147,21 @@ const TeacherProfile = () => {
               sx={{
                 width: 130,
                 height: 130,
-                border: "4px solid white",
                 mx: "auto",
+                border: "4px solid white",
                 boxShadow: "0 0 15px rgba(0,0,0,0.2)",
               }}
             />
 
-            <Box
-              sx={{
-                mt: 2,
-                display: "flex",
-                justifyContent: "center",
-                gap: 1,
-                flexWrap: "wrap",
-              }}
-            >
+            <Box sx={{ mt: 2, display: "flex", gap: 1, justifyContent: "center" }}>
               {teacher.verified && (
-                <Chip
-                  icon={<CheckCircle />}
-                  label="Verified"
-                  color="success"
-                  size="small"
-                  sx={{ fontWeight: 600 }}
-                />
+                <Chip icon={<CheckCircle />} label="Verified" color="success" size="small" />
               )}
-
               {teacher.featured && (
-                <Chip
-                  label="Featured"
-                  color="primary"
-                  size="small"
-                  sx={{ fontWeight: 600 }}
-                />
+                <Chip label="Featured" color="primary" size="small" />
               )}
-
               {teacher.rating > 0 && (
-                <Chip
-                  icon={<Star />}
-                  label={`${teacher.rating} ★`}
-                  color="warning"
-                  size="small"
-                  sx={{ fontWeight: 600 }}
-                />
+                <Chip icon={<Star />} label={`${teacher.rating} ★`} color="warning" size="small" />
               )}
             </Box>
           </Grid>
@@ -171,89 +170,57 @@ const TeacherProfile = () => {
             <Typography variant="h4" fontWeight={700} color="#004aad">
               {teacher.name}
             </Typography>
-            <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 0.5 }}>
-              {teacher.qualification}
-            </Typography>
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography color="text.secondary">{teacher.qualification}</Typography>
+            <Typography color="text.secondary">
               Experience: {teacher.experience} years
             </Typography>
-            <Typography variant="subtitle2" color="text.secondary">
-              {teacher.city}
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{ mt: 1, color: "#29b554", fontWeight: 700 }}
-            >
+            <Typography color="text.secondary">{teacher.city}</Typography>
+            <Typography variant="h6" sx={{ mt: 1, color: "#29b554", fontWeight: 700 }}>
               {teacher.price}/hr
             </Typography>
           </Grid>
         </Grid>
 
-        {/* Subjects */}
         {teacher.subjects.length > 0 && (
           <Box sx={{ mt: 4 }}>
-            <Typography variant="h6" fontWeight={700} color="#004aad" gutterBottom>
+            <Typography variant="h6" fontWeight={700} color="#004aad">
               Subjects
             </Typography>
             <Grid container spacing={1}>
               {teacher.subjects.map((sub, i) => (
                 <Grid item key={i}>
-                  <Chip
-                    label={sub}
-                    color="primary"
-                    variant="outlined"
-                    sx={{ fontWeight: 600 }}
-                  />
+                  <Chip label={sub} variant="outlined" />
                 </Grid>
               ))}
             </Grid>
           </Box>
         )}
 
-        {/* Preferred Areas */}
         {[teacher.Area1, teacher.Area2, teacher.Area3].some(Boolean) && (
           <Box sx={{ mt: 3 }}>
-            <Typography variant="h6" fontWeight={700} color="#004aad" gutterBottom>
+            <Typography variant="h6" fontWeight={700} color="#004aad">
               Preferred Areas
             </Typography>
             {[teacher.Area1, teacher.Area2, teacher.Area3]
               .filter(Boolean)
               .map((area, i) => (
-                <Typography key={i} variant="body1" sx={{ mb: 0.5 }}>
-                  📍 {area}
-                </Typography>
+                <Typography key={i}>📍 {area}</Typography>
               ))}
           </Box>
         )}
 
-        {/* Bio */}
         {teacher.bio && (
           <Box sx={{ mt: 3 }}>
-            <Typography variant="h6" fontWeight={700} color="#004aad" gutterBottom>
+            <Typography variant="h6" fontWeight={700} color="#004aad">
               About
             </Typography>
-            <Typography variant="body1">{teacher.bio}</Typography>
+            <Typography>{teacher.bio}</Typography>
           </Box>
         )}
 
-        {/* Buttons */}
-        <Box
-          sx={{
-            mt: 4,
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: 2,
-            flexWrap: "wrap",
-          }}
-        >
-          <Button
-            variant="contained"
-            color="success"
-            component={Link}
-            to={`/hire/${teacher.id}`}
-            state={{ teacherId: teacher.id, teacherName: teacher.name }}
-          >
-            Hire {teacher.name?.split(" ")[0] || "Teacher"}
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>
+          <Button variant="contained" color="success" onClick={handleHireOnWhatsApp}>
+            Hire on WhatsApp
           </Button>
 
           <Button variant="outlined" onClick={() => window.history.back()}>
