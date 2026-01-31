@@ -36,6 +36,7 @@
       http-equiv="Content-Security-Policy"
       content="
         default-src 'self';
+
         script-src
           'self'
           'unsafe-inline'
@@ -46,6 +47,7 @@
           https://www.googleadservices.com
           https://embed.tawk.to
           https://cdn.jsdelivr.net;
+
         script-src-elem
           'self'
           'unsafe-inline'
@@ -56,28 +58,39 @@
           https://www.googleadservices.com
           https://embed.tawk.to
           https://cdn.jsdelivr.net;
+
         frame-src
           https://www.google.com
           https://www.googletagmanager.com
           https://embed.tawk.to
           https://googleads.g.doubleclick.net;
+
         connect-src
           'self'
           https://www.google-analytics.com
+          https://region1.google-analytics.com
+          https://stats.g.doubleclick.net
           https://www.googletagmanager.com
           https://www.google.com
           https://www.googleadservices.com
           https://googleads.g.doubleclick.net
-          https://embed.tawk.to;
+          https://va.tawk.to;
+
         img-src
           'self'
           data:
           https://www.google.com
-          https://www.gstatic.com;
+          https://www.google.com.pk
+          https://www.gstatic.com
+          https://www.googletagmanager.com
+          https://www.googleadservices.com
+          https://googleads.g.doubleclick.net;
+
         style-src
           'self'
           'unsafe-inline'
           https://fonts.googleapis.com;
+
         font-src
           'self'
           https://fonts.gstatic.com;
