@@ -84,18 +84,18 @@ const TeacherProfile = () => {
     const profileUrl = window.location.href;
 
     const message = `
-Hello The Professor Academy 👋
+Aoa The Professor Academy! 
 
 I would like to hire ${teacher.name}.
 
-📚 Subjects: ${
+▸ Subjects: ${
       teacher.subjects.length ? teacher.subjects.join(", ") : "Various subjects"
     }
-🎓 Qualification: ${teacher.qualification}
-📍 City: ${teacher.city}
-💰 Fee: ${teacher.price}/hr
+▸ Qualification: ${teacher.qualification}
+▸ City: ${teacher.city}
+▸Fee: ${teacher.price}/hr
 
-🔗 Teacher Profile:
+▸ Teacher Profile:
 ${profileUrl}
 
 Please guide me with next steps.
